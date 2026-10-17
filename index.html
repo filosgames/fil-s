@@ -902,12 +902,12 @@ try {
  </div>
  <div id="root"></div>
 </div>
-<script src="data-ag.js?v=2"></script>
+<script src="data-ag.js?v=3"></script>
 <script src="data-qv.js?v=2"></script>
 <script src="data-sp.js?v=3"></script>
-<script src="data-cats.js?v=2"></script>
-<script src="data-quizdata.js?v=1"></script>
-<script src="data-quiz.js?v=17"></script>
+<script src="data-cats.js?v=3"></script>
+<script src="data-quizdata.js?v=2"></script>
+<script src="data-quiz.js?v=18"></script>
 <script>
 
 
@@ -1093,9 +1093,17 @@ function setLang(l){
  var prev=(typeof curGame==="function")?curGame():null;
  var prevStarter=S.starterGame;
  LANG=l;
+ // Domande gia estratte per la partita in corso: passa alle stesse domande nella nuova lingua
+ function remap(list,tables,cur){if(!list||!cur)return list;return list.map(function(q){for(var t=0;t<tables.length;t++){var i=tables[t]?tables[t].indexOf(q):-1;if(i>=0)return cur[i]||q;}return q;});}
+ try{
+  if(S.quizQuestions&&S.quizGame&&typeof QUIZ_DATA!=="undefined"&&QUIZ_DATA[S.quizGame]){var g=S.quizGame;
+   S.quizQuestions=remap(S.quizQuestions,[QUIZ_DATA[g].questions,QUIZ_DATA_EN[g]&&QUIZ_DATA_EN[g].questions,QUIZ_DATA_ES[g]&&QUIZ_DATA_ES[g].questions],quizDataFor(g).questions);}
+  if(S.agQuestions&&typeof ANNO_GIUSTO_DATA!=="undefined")
+   S.agQuestions=remap(S.agQuestions,[ANNO_GIUSTO_DATA,window.ANNO_GIUSTO_DATA_EN,window.ANNO_GIUSTO_DATA_ES],agData());
+ }catch(e){}
  if(prev){
   var key=prev._it||prev.name,list=gameTable()[S.cat]||[],ni=-1;
-  for(var i=0;i<list.length;i++){if((list[i]._it||list[i].name)===key){ni=i;break;}}
+  for(var i=0;i<list.length;i++){if((list[i]._it||list[i].name)===key&&(list[i].players==="2")===(prev.players==="2")){ni=i;break;}}
   if(ni<0){stopAllTimers();S.screen="games";S.game=null;}
   else{S.game=ni;if(prevStarter&&prevStarter===prev.name)S.starterGame=list[ni].name;}
  }
@@ -1128,6 +1136,1012 @@ menuCallWaiter:"CHIAMATE IL CAMERIERE!"},
  en:{tagline:"SOCIAL GAMES",splashDesc:"No cards, no dice — just you, good company, and the desire to be together.",splashBtn:"START PLAYING",splashFoot:"PUBS · BARS · FRIEND NIGHTS",homeTitle:"WHAT DO WE WANT TO PLAY?",catAmici:"WITH FRIENDS",catCoppia:"AS A COUPLE",catBambini:"ICEBREAKER",catIndovinelli:"RIDDLES",catAzione:"ACTION",catCreativi:"CREATIVE",catCultura:"TRIVIA",catAdulti:"18+",catRelax:"REMOTE",catSolitario:"SOLO",back:"BACK",connect:"CONNECT",backBtn:"Back",exitBtn:"Exit",filterAll:"ALL",filterEasy:"EASY",filterMed:"MEDIUM",filterHard:"HARD",players:"players",backToGames:"← BACK TO GAMES",endMsg4:"WHAT A GREAT NIGHT!",endMsg3:"NICE, BUT CAN DO BETTER!",endMsgElse:"LET'S TRY SOMETHING ELSE?",mrWhiteHowMany:"How many players are you?",mrWhitePass:"Pass the tablet around. Each player taps their button to see the word.",dadoInsert:"Enter the number and your names. First to 5 points wins!",waitingPlayers:"Waiting for players...",qvQuestion:"QUESTION",qvOf:"OF",qvYourAnswer:"Your answer (you are ",qvConfirm:"CONFIRM →",qvAnswerSent:"Answer sent!",qvWaitingOthers:"Waiting for the other players...",qvWaitingOthers2:"Waiting for the others...",qvPassTablet:"Pass the tablet to: ",qvAnswerSentShort:"Answer sent",qvCorrectAnswer:"THE CORRECT ANSWER IS",qvNextQuestion:"NEXT QUESTION →",qvFinalScore:"SEE FINAL SCOREBOARD →",qvRevealAnswers:"REVEAL ANSWERS →",qvWon:"WON!",qvPoints:"With",qvPointsOf:"points out of",qvPlayAgain:"PLAY AGAIN",howToPlay:"HOW TO PLAY",tipLabel:"Tip",theQuestions:"THE QUESTIONS",backToGame:"← BACK TO GAME",startMrWhite:"START MR. WHITE →",qvShareCode:"Share this code with your friends",qvDisconnect:"Disconnect",codeError4:"Enter the code (4 digits)",qvPlayer1:"player",qvPlayerN:"players",qvTitle:"HOW MUCH?",endGame:"END GAME →",chiPagaTitle:"WHO PAYS?",chiPagaInstr:"Put a finger\non the screen",chiPagaWait:"Waiting for others…",chiPagaLoser:"It's on",chiPagaSub:"pays the bill! ",chiPagaRestart:"Play again",chiPagaBack:"← GAMES",starterContinue:"You've broken the ice — keep going with your own questions, following the game rules.",qzShowAnswer:"SHOW ANSWER",mrWhiteStart:"Everyone has seen the word. Start giving clues!",intesaWord:"Word ",intesaLevel:"LEVEL: ",intesaGuessedN:"You guessed ",intesaLevelOf:"— Level: ",changeLevel:"CHANGE LEVEL",alfabetoHint:"Find something that starts with this letter!",codiceAllDigits:"All players must enter 4 digits!",codiceWonBy:"Guessed the code of ",roomNotFound2:"Room not found",otherGames:"OTHER GAMES",starterInstruct:"Play this phrase, then move on to the next.",analyticsEmpty:"No data yet. Start playing!",mostPlayed:"MOST PLAYED GAMES",topCategory:"most played category",connectedRoom:"Connected to room",creatingRoom:"Creating room and sharing the code",createRoom:"CREATE ROOM",qzChooseName:"Choose your player name",qzLeaderboard:"LEADERBOARD ",qzLeaderTitle:"LEADERBOARD",qzFinalLeader:"FINAL LEADERBOARD",connErr:"Connection error",joinBtn:"Join",oppure:"OR",enterBtn:"Join",codeRoomPH2:"Room code",codeRoomShare:"Room code — share it with the players",codeRoomLabel:"Room code",waitingHost2:" Waiting for the host to start the game...",waitingPlayers3:"Waiting for players...",codiceWaiting:"Waiting for the answer from ",quizzoneCorrect:"Correct answer! Waiting for the others...",quizzoneWrong:"Wrong answer. Waiting for the others...",roomCode:"Room code",inRoom:"You're in the room",waitingHost:" Waiting for the host to start the game...",leaveRoom:"Leave room",playersInRoom:"Players in room:",startGame:" START THE GAME",enterCode:"Enter the room code:",codeRoomPH:"E.g. ABC123",yourName:"Your name:",yourNamePH:"What's your name?",roomNotFound:"Room not found — check the code",waitPlayer:"Wait for at least one player!",closeRoom:"Close room",joinRoom:"Join a room",joinRoomPH:"Room code",waitingPlayers2:"Waiting for more players...",copyCode:"Copy code",disconnectBtn:"Disconnect",firebaseErr:"Firebase not available",timeoutErr:"Timeout — check your internet connection",howMany:"HOW MANY?",modeLocal:"Local",modeDist:"Remote",playerNamePH:"Player name ",pinAccess:"Enter PIN to access.",productName:"Product name",riddleLabel:"RIDDLE",revealAnswer:"REVEAL ANSWER ",endBtn:"END →",mrWhiteYourWord:"The secret word is:",mrWhiteBluff:"This is YOUR word — similar to the others'.\nBluff! Try to figure out their word from their clues.",mrWhitePlayer:"Player ",mrWhiteLookWord:" SEE THE WORD",intesaTitle:"THE RIGHT WORD",intesaDifficulty:"CHOOSE DIFFICULTY",intesaDesc:"One player describes, the team guesses. 60 seconds. How many words can you get?",intesaHard:"More challenging words",intesaStart:" START",intesaGuessed:"CORRECT",intesaResult:"WORDS GUESSED",nomeCognomeDesc:"The first to say a full name with these letters wins the point!",codiceTitle:"CRACK THE CODE",codiceDesc:"Each player picks a secret 4-digit code. Don't show it to the others!",codiceTurn:"Turn of ",codiceAsk:"— choose who to ask and which digit to guess",codiceYes:"YES, it has a ",qvMultiDevice:"PLAY ON MULTIPLE DEVICES",qvMultiDesc:"Each player uses their own device. The room creator plays too!",qvEnterName:"Enter your name",qvCreateRoom:"Create room",qvLocalDesc:"Each player moves the slider to guess the value. Whoever is closest to the correct answer wins the point!",qvStart:"START →",qvPlayer:"Player ",quizChooseLevel:"Choose difficulty level",quizQuestion:"QUESTION ",quizReveal:"REVEAL ANSWER",starterStart:"START GAME →",starterEnd:"END GAME",starterNext:"NEXT PHRASE →",starterDone:"DONE — NOW IT'S YOUR TURN!",quizzoneStart:" START GAME",quizzoneChooseName:"Choose your player name",quizzoneLeaderboard:"LEADERBOARD ",quizzoneShowAnswer:"SHOW ANSWER",quizzoneFinalScore:"FINAL LEADERBOARD",quizzoneNextQ:"NEXT QUESTION ",quizzoneEnd:"GAME OVER!",nome:"Name",stanza:"Room",è:"is",otherDevicesCode:"Other devices open Filòs and enter this code",quizzoneTitle:"QUIZZONE",dadoInsert15:"Enter the number and your names. First to reach 15 wins!",dadoRoll:"Tap the die to roll it!",dadoGot:"You rolled: ",dadoWhat:"What do you want to do?",dadoBust:"BUST! Back to 0",dadoAddMe:"to me →",dadoBustMe:"BUST! Back to 0",dadoWinMe:"EXACTLY 15! YOU WIN!",dadoSubTo:"to ",dadoArrow:"→",dadoFirst15:"First to reach 15!",menuNote:"Call the waiter to order · make the most of the break!",syncedHost:"Synced · follow the host's screen",iAmHost:"I'm the host",iJoin:"I'm joining",enterHostCode:"Enter the host's code",othersInsertCode:"Others enter this code",menuFood:"FOOD",menuDrink:"DRINKS",enterRoom:"JOIN",nfcGateTitle:"Are you at the venue?",nfcGateSub:"Hold your phone near the coaster on your table to access Filòs.",pinTitle:"Restricted area",pinSub:"Enter your PIN to continue",pinError:"Wrong PIN, try again",obTitle:"Welcome to Filòs",obSub:"Set up your venue in a few steps to activate analytics and manager features.",obFieldName:"Venue name",obFieldNamePH:"E.g. The Crown Pub",obFieldCode:"Pub code",obFieldCodePH:"E.g. crown.pub",obHint:"The pub code identifies your venue. Use it in the NFC tags on your coasters.",obBtn:"Activate my venue",obBtnDone:"Done!",obErrName:"Enter the venue name",obErrCode:"The code must be at least 3 characters",settingsTitle:"Settings",tabProfilo:"Profile",tabAnalytics:"Analytics",tabReport:"Report",tabSerate:"Events",tabAdmin:"Admin",settingsSave:"Save changes",settingsSaved:" Saved",settingsIlTuoLocale:"Your venue",settingsStato:"Status",settingsLocaleConf:"Venue configured",nfcSection:"NFC Token",nfcToggleLabel:"NFC lock active",nfcToggleSub:"Only those who scan the tag can access the app",nfcUrlLabel:"URL for NFC tags",nfcCopyBtn:"Copy URL",nfcCopied:"Copied!",nfcRegenBtn:"Regenerate token (invalidates old tags)",nfcRegenConfirm:"Regenerate the token? All existing NFC tags will stop working.",adminSave:"Save to Firebase",adminSaved:" Saved to Firebase",firstTo:"First to ",pointsHunter:"points. Great hunter!",pointsWin:"points!",ncTitle:"FIRST & LAST NAME",ncLabelName:"FIRST NAME",ncLabelSurname:"LAST NAME",ncSaidFirst:"SAID IT FIRST!",ncNobody:"NOBODY — NEW LETTERS",gameOver:"GAME OVER",rateStars:"Tap the stars to rate",rateGame:"Rate: ",starterNowYou:"NOW IT'S YOUR TURN!",analyticsReset:"RESET",analyticsSure:"Sure?",analyticsClose:"CLOSE",analyticsPinHint:"tap the logo 5 times to open",analyticsTotalGames:"total games",analyticsToday:"today",analyticsAvgRating:"avg rating",analyticsGames:"games",analyticsRecent:"RECENT GAMES",menuCallWaiter:"CALL THE WAITER!"},
   es:{tagline:"JUEGOS SOCIALES",splashDesc:"Sin cartas, sin dados — solo vosotros, buena compañía y ganas de estar juntos.",splashBtn:"EMPEZAR A JUGAR",splashFoot:"BARES · LOCALES · NOCHES CON AMIGOS",homeTitle:"¿A QUÉ QUEREMOS JUGAR?",catAmici:"CON AMIGOS",catCoppia:"EN PAREJA",catBambini:"ROMPE-HIELO",catIndovinelli:"ACERTIJOS",catAzione:"ACCIÓN",catCreativi:"CREATIVOS",catCultura:"CULTURA",catAdulti:"18+",catRelax:"A DISTANCIA",catSolitario:"SOLO",back:"VOLVER",connect:"CONECTAR",backBtn:"Volver",exitBtn:"Salir",filterAll:"TODOS",filterEasy:"FÁCIL",filterMed:"MEDIO",filterHard:"DIFÍCIL",players:"jugadores",endMsg4:"¡QUÉ NOCHE TAN GENIAL!",endMsg3:"¡BIEN, PERO SE PUEDE MEJORAR!",endMsgElse:"¿PROBAMOS OTRA COSA?",mrWhiteHowMany:"¿Cuántos jugadores sois?",mrWhitePass:"Pasa la tablet en turnos. Cada jugador toca su botón para ver la palabra.",dadoInsert:"Introduce el número y vuestros nombres. ¡El primero en llegar a 5 puntos gana!",waitingPlayers:"Esperando jugadores...",qvQuestion:"PREGUNTA",qvOf:"DE",qvYourAnswer:"Tu respuesta (eres ",qvConfirm:"CONFIRMAR →",qvAnswerSent:"¡Respuesta enviada!",qvWaitingOthers:"Esperando a los demás jugadores...",qvWaitingOthers2:"Esperando a los demás...",qvPassTablet:"Pasa la tablet a: ",qvAnswerSentShort:"Respuesta enviada",qvCorrectAnswer:"LA RESPUESTA CORRECTA ES",qvNextQuestion:"SIGUIENTE PREGUNTA →",qvFinalScore:"VER CLASIFICACIÓN FINAL →",qvRevealAnswers:"REVELAR RESPUESTAS →",qvWon:"¡HA GANADO!",qvPoints:"Con",qvPointsOf:"puntos de",qvPlayAgain:"JUGAR DE NUEVO",howToPlay:"CÓMO SE JUEGA",tipLabel:"Consejo",theQuestions:"LAS PREGUNTAS",backToGame:"← VOLVER AL JUEGO",startMrWhite:"INICIAR MR. WHITE →",qvShareCode:"Comparte este código con tus amigos",qvDisconnect:"Desconectar",codeError4:"Ingresa el código (4 dígitos)",qvPlayer1:"jugador",qvPlayerN:"jugadores",qvTitle:"¿CUÁNTO VALE?",endGame:"FIN DEL JUEGO →",chiPagaTitle:"¿QUIÉN PAGA?",chiPagaInstr:"Pon un dedo\nen la pantalla",chiPagaWait:"Espera a los demás…",chiPagaLoser:"Le toca a",chiPagaSub:"¡paga la cuenta! ",chiPagaRestart:"Repetir",chiPagaBack:"← JUEGOS",starterContinue:"Habéis roto el hielo — continuad con vuestras preguntas, siguiendo las reglas del juego.",qzShowAnswer:"MOSTRAR RESPUESTA",mrWhiteStart:"¡Todos han visto la palabra. ¡Empezad a dar pistas!",intesaWord:"Palabra ",intesaLevel:"NIVEL: ",intesaGuessedN:"Habéis adivinado ",intesaLevelOf:"— Nivel: ",changeLevel:"CAMBIAR NIVEL",alfabetoHint:"¡Encuentra algo que empiece por esta letra!",codiceAllDigits:"¡Todos los jugadores deben introducir 4 dígitos!",codiceWonBy:"Ha adivinado el código de ",roomNotFound2:"Sala no encontrada",otherGames:"OTROS JUEGOS",starterInstruct:"Jugad esta frase, luego pasad a la siguiente.",analyticsEmpty:"Sin datos aún. ¡Empezad a jugar!",mostPlayed:"JUEGOS MÁS JUGADOS",topCategory:"categoría más jugada",connectedRoom:"Conectado a la sala",creatingRoom:"Creando sala y compartiendo el código",createRoom:"CREAR SALA",qzChooseName:"Elige tu nombre de jugador",qzLeaderboard:"CLASIFICACIÓN ",qzLeaderTitle:"CLASIFICACIÓN",qzFinalLeader:"CLASIFICACIÓN FINAL",connErr:"Error de conexión",joinBtn:"Entrar",oppure:"O BIEN",enterBtn:"Entrar",codeRoomPH2:"Código de sala",codeRoomShare:"Código de sala — compártelo con los jugadores",codeRoomLabel:"Código de sala",waitingHost2:" Esperando que el host inicie el juego...",waitingPlayers3:"Esperando jugadores...",codiceWaiting:"Esperando la respuesta de ",quizzoneCorrect:"¡Respuesta correcta! Esperando a los demás...",quizzoneWrong:"Respuesta incorrecta. Esperando a los demás...",roomCode:"Código de sala",inRoom:"Estás en la sala",waitingHost:" Esperando que el host inicie el juego...",leaveRoom:"Salir de la sala",playersInRoom:"Jugadores en la sala:",startGame:" INICIAR EL JUEGO",codeRoomPH:"Ej. ABC123",yourName:"Tu nombre:",yourNamePH:"¿Cómo te llamas?",roomNotFound:"Sala no encontrada — comprueba el código",waitPlayer:"¡Espera al menos un jugador!",closeRoom:"Cerrar sala",joinRoom:"Unirse a una sala",joinRoomPH:"Código de sala",waitingPlayers2:"Esperando a más jugadores...",copyCode:"Copiar código",disconnectBtn:"Desconectar",firebaseErr:"Firebase no disponible",timeoutErr:"Tiempo agotado — comprueba tu conexión",howMany:"¿CUÁNTOS SOIS?",modeLocal:"Local",modeDist:"A distancia",playerNamePH:"Nombre del jugador ",pinAccess:"Introduce el PIN para acceder.",productName:"Nombre del producto",riddleLabel:"ACERTIJO",revealAnswer:"REVELAR RESPUESTA ",endBtn:"FIN →",mrWhiteBluff:"Esta es TU palabra — similar a la de los demás.\n¡Farolea! Intenta adivinar su palabra por sus pistas.",mrWhitePlayer:"Jugador ",mrWhiteLookWord:" VER LA PALABRA",intesaTitle:"LA PALABRA CORRECTA",intesaDifficulty:"ELIGE LA DIFICULTAD",intesaDesc:"Un jugador describe, el equipo adivina. 60 segundos. ¿Cuántas palabras podéis?",intesaHard:"Palabras más difíciles",intesaStart:" EMPEZAR",intesaGuessed:"CORRECTA",intesaResult:"PALABRAS ADIVINADAS",nomeCognomeDesc:"¡El primero que diga un nombre y apellido con estas letras gana el punto!",codiceTitle:"ADIVINA EL CÓDIGO",codiceDesc:"Cada jugador elige su código secreto de 4 dígitos. ¡No lo muestres a los demás!",codiceTurn:"Turno de ",codiceAsk:"— elige a quién preguntar y qué número pedir",codiceYes:"SÍ, tiene un ",qvMultiDevice:"JUGAR EN VARIOS DISPOSITIVOS",qvMultiDesc:"¡Cada jugador usa su propio dispositivo. El que crea la sala también juega!",qvEnterName:"Introduce tu nombre",qvCreateRoom:"Crear sala",qvLocalDesc:"Cada jugador mueve el cursor para adivinar el valor. ¡Quien más se acerque a la respuesta correcta gana el punto!",qvStart:"EMPEZAR →",qvPlayer:"Jugador ",quizChooseLevel:"Elige el nivel de dificultad",quizQuestion:"PREGUNTA ",quizReveal:"REVELAR RESPUESTA",starterStart:"INICIAR JUEGO →",starterEnd:"FIN DEL JUEGO",starterNext:"SIGUIENTE FRASE →",starterDone:"¡FIN — AHORA OS TOCA A VOSOTROS!",quizzoneStart:" INICIAR JUEGO",quizzoneChooseName:"Elige tu nombre de jugador",quizzoneLeaderboard:"CLASIFICACIÓN ",quizzoneShowAnswer:"MOSTRAR RESPUESTA",quizzoneFinalScore:"CLASIFICACIÓN FINAL",quizzoneNextQ:"SIGUIENTE PREGUNTA ",quizzoneEnd:"¡PARTIDA TERMINADA!",otherDevicesCode:"Los demás dispositivos abren Filòs e introducen este código",quizzoneTitle:"QUIZZONE",nfcGateTitle:"¿Estás en el local?",nfcGateSub:"Acerca el teléfono al posavasos de tu mesa para acceder a Filòs.",pinTitle:"Área reservada",pinSub:"Introduce el PIN para continuar",pinError:"PIN incorrecto, inténtalo de nuevo",obTitle:"Bienvenido a Filòs",obSub:"Configura tu local en pocos pasos para activar las analíticas y las funciones de gestor.",obFieldName:"Nombre del local",obFieldNamePH:"Ej. Bar El Rincón",obFieldCode:"Código del local",obFieldCodePH:"Ej. bar.rincon",obHint:"El código identifica tu local. Úsalo en las etiquetas NFC de los posavasos.",obBtn:"Activar mi local",obBtnDone:"¡Listo!",obErrName:"Introduce el nombre del local",obErrCode:"El código debe tener al menos 3 caracteres",settingsTitle:"Ajustes",tabProfilo:"Perfil",tabAnalytics:"Análisis",tabReport:"Informe",tabSerate:"Eventos",tabAdmin:"Admin",settingsSave:"Guardar cambios",settingsSaved:" Guardado",settingsIlTuoLocale:"Tu local",settingsStato:"Estado",settingsLocaleConf:"Local configurado",nfcSection:"Token NFC",nfcToggleLabel:"Bloqueo NFC activo",nfcToggleSub:"Solo quien escanea la etiqueta accede a la app",nfcUrlLabel:"URL para etiquetas NFC",nfcCopyBtn:"Copiar URL",nfcCopied:"¡Copiado!",nfcRegenBtn:"Regenerar token (invalida las etiquetas antiguas)",nfcRegenConfirm:"¿Regenererar el token? Todas las etiquetas NFC existentes dejarán de funcionar.",adminSave:"Guardar en Firebase",adminSaved:" Guardado en Firebase",firstTo:"Primero en llegar a ",pointsHunter:"puntos. ¡Gran cazador!",pointsWin:"puntos!",ncTitle:"NOMBRE Y APELLIDO",ncLabelName:"NOMBRE",ncLabelSurname:"APELLIDO",ncSaidFirst:"¡LO DIJO PRIMERO!",ncNobody:"NADIE — NUEVAS LETRAS",gameOver:"JUEGO TERMINADO",rateStars:"Toca las estrellas para valorar",rateGame:"Valora: ",starterNowYou:"¡AHORA OS TOCA A VOSOTROS!",analyticsReset:"RESET",analyticsSure:"¿Seguro?",analyticsClose:"CERRAR",analyticsPinHint:"toca el logo 5 veces para abrir",analyticsTotalGames:"partidas totales",analyticsToday:"hoy",analyticsAvgRating:"nota media",analyticsGames:"partidas",analyticsRecent:"ÚLTIMAS PARTIDAS",menuCallWaiter:"¡LLAMAD AL CAMARERO!",backToGames:"← VOLVER A LOS JUEGOS",mrWhiteYourWord:"La palabra secreta es:",dadoInsert15:"Introduce el número y vuestros nombres. ¡El primero en llegar a 15 gana!",dadoRoll:"¡Toca el dado para lanzarlo!",dadoGot:"Has sacado: ",dadoWhat:"¿Qué quieres hacer?",dadoBust:"¡TE PASASTE! Vuelve a 0",dadoAddMe:"para mí →",dadoBustMe:"¡TE PASASTE! Vuelves a 0",dadoWinMe:"¡15 EXACTOS! ¡GANAS!",dadoSubTo:"a ",dadoArrow:"→",dadoFirst15:"¡El primero en llegar a 15!",menuNote:"Llamad al camarero para pedir · ¡aprovechad la pausa!",syncedHost:"Sincronizado · sigue la pantalla del anfitrión",iAmHost:"Soy el anfitrión",iJoin:"Me uno",enterHostCode:"Introduce el código del anfitrión",othersInsertCode:"Los demás introducen este código",menuFood:"COMIDA",menuDrink:"BEBIDAS",enterRoom:"ENTRAR"}
 };
+// ── Testi dell'interfaccia (generati dai testi fissi) ─────────
+Object.assign(STRINGS.it,{
+ ui_come_ti_fai_chiamare:"Come ti fai chiamare?",
+ ui_gli_altri_tavoli_ti_vedranno:"Gli altri tavoli ti vedranno con questo nome.",
+ ui_il_tuo_nome_o_soprannome:"Il tuo nome o soprannome",
+ ui_inizia_a_giocare:"Inizia a giocare",
+ ui_puoi_cambiare_il_tuo_nome:"Puoi cambiare il tuo nome o confermare quello precedente.",
+ ui_il_nome_verra_chiesto_ogni:"Il nome verrà chiesto ogni volta che apri l'app.",
+ ui_rompighiaccio:"ROMPIGHIACCIO",
+ ui_primo_appuntamento:"PRIMO APPUNTAMENTO",
+ ui_indovinello:"indovinello ",
+ ui_nuovo:"★ NUOVO",
+ ui_nascondi:"NASCONDI ▲",
+ ui_minimo:"minimo ",
+ ui_massimo:" · massimo ",
+ ui_conferma:"CONFERMA ",
+ ui_inizia:"INIZIA",
+ ui_sei_mr_white:"Sei MR. WHITE ",
+ ui_ricordatela_non_mostrarla_agli_altri:"Ricordatela. Non mostrarla agli altri.",
+ ui_ho_visto:"HO VISTO ",
+ ui_visto:"</span><span> Visto</span>",
+ ui_facile:"FACILE",
+ ui_parole_di_tutti_i_giorni:"Parole di tutti i giorni",
+ ui_media:"MEDIA",
+ ui_difficile:"DIFFICILE",
+ ui_solo_per_coraggiosi:"Solo per coraggiosi",
+ ui_di:" di ",
+ ui_passa:" PASSA",
+ ui_tempo:"TEMPO!",
+ ui_parole_su:" parole su ",
+ ui_caccia_all_oggetto:"CACCIA ALL'OGGETTO",
+ ui_via:" VIA!",
+ ui_ha_trovato:" HA TROVATO!",
+ ui_fifteen:"FIFTEEN",
+ ui_s_codice:"'s codice",
+ ui_chiede_a:"</strong> chiede a <strong>",
+ ui_hai_il:"</strong>: hai il <strong>",
+ ui_nel_tuo_codice:"</strong> nel tuo codice?",
+ ui_si_ce_l_ho:" SÌ, ce l'ho",
+ ui_no_non_ce_l_ho:" NO, non ce l'ho",
+ ui_pubblicita_assurda:"PUBBLICITA ASSURDA",
+ ui_2_minuti_per_convincere_tutti:"2 minuti per convincere tutti ",
+ ui_presenta_il_tuo_prodotto_assurdo:"Presenta il tuo prodotto assurdo come uno spot vero: nome, slogan e perché comprarlo!",
+ ui_votate_lo_spot_migliore:" Votate lo spot migliore!",
+ ui_prossimo_giocatore:"↺ PROSSIMO GIOCATORE",
+ ui_inizia_lo_spot:" INIZIA LO SPOT",
+ ui_riprendi:" RIPRENDI",
+ ui_ricomincia:"↺ RICOMINCIA",
+ ui_pausa:" PAUSA",
+ ui_il_robot:"IL ROBOT",
+ ui_2_minuti_per_completare_la:"2 minuti per completare la missione ",
+ ui_il_programmatore_da_comandi_precisi:"Il programmatore dà comandi precisi, il robot esegue alla lettera. Allo scadere si scambiano i ruoli!",
+ ui_cambiate_ruolo:" Cambiate ruolo!",
+ ui_nuovo_turno:"↺ NUOVO TURNO",
+ ui_inizia_il_turno:" INIZIA IL TURNO",
+ ui_specchio:"SPECCHIO",
+ ui_2_minuti_come_riflesso_poi:"2 minuti come riflesso, poi si scambiano ",
+ ui_uno_guida_l_altro_imita:"Uno guida, l'altro imita ogni movimento come uno specchio. Allo scadere si scambiano i ruoli!",
+ ui_scambiate_i_ruoli:" Scambiate i ruoli!",
+ ui_scultura_umana:"SCULTURA UMANA",
+ ui_1_minuto_per_indovinare_la:"1 minuto per indovinare la scena ",
+ ui_le_statue_non_possono_muoversi:"Le statue non possono muoversi né parlare. Il pubblico indovina la scena entro il tempo!",
+ ui_tempo_rivelate_la_scena:" Tempo! Rivelate la scena!",
+ ui_prossimo_scultore:" PROSSIMO SCULTORE",
+ ui_inizia_il_timer:" INIZIA IL TIMER",
+ ui_il_mimo:"IL MIMO",
+ ui_3_minuti_per_far_indovinare:"3 minuti per far indovinare la squadra ",
+ ui_mima_senza_parlare_fare_suoni:"Mima senza parlare, fare suoni né indicare oggetti. La tua squadra deve indovinare il titolo in tempo!",
+ ui_tempo_prossimo_giocatore:" Tempo! Prossimo giocatore!",
+ ui_prossimo_mimo:" PROSSIMO MIMO",
+ ui_inizia_il_mimo:" INIZIA IL MIMO",
+ ui_il_soprannome:"IL SOPRANNOME",
+ ui_5_minuti_di_conversazione_libera:"5 minuti di conversazione libera ",
+ ui_chiacchierate_liberamente_allo_scadere_del:"Chiacchierate liberamente. Allo scadere del timer, ognuno assegna un soprannome alla persona alla sua destra e si rivelano tutti insieme!",
+ ui_tempo_rivelate_i_soprannomi:" Tempo! Rivelate i soprannomi!",
+ ui_nuovo_giro:"↺ NUOVO GIRO",
+ ui_inizia_la_conversazione:" INIZIA LA CONVERSAZIONE",
+ ui_cosa_hai_in_comune:"COSA HAI IN COMUNE?",
+ ui_4_minuti_per_scoprirlo:"4 minuti per scoprirlo! ",
+ ui_trovate_almeno_3_cose_inaspettate:"Trovate almeno 3 cose inaspettate che avete in comune. Poi presentatele al gruppo!",
+ ui_tempo_presentatevi_al_gruppo:" Tempo! Presentatevi al gruppo!",
+ ui_nuova_coppia:" NUOVA COPPIA",
+ ui_inizia_2:" INIZIA",
+ ui_chi_sei_davvero:"CHI SEI DAVVERO?",
+ ui_20_secondi_per_rispondere:"20 secondi per rispondere! ",
+ ui_il_moderatore_fa_una_domanda:"Il moderatore fa una domanda. Tutti hanno 20 secondi per rispondere spontaneamente. Nessuna risposta sbagliata!",
+ ui_tempo_prossima_domanda:" Tempo! Prossima domanda!",
+ ui_nuova_domanda:" NUOVA DOMANDA",
+ ui_inizia_il_round:" INIZIA IL ROUND",
+ ui_il_superpotere:"IL SUPERPOTERE",
+ ui_30_secondi_per_convincerli_tutti:"30 secondi per convincerli tutti! ",
+ ui_scegli_un_superpotere_e_spiega:"Scegli un superpotere e spiega cosa faresti con esso oggi. Gli altri ascoltano in silenzio.",
+ ui_tempo_scaduto:" Tempo scaduto!",
+ ui_prossimo_giocatore_2:" PROSSIMO GIOCATORE",
+ ui_appello:"APPELLO",
+ ui_memorizza_tutti_i_nomi_in:"Memorizza tutti i nomi in 60 secondi!",
+ ui_il_moderatore_punta_il_dito:"Il moderatore punta il dito su qualcuno → un altro giocatore ha 3 secondi per dire il suo nome. Chi sbaglia è eliminato.",
+ ui_via_iniziate_a_giocare:" Via! Iniziate a giocare!",
+ ui_nuovo_giro_2:" NUOVO GIRO",
+ ui_inizia_memorizzazione:" INIZIA MEMORIZZAZIONE",
+ ui_si_no_non:"SÌ, NO, NON",
+ ui_rispondi_senza_mai_dire_si:"Rispondi senza mai dire SÌ · NO · NON",
+ ui_si:"SÌ",
+ ui_no:"NO",
+ ui_non:"NON",
+ ui_tempo_scaduto_hai_resistito:" Tempo scaduto! Hai resistito!",
+ ui_ha_detto_si_no_non:" HA DETTO SÌ/NO/NON — turno successivo",
+ ui_ha_detto_si_no_non_2:" HA DETTO SÌ/NO/NON",
+ ui_in_attesa_degli_altri:"In attesa degli altri",
+ ui_nessun_giocatore_ancora:"Nessun giocatore ancora…",
+ ui_inizia_3:"Inizia",
+ ui_aspetta_che_si_colleghi_almeno:"Aspetta che si colleghi almeno un altro giocatore.",
+ ui_annulla_sfida:"Annulla sfida",
+ ui_connesso:"Connesso",
+ ui_aspetta_che_l_altro_giocatore:" Aspetta che l'altro giocatore avvii la partita…",
+ ui_esci_dalla_stanza:"Esci dalla stanza",
+ ui_quanti_siete:"Quanti siete?",
+ ui_gli_altri_dispositivi_riceveranno_una:"Gli altri dispositivi riceveranno una notifica",
+ ui_invio_sfida:"Invio sfida…",
+ ui_rivelazione_automatica_tra_40s:"Rivelazione automatica tra 40s",
+ ui_rivelazione_automatica_tra:"Rivelazione automatica tra ",
+ ui_risposta_automatica_tra_40s:"Risposta automatica tra 40s",
+ ui_risposta_automatica_tra:"Risposta automatica tra ",
+ ui_avanzamento_automatico_tra:"Avanzamento automatico tra ",
+ ui_anno_giusto:"ANNO GIUSTO",
+ ui_giocatore:"Giocatore ",
+ ui_round:"Round ",
+ ui_turno_di:"Turno di: ",
+ ui_conferma_risposta:" CONFERMA RISPOSTA",
+ ui_risposta_corretta:"Risposta corretta",
+ ui_punteggi_totali:"Punteggi totali",
+ ui_risultati_finali:" RISULTATI FINALI",
+ ui_prossima_domanda:" PROSSIMA DOMANDA",
+ ui_ha_vinto:" ha vinto! ",
+ ui_con:"Con ",
+ ui_punti_su:" punti su ",
+ ui_gioca_ancora:"↺ GIOCA ANCORA",
+ ui_l_ex:"L'EX",
+ ui_2_minuti_per_raccontare_la:"2 minuti per raccontare la storia ",
+ ui_racconta_la_storia_piu_assurda:"Racconta la storia più assurda, imbarazzante o surreale legata a un ex. Nessun nome vero!",
+ ui_votate_la_storia_migliore:" Votate la storia migliore!",
+ ui_confessioni_anonime:"CONFESSIONI ANONIME",
+ ui_scrivi_una_confessione_anonima_qualcosa:"Scrivi una confessione anonima. Qualcosa di vero, imbarazzante o inaspettato. Nessuno vedrà il tuo nome.",
+ ui_la_mia_confessione:"La mia confessione...",
+ ui_tieni_il_telefono_verso_di:"Tieni il telefono verso di te mentre scrivi ",
+ ui_passa_al_prossimo:"Passa al prossimo →",
+ ui_mescola_e_inizia:"Mescola e inizia ",
+ ui_confessione:"CONFESSIONE ",
+ ui_di_2:" DI ",
+ ui_il_gruppo_vota_di_chi:"Il gruppo vota: di chi è questa confessione?",
+ ui_prossima_confessione:"Prossima confessione →",
+ ui_risultati_finali_2:"Risultati finali ",
+ ui_fine_del_gioco:"Fine del gioco! ",
+ ui_tutte_le:"Tutte le ",
+ ui_confessioni_sono_state_svelate:" confessioni sono state svelate",
+ ui_domande_accessibili_per_tutti:"Domande accessibili per tutti",
+ ui_qualche_sfida_in_piu:"Qualche sfida in piu",
+ ui_solo_per_esperti:"Solo per esperti",
+ ui_quiz_terminato:"QUIZ TERMINATO!",
+ ui_domande_corrette_su:"domande corrette su ",
+ ui_fenomenale:"FENOMENALE!",
+ ui_ottimo:"OTTIMO!",
+ ui_non_male:"NON MALE!",
+ ui_riprova:"RIPROVA!",
+ ui_punti:"PUNTI: ",
+ ui_non_sapevo:"NON SAPEVO",
+ ui_lo_sapevo_1:"LO SAPEVO! +1",
+ ui_frase:"FRASE ",
+ ui_vedi_le_regole:"VEDI LE REGOLE",
+ ui_modifica_menu:"MODIFICA MENU",
+ ui_rimuovi_foto:" Rimuovi foto",
+ ui_tocca_per_aggiungere_foto:"Tocca per aggiungere foto",
+ ui_nome_prodotto:"Nome prodotto",
+ ui_descrizione:"Descrizione",
+ ui_elimina_prodotto:" Elimina prodotto",
+ ui_eliminare_questo_prodotto:"Eliminare questo prodotto?",
+ ui_titolo:"Titolo",
+ ui_prezzo:"Prezzo (€)",
+ ui_allergeni:"Allergeni",
+ ui_aggiungi_prodotto:"+ Aggiungi prodotto",
+ ui_massimo_10_prodotti_per_categoria:"Massimo 10 prodotti per categoria.",
+ ui_ripristina_menu_default:"Ripristina menu default",
+ ui_ripristinare_il_menu:"Ripristinare il menu ",
+ ui_predefinito:" predefinito?",
+ ui_il_codice_pub_identifica_il:"Il codice pub identifica il tuo locale. Usalo nei tag NFC dei sottobicchieri.",
+ ui_impostazioni:"Impostazioni",
+ ui_menu:" Menu",
+ ui_es_osteria_mario:"Es. Osteria Mario",
+ ui_partite_totali:"Partite totali",
+ ui_oggi:"Oggi",
+ ui_tempo_totale:"Tempo totale",
+ ui_valutazione:"Valutazione ",
+ ui_giochi_piu_giocati:"Giochi più giocati",
+ ui_menu_piu_richiesti:" Menu più richiesti (",
+ ui_click_totali:" click totali)",
+ ui_nessun_click_menu_ancora:"Nessun click menu ancora",
+ ui_i_click_verranno_tracciati_quando:"I click verranno tracciati quando i clienti sfogliano il menu",
+ ui_recenti:"Recenti",
+ ui_reset_tutti_i_dati:"Reset tutti i dati",
+ ui_cancellare_tutti_i_dati_analytics:"Cancellare tutti i dati analytics locali?\nI dati su Firebase non vengono eliminati.",
+ ui_il_tuo_locale:"Il tuo locale",
+ ui_periodo:"Periodo",
+ ui_seleziona_periodo:"Seleziona periodo",
+ ui_questa_settimana:"Questa settimana",
+ ui_questo_mese:"Questo mese",
+ ui_ultimo_trimestre:"Ultimo trimestre",
+ ui_tutto:"Tutto",
+ ui_genera_e_scarica_pdf:" Genera e scarica PDF",
+ ui_cosa_include_il_report:"Cosa include il report",
+ ui_partite_totali_e_giornaliere:"Partite totali e giornaliere",
+ ui_conteggio_per_periodo:"Conteggio per periodo",
+ ui_giochi_piu_popolari:"Giochi più popolari",
+ ui_top_10_con_barra_di:"Top 10 con barra di utilizzo",
+ ui_menu_piu_richiesti_2:"Menu più richiesti",
+ ui_click_su_drink_e_food:"Click su drink e food",
+ ui_valutazioni_medie:"Valutazioni medie",
+ ui_per_gioco:"Per gioco",
+ ui_tempo_di_gioco:"Tempo di gioco",
+ ui_totale_e_per_gioco:"Totale e per gioco",
+ ui_giochi_speciali:"Giochi speciali",
+ ui_quiz_multiplayer_per_la_serata:"Quiz multiplayer per la serata",
+ ui_stato:"Stato",
+ ui_firebase_non_disponibile:"Firebase non disponibile",
+ ui_controlla_la_connessione:"Controlla la connessione",
+ ui_nome_evento:"Nome evento",
+ ui_es_quizzone_del_mercoledi:"Es. Quizzone del mercoledì",
+ ui_codici_pub_partecipanti:"Codici pub partecipanti",
+ ui_evento_attivo:"Evento attivo",
+ ui_visibile_a_tutti_i_pub:"Visibile a tutti i pub partecipanti",
+ ui_evento_in_corso:"Evento in corso",
+ ui_errore_salvataggio:" Errore salvataggio",
+ ui_errore:"Errore",
+ ui_impossibile_leggere_firebase:"Impossibile leggere Firebase",
+ ui_tutto_il_periodo:"Tutto il periodo",
+ ui_oggi_2:"Oggi, ",
+ ui_settimana_corrente:"Settimana corrente",
+ ui_mese:"Mese: ",
+ ui_generato_il:"<div class=\"header-meta\">Generato il ",
+ ui_partite:"</div><div class=\"stat-label\">Partite</div></div>",
+ ui_giorni_attivi:"</div><div class=\"stat-label\">Giorni attivi</div></div>",
+ ui_tempo_totale_2:"</div><div class=\"stat-label\">Tempo totale</div></div>",
+ ui_valutazione_2:"</div><div class=\"stat-label\">Valutazione </div></div>",
+ ui_click_menu:"</div><div class=\"stat-label\">Click menu</div></div>",
+ ui_ora_di_punta:"</div><div class=\"stat-label\">Ora di punta</div></div>",
+ ui_giochi_piu_giocati_2:"<h2> Giochi più giocati</h2>",
+ ui_pt:"&nbsp;pt</span></div>",
+ ui_menu_piu_richiesti_3:"<h2> Menu più richiesti</h2>",
+ ui_x:"x</span></div>",
+ ui_valutazioni_per_gioco:"<h2>⭐ Valutazioni per gioco</h2>",
+ ui_fil_s_report_analitico_i:"<div class=\"footer\">Fil&apos;s — Report analitico • I dati non contengono informazioni personali identificabili</div>",
+ ui_il_popup_e_stato_bloccato:"Il popup è stato bloccato. Abilita i popup per questo sito per scaricare il PDF.",
+ ui_codice:"CODICE",
+ ui_il_tuo_nome:"Il tuo nome...",
+ ui_sei_in_lobby_aspetta_che:"</span><br><br>Sei in lobby — aspetta che l'host avvii il gioco",
+ ui_tu:" (tu)",
+ ui_home:"Home",
+ ui_dove_andate:" Dove andate?",
+ ui_es_giappone_patagonia_marocco:"Es. Giappone, Patagonia, Marocco…",
+ ui_quando_partite:" Quando partite?",
+ ui_es_primavera_natale_subito:"Es. Primavera, Natale, subito…",
+ ui_per_quanto_tempo:" Per quanto tempo?",
+ ui_es_2_settimane_un_mese:"Es. 2 settimane, un mese…",
+ ui_dove_dormite:" Dove dormite?",
+ ui_es_ryokan_tenda_villa_con:"Es. Ryokan, tenda, villa con piscina…",
+ ui_cosa_fate_ogni_giorno:" Cosa fate ogni giorno?",
+ ui_es_trekking_musei_spiaggia_niente:"Es. Trekking, musei, spiaggia, niente…",
+ ui_cosa_mangiate:" Cosa mangiate?",
+ ui_es_street_food_locale_ristoranti:"Es. Street food locale, ristoranti stellati…",
+ ui_il_momento_piu_bello:" Il momento più bello?",
+ ui_es_tramonto_sul_vulcano_mercato:"Es. Tramonto sul vulcano, mercato notturno…",
+ ui_budget_senza_limiti:" Budget (senza limiti!)",
+ ui_es_illimitato_prima_classe_ovunque:"Es. Illimitato, prima classe ovunque…",
+ ui_il_viaggio_dei_sogni:"IL VIAGGIO DEI SOGNI",
+ ui_rispondete_insieme_a_ogni_domanda:"Rispondete insieme a ogni domanda e costruite il vostro viaggio perfetto. Nessun limite!",
+ ui_vedi_il_vostro_viaggio:"VEDI IL VOSTRO VIAGGIO ",
+ ui_modifica:"← Modifica",
+ ui_il_vostro_viaggio:"IL VOSTRO VIAGGIO",
+ ui_il_vostro_viaggio_dei_sogni:"IL VOSTRO VIAGGIO DEI SOGNI",
+ ui_modifica_2:" MODIFICA",
+ ui_nuovo_viaggio:" NUOVO VIAGGIO",
+ ui_cosa_non_sai_di_me:"COSA NON SAI DI ME",
+ ui_giocatore_2:"GIOCATORE ",
+ ui_scrivi_5_cose_che_l:" — scrivi 5 cose che l'altro non sa di te",
+ ui_possono_essere_vere_o_false:"Possono essere vere o false — l'altro dovrà indovinare!",
+ ui_scrivi_qualcosa:"Scrivi qualcosa…",
+ ui_passa_al_giocatore_2:"PASSA AL GIOCATORE 2 →",
+ ui_inizia_il_gioco:"INIZIA IL GIOCO →",
+ ui_giocatore_1_ha_finito:" Giocatore 1 ha finito!",
+ ui_ora_passa_il_telefono_al:"Ora passa il telefono al Giocatore 2.",
+ ui_sono_il_giocatore_2:"SONO IL GIOCATORE 2 →",
+ ui_ora_tocca_al_giocatore_2:"Ora tocca al Giocatore 2!",
+ ui_passa_il_telefono_al_giocatore:"Passa il telefono al Giocatore 2 — indovinerà le affermazioni del Giocatore 1.",
+ ui_nessuna_affermazione:"(nessuna affermazione)",
+ ui_affermazione:"AFFERMAZIONE ",
+ ui_giocatore_3:" Giocatore ",
+ ui_affermazione_nascosta:" Affermazione nascosta",
+ ui_leggi_l_affermazione_all_altro:": leggi l'affermazione all'altro ad alta voce.",
+ ui_leggi_l_affermazione:"LEGGI L'AFFERMAZIONE →",
+ ui_e_vera_o_falsa:": è vera o falsa?",
+ ui_vera:" VERA",
+ ui_falsa:" FALSA",
+ ui_era_vera_o_falsa:": era vera o falsa?",
+ ui_era_vera:" ERA VERA",
+ ui_era_falsa:" ERA FALSA",
+ ui_la_tua_risposta:"La tua risposta: ",
+ ui_fine_del_gioco_2:" Fine del gioco!",
+ ui_giocatore_1:"Giocatore 1: ",
+ ui_giocatore_2_2:"Giocatore 2: ",
+ ui_5_indovinati:" / 5 indovinati",
+ ui_vince_il_giocatore_1:"Vince il Giocatore 1! ",
+ ui_vince_il_giocatore_2:"Vince il Giocatore 2! ",
+ ui_pareggio_vi_conoscete_benissimo:"Pareggio — vi conoscete benissimo! ",
+ ui_gioca_ancora_2:"GIOCA ANCORA",
+ ui_chi_paga_il_conto:"CHI PAGA IL CONTO",
+ ui_appoggiate_tutti_un_dito:"Appoggiate tutti un dito ",
+ ui_non_alzate_il_dito:"Non alzate il dito... ",
+ ui_paga_lui:"PAGA LUI!",
+ ui_tocca_per_chiudere:"Tocca per chiudere",
+ ui_appoggiate_anche_gli_altri:"Appoggiate anche gli altri ",
+ ui_dita_pronti:" dita — pronti?",
+ ui_sfida_ricevuta:"Sfida ricevuta",
+ ui_qualcuno:"Qualcuno",
+ ui_vuole_giocare_a:" vuole giocare a ",
+ ui_un_gioco:"un gioco",
+ ui_accetta:"Accetta",
+ ui_stanza_non_trovata_o_scaduta:" Stanza non trovata o scaduta.",
+ ui_rifiuta:"Rifiuta",
+ ui_sfida_un_altro_tavolo:"Sfida un altro tavolo",
+ ui_scegli_un_gioco_gli_altri:"Scegli un gioco — gli altri riceveranno la notifica.",
+ ui_con_gli_amici:"Con gli amici",
+ ui_in_coppia:"In coppia",
+ ui_indovinelli:"Indovinelli",
+ ui_azione:"Azione",
+ ui_invito_inviato_a_tutti_i:"Invito inviato a tutti i tavoli!",
+ ui_annulla:"Annulla"
+});
+Object.assign(STRINGS.en,{
+ ui_come_ti_fai_chiamare:"What should we call you?",
+ ui_gli_altri_tavoli_ti_vedranno:"Other tables will see you with this name.",
+ ui_il_tuo_nome_o_soprannome:"Your name or nickname",
+ ui_inizia_a_giocare:"Start playing",
+ ui_puoi_cambiare_il_tuo_nome:"You can change your name or keep the previous one.",
+ ui_il_nome_verra_chiesto_ogni:"You'll be asked for your name every time you open the app.",
+ ui_rompighiaccio:"ICEBREAKER",
+ ui_primo_appuntamento:"FIRST DATE",
+ ui_indovinello:"riddle ",
+ ui_nuovo:"★ NEW",
+ ui_nascondi:"HIDE ▲",
+ ui_minimo:"minimum ",
+ ui_massimo:" · maximum ",
+ ui_conferma:"CONFIRM ",
+ ui_inizia:"START",
+ ui_sei_mr_white:"You are MR. WHITE ",
+ ui_ricordatela_non_mostrarla_agli_altri:"Remember it. Don't show it to the others.",
+ ui_ho_visto:"GOT IT ",
+ ui_visto:"</span><span> Seen</span>",
+ ui_facile:"EASY",
+ ui_parole_di_tutti_i_giorni:"Everyday words",
+ ui_media:"MEDIUM",
+ ui_difficile:"HARD",
+ ui_solo_per_coraggiosi:"For the brave only",
+ ui_di:" of ",
+ ui_passa:" SKIP",
+ ui_tempo:"TIME'S UP!",
+ ui_parole_su:" words out of ",
+ ui_caccia_all_oggetto:"OBJECT HUNT",
+ ui_via:" GO!",
+ ui_ha_trovato:" FOUND IT!",
+ ui_fifteen:"FIFTEEN",
+ ui_s_codice:"'s code",
+ ui_chiede_a:"</strong> asks <strong>",
+ ui_hai_il:"</strong>: do you have a <strong>",
+ ui_nel_tuo_codice:"</strong> in your code?",
+ ui_si_ce_l_ho:" YES, I have it",
+ ui_no_non_ce_l_ho:" NO, I don't have it",
+ ui_pubblicita_assurda:"ABSURD AD",
+ ui_2_minuti_per_convincere_tutti:"2 minutes to convince everyone ",
+ ui_presenta_il_tuo_prodotto_assurdo:"Pitch your absurd product like a real commercial: name, slogan and why to buy it!",
+ ui_votate_lo_spot_migliore:" Vote for the best ad!",
+ ui_prossimo_giocatore:"↺ NEXT PLAYER",
+ ui_inizia_lo_spot:" START THE AD",
+ ui_riprendi:" RESUME",
+ ui_ricomincia:"↺ RESTART",
+ ui_pausa:" PAUSE",
+ ui_il_robot:"THE ROBOT",
+ ui_2_minuti_per_completare_la:"2 minutes to complete the mission ",
+ ui_il_programmatore_da_comandi_precisi:"The programmer gives precise commands, the robot follows them to the letter. When time's up, swap roles!",
+ ui_cambiate_ruolo:" Swap roles!",
+ ui_nuovo_turno:"↺ NEW TURN",
+ ui_inizia_il_turno:" START THE TURN",
+ ui_specchio:"MIRROR",
+ ui_2_minuti_come_riflesso_poi:"2 minutes as the reflection, then swap ",
+ ui_uno_guida_l_altro_imita:"One leads, the other copies every move like a mirror. When time's up, swap roles!",
+ ui_scambiate_i_ruoli:" Swap roles!",
+ ui_scultura_umana:"HUMAN SCULPTURE",
+ ui_1_minuto_per_indovinare_la:"1 minute to guess the scene ",
+ ui_le_statue_non_possono_muoversi:"The statues can't move or talk. The audience must guess the scene before time runs out!",
+ ui_tempo_rivelate_la_scena:" Time's up! Reveal the scene!",
+ ui_prossimo_scultore:" NEXT SCULPTOR",
+ ui_inizia_il_timer:" START THE TIMER",
+ ui_il_mimo:"THE MIME",
+ ui_3_minuti_per_far_indovinare:"3 minutes for your team to guess ",
+ ui_mima_senza_parlare_fare_suoni:"Act it out without talking, making sounds or pointing at objects. Your team must guess the title in time!",
+ ui_tempo_prossimo_giocatore:" Time's up! Next player!",
+ ui_prossimo_mimo:" NEXT MIME",
+ ui_inizia_il_mimo:" START MIMING",
+ ui_il_soprannome:"THE NICKNAME",
+ ui_5_minuti_di_conversazione_libera:"5 minutes of free conversation ",
+ ui_chiacchierate_liberamente_allo_scadere_del:"Chat freely. When the timer ends, everyone gives a nickname to the person on their right and you reveal them all together!",
+ ui_tempo_rivelate_i_soprannomi:" Time's up! Reveal the nicknames!",
+ ui_nuovo_giro:"↺ NEW ROUND",
+ ui_inizia_la_conversazione:" START TALKING",
+ ui_cosa_hai_in_comune:"WHAT DO YOU HAVE IN COMMON?",
+ ui_4_minuti_per_scoprirlo:"4 minutes to find out! ",
+ ui_trovate_almeno_3_cose_inaspettate:"Find at least 3 unexpected things you have in common. Then present them to the group!",
+ ui_tempo_presentatevi_al_gruppo:" Time's up! Present yourselves to the group!",
+ ui_nuova_coppia:" NEW PAIR",
+ ui_inizia_2:" START",
+ ui_chi_sei_davvero:"WHO ARE YOU REALLY?",
+ ui_20_secondi_per_rispondere:"20 seconds to answer! ",
+ ui_il_moderatore_fa_una_domanda:"The host asks a question. Everyone has 20 seconds to answer spontaneously. There are no wrong answers!",
+ ui_tempo_prossima_domanda:" Time's up! Next question!",
+ ui_nuova_domanda:" NEW QUESTION",
+ ui_inizia_il_round:" START THE ROUND",
+ ui_il_superpotere:"THE SUPERPOWER",
+ ui_30_secondi_per_convincerli_tutti:"30 seconds to win them all over! ",
+ ui_scegli_un_superpotere_e_spiega:"Pick a superpower and explain what you'd do with it today. The others listen in silence.",
+ ui_tempo_scaduto:" Time's up!",
+ ui_prossimo_giocatore_2:" NEXT PLAYER",
+ ui_appello:"ROLL CALL",
+ ui_memorizza_tutti_i_nomi_in:"Memorise everyone's name in 60 seconds!",
+ ui_il_moderatore_punta_il_dito:"The host points at someone → another player has 3 seconds to say their name. Get it wrong and you're out.",
+ ui_via_iniziate_a_giocare:" Go! Start playing!",
+ ui_nuovo_giro_2:" NEW ROUND",
+ ui_inizia_memorizzazione:" START MEMORISING",
+ ui_si_no_non:"YES, NO, NOT",
+ ui_rispondi_senza_mai_dire_si:"Answer without ever saying YES · NO · NOT",
+ ui_si:"YES",
+ ui_no:"NO",
+ ui_non:"NOT",
+ ui_tempo_scaduto_hai_resistito:" Time's up! You made it!",
+ ui_ha_detto_si_no_non:" SAID YES/NO/NOT — next turn",
+ ui_ha_detto_si_no_non_2:" SAID YES/NO/NOT",
+ ui_in_attesa_degli_altri:"Waiting for the others",
+ ui_nessun_giocatore_ancora:"No players yet…",
+ ui_inizia_3:"Start",
+ ui_aspetta_che_si_colleghi_almeno:"Wait for at least one more player to join.",
+ ui_annulla_sfida:"Cancel challenge",
+ ui_connesso:"Connected",
+ ui_aspetta_che_l_altro_giocatore:" Wait for the other player to start the game…",
+ ui_esci_dalla_stanza:"Leave the room",
+ ui_quanti_siete:"How many of you are there?",
+ ui_gli_altri_dispositivi_riceveranno_una:"The other devices will get a notification",
+ ui_invio_sfida:"Sending challenge…",
+ ui_rivelazione_automatica_tra_40s:"Automatic reveal in 40s",
+ ui_rivelazione_automatica_tra:"Automatic reveal in ",
+ ui_risposta_automatica_tra_40s:"Automatic answer in 40s",
+ ui_risposta_automatica_tra:"Automatic answer in ",
+ ui_avanzamento_automatico_tra:"Moving on automatically in ",
+ ui_anno_giusto:"RIGHT YEAR",
+ ui_giocatore:"Player ",
+ ui_round:"Round ",
+ ui_turno_di:"Turn: ",
+ ui_conferma_risposta:" CONFIRM ANSWER",
+ ui_risposta_corretta:"Correct answer",
+ ui_punteggi_totali:"Total scores",
+ ui_risultati_finali:" FINAL RESULTS",
+ ui_prossima_domanda:" NEXT QUESTION",
+ ui_ha_vinto:" wins! ",
+ ui_con:"With ",
+ ui_punti_su:" points out of ",
+ ui_gioca_ancora:"↺ PLAY AGAIN",
+ ui_l_ex:"THE EX",
+ ui_2_minuti_per_raccontare_la:"2 minutes to tell the story ",
+ ui_racconta_la_storia_piu_assurda:"Tell the most absurd, embarrassing or surreal story about an ex. No real names!",
+ ui_votate_la_storia_migliore:" Vote for the best story!",
+ ui_confessioni_anonime:"ANONYMOUS CONFESSIONS",
+ ui_scrivi_una_confessione_anonima_qualcosa:"Write an anonymous confession. Something true, embarrassing or unexpected. Nobody will see your name.",
+ ui_la_mia_confessione:"My confession...",
+ ui_tieni_il_telefono_verso_di:"Keep the phone turned towards you while you write ",
+ ui_passa_al_prossimo:"Pass to the next →",
+ ui_mescola_e_inizia:"Shuffle and start ",
+ ui_confessione:"CONFESSION ",
+ ui_di_2:" OF ",
+ ui_il_gruppo_vota_di_chi:"The group votes: whose confession is this?",
+ ui_prossima_confessione:"Next confession →",
+ ui_risultati_finali_2:"Final results ",
+ ui_fine_del_gioco:"Game over! ",
+ ui_tutte_le:"All ",
+ ui_confessioni_sono_state_svelate:" confessions have been revealed",
+ ui_domande_accessibili_per_tutti:"Questions anyone can answer",
+ ui_qualche_sfida_in_piu:"A bit more of a challenge",
+ ui_solo_per_esperti:"Experts only",
+ ui_quiz_terminato:"QUIZ OVER!",
+ ui_domande_corrette_su:"correct answers out of ",
+ ui_fenomenale:"PHENOMENAL!",
+ ui_ottimo:"GREAT!",
+ ui_non_male:"NOT BAD!",
+ ui_riprova:"TRY AGAIN!",
+ ui_punti:"POINTS: ",
+ ui_non_sapevo:"DIDN'T KNOW",
+ ui_lo_sapevo_1:"KNEW IT! +1",
+ ui_frase:"PROMPT ",
+ ui_vedi_le_regole:"SEE THE RULES",
+ ui_modifica_menu:"EDIT MENU",
+ ui_rimuovi_foto:" Remove photo",
+ ui_tocca_per_aggiungere_foto:"Tap to add a photo",
+ ui_nome_prodotto:"Product name",
+ ui_descrizione:"Description",
+ ui_elimina_prodotto:" Delete product",
+ ui_eliminare_questo_prodotto:"Delete this product?",
+ ui_titolo:"Title",
+ ui_prezzo:"Price (€)",
+ ui_allergeni:"Allergens",
+ ui_aggiungi_prodotto:"+ Add product",
+ ui_massimo_10_prodotti_per_categoria:"Maximum 10 products per category.",
+ ui_ripristina_menu_default:"Restore default menu",
+ ui_ripristinare_il_menu:"Restore the ",
+ ui_predefinito:" menu to default?",
+ ui_il_codice_pub_identifica_il:"The pub code identifies your venue. Use it in the NFC tags on your coasters.",
+ ui_impostazioni:"Settings",
+ ui_menu:" Menu",
+ ui_es_osteria_mario:"E.g. The Crown Pub",
+ ui_partite_totali:"Total games",
+ ui_oggi:"Today",
+ ui_tempo_totale:"Total time",
+ ui_valutazione:"Rating ",
+ ui_giochi_piu_giocati:"Most played games",
+ ui_menu_piu_richiesti:" Most requested menu items (",
+ ui_click_totali:" total clicks)",
+ ui_nessun_click_menu_ancora:"No menu clicks yet",
+ ui_i_click_verranno_tracciati_quando:"Clicks will be tracked when customers browse the menu",
+ ui_recenti:"Recent",
+ ui_reset_tutti_i_dati:"Reset all data",
+ ui_cancellare_tutti_i_dati_analytics:"Delete all local analytics data?\nData on Firebase will not be deleted.",
+ ui_il_tuo_locale:"Your venue",
+ ui_periodo:"Period",
+ ui_seleziona_periodo:"Select period",
+ ui_questa_settimana:"This week",
+ ui_questo_mese:"This month",
+ ui_ultimo_trimestre:"Last quarter",
+ ui_tutto:"All time",
+ ui_genera_e_scarica_pdf:" Generate and download PDF",
+ ui_cosa_include_il_report:"What the report includes",
+ ui_partite_totali_e_giornaliere:"Total and daily games",
+ ui_conteggio_per_periodo:"Count by period",
+ ui_giochi_piu_popolari:"Most popular games",
+ ui_top_10_con_barra_di:"Top 10 with usage bar",
+ ui_menu_piu_richiesti_2:"Most requested menu items",
+ ui_click_su_drink_e_food:"Clicks on drinks and food",
+ ui_valutazioni_medie:"Average ratings",
+ ui_per_gioco:"Per game",
+ ui_tempo_di_gioco:"Play time",
+ ui_totale_e_per_gioco:"Total and per game",
+ ui_giochi_speciali:"Special games",
+ ui_quiz_multiplayer_per_la_serata:"Multiplayer quiz for the evening",
+ ui_stato:"Status",
+ ui_firebase_non_disponibile:"Firebase not available",
+ ui_controlla_la_connessione:"Check your connection",
+ ui_nome_evento:"Event name",
+ ui_es_quizzone_del_mercoledi:"E.g. Wednesday Quiz Night",
+ ui_codici_pub_partecipanti:"Participating pub codes",
+ ui_evento_attivo:"Event active",
+ ui_visibile_a_tutti_i_pub:"Visible to all participating pubs",
+ ui_evento_in_corso:"Current event",
+ ui_errore_salvataggio:" Save error",
+ ui_errore:"Error",
+ ui_impossibile_leggere_firebase:"Unable to read Firebase",
+ ui_tutto_il_periodo:"All time",
+ ui_oggi_2:"Today, ",
+ ui_settimana_corrente:"This week",
+ ui_mese:"Month: ",
+ ui_generato_il:"<div class=\"header-meta\">Generated on ",
+ ui_partite:"</div><div class=\"stat-label\">Games</div></div>",
+ ui_giorni_attivi:"</div><div class=\"stat-label\">Active days</div></div>",
+ ui_tempo_totale_2:"</div><div class=\"stat-label\">Total time</div></div>",
+ ui_valutazione_2:"</div><div class=\"stat-label\">Rating </div></div>",
+ ui_click_menu:"</div><div class=\"stat-label\">Menu clicks</div></div>",
+ ui_ora_di_punta:"</div><div class=\"stat-label\">Peak hour</div></div>",
+ ui_giochi_piu_giocati_2:"<h2> Most played games</h2>",
+ ui_pt:"&nbsp;plays</span></div>",
+ ui_menu_piu_richiesti_3:"<h2> Most requested menu items</h2>",
+ ui_x:"x</span></div>",
+ ui_valutazioni_per_gioco:"<h2>⭐ Ratings by game</h2>",
+ ui_fil_s_report_analitico_i:"<div class=\"footer\">Fil&apos;s — Analytics report • The data contains no personally identifiable information</div>",
+ ui_il_popup_e_stato_bloccato:"The pop-up was blocked. Allow pop-ups for this site to download the PDF.",
+ ui_codice:"CODE",
+ ui_il_tuo_nome:"Your name...",
+ ui_sei_in_lobby_aspetta_che:"</span><br><br>You're in the lobby — wait for the host to start the game",
+ ui_tu:" (you)",
+ ui_home:"Home",
+ ui_dove_andate:" Where are you going?",
+ ui_es_giappone_patagonia_marocco:"E.g. Japan, Patagonia, Morocco…",
+ ui_quando_partite:" When are you leaving?",
+ ui_es_primavera_natale_subito:"E.g. Spring, Christmas, right now…",
+ ui_per_quanto_tempo:" For how long?",
+ ui_es_2_settimane_un_mese:"E.g. 2 weeks, a month…",
+ ui_dove_dormite:" Where are you staying?",
+ ui_es_ryokan_tenda_villa_con:"E.g. Ryokan, tent, villa with a pool…",
+ ui_cosa_fate_ogni_giorno:" What do you do each day?",
+ ui_es_trekking_musei_spiaggia_niente:"E.g. Hiking, museums, beach, nothing at all…",
+ ui_cosa_mangiate:" What do you eat?",
+ ui_es_street_food_locale_ristoranti:"E.g. Local street food, Michelin-star restaurants…",
+ ui_il_momento_piu_bello:" The best moment?",
+ ui_es_tramonto_sul_vulcano_mercato:"E.g. Sunset on the volcano, night market…",
+ ui_budget_senza_limiti:" Budget (no limits!)",
+ ui_es_illimitato_prima_classe_ovunque:"E.g. Unlimited, first class everywhere…",
+ ui_il_viaggio_dei_sogni:"DREAM TRIP",
+ ui_rispondete_insieme_a_ogni_domanda:"Answer each question together and build your perfect trip. No limits!",
+ ui_vedi_il_vostro_viaggio:"SEE YOUR TRIP ",
+ ui_modifica:"← Edit",
+ ui_il_vostro_viaggio:"YOUR TRIP",
+ ui_il_vostro_viaggio_dei_sogni:"YOUR DREAM TRIP",
+ ui_modifica_2:" EDIT",
+ ui_nuovo_viaggio:" NEW TRIP",
+ ui_cosa_non_sai_di_me:"WHAT YOU DON'T KNOW ABOUT ME",
+ ui_giocatore_2:"PLAYER ",
+ ui_scrivi_5_cose_che_l:" — write 5 things the other doesn't know about you",
+ ui_possono_essere_vere_o_false:"They can be true or false — the other has to guess!",
+ ui_scrivi_qualcosa:"Write something…",
+ ui_passa_al_giocatore_2:"PASS TO PLAYER 2 →",
+ ui_inizia_il_gioco:"START THE GAME →",
+ ui_giocatore_1_ha_finito:" Player 1 is done!",
+ ui_ora_passa_il_telefono_al:"Now pass the phone to Player 2.",
+ ui_sono_il_giocatore_2:"I'M PLAYER 2 →",
+ ui_ora_tocca_al_giocatore_2:"Now it's Player 2's turn!",
+ ui_passa_il_telefono_al_giocatore:"Pass the phone to Player 2 — they'll guess Player 1's statements.",
+ ui_nessuna_affermazione:"(no statement)",
+ ui_affermazione:"STATEMENT ",
+ ui_giocatore_3:" Player ",
+ ui_affermazione_nascosta:" Hidden statement",
+ ui_leggi_l_affermazione_all_altro:": read the statement out loud to the other.",
+ ui_leggi_l_affermazione:"READ THE STATEMENT →",
+ ui_e_vera_o_falsa:": true or false?",
+ ui_vera:" TRUE",
+ ui_falsa:" FALSE",
+ ui_era_vera_o_falsa:": was it true or false?",
+ ui_era_vera:" IT WAS TRUE",
+ ui_era_falsa:" IT WAS FALSE",
+ ui_la_tua_risposta:"Your answer: ",
+ ui_fine_del_gioco_2:" Game over!",
+ ui_giocatore_1:"Player 1: ",
+ ui_giocatore_2_2:"Player 2: ",
+ ui_5_indovinati:" / 5 guessed",
+ ui_vince_il_giocatore_1:"Player 1 wins! ",
+ ui_vince_il_giocatore_2:"Player 2 wins! ",
+ ui_pareggio_vi_conoscete_benissimo:"It's a tie — you know each other really well! ",
+ ui_gioca_ancora_2:"PLAY AGAIN",
+ ui_chi_paga_il_conto:"WHO PAYS THE BILL",
+ ui_appoggiate_tutti_un_dito:"Everyone put a finger down ",
+ ui_non_alzate_il_dito:"Don't lift your finger... ",
+ ui_paga_lui:"THEY PAY!",
+ ui_tocca_per_chiudere:"Tap to close",
+ ui_appoggiate_anche_gli_altri:"Others, put your fingers down too ",
+ ui_dita_pronti:" fingers — ready?",
+ ui_sfida_ricevuta:"Challenge received",
+ ui_qualcuno:"Someone",
+ ui_vuole_giocare_a:" wants to play ",
+ ui_un_gioco:"a game",
+ ui_accetta:"Accept",
+ ui_stanza_non_trovata_o_scaduta:" Room not found or expired.",
+ ui_rifiuta:"Decline",
+ ui_sfida_un_altro_tavolo:"Challenge another table",
+ ui_scegli_un_gioco_gli_altri:"Pick a game — the others will get a notification.",
+ ui_con_gli_amici:"With friends",
+ ui_in_coppia:"As a couple",
+ ui_indovinelli:"Riddles",
+ ui_azione:"Action",
+ ui_invito_inviato_a_tutti_i:"Invitation sent to all tables!",
+ ui_annulla:"Cancel"
+});
+Object.assign(STRINGS.es,{
+ ui_come_ti_fai_chiamare:"¿Cómo te llamas?",
+ ui_gli_altri_tavoli_ti_vedranno:"Las otras mesas te verán con este nombre.",
+ ui_il_tuo_nome_o_soprannome:"Tu nombre o apodo",
+ ui_inizia_a_giocare:"Empezar a jugar",
+ ui_puoi_cambiare_il_tuo_nome:"Puedes cambiar tu nombre o confirmar el anterior.",
+ ui_il_nome_verra_chiesto_ogni:"Se te pedirá el nombre cada vez que abras la app.",
+ ui_rompighiaccio:"ROMPEHIELOS",
+ ui_primo_appuntamento:"PRIMERA CITA",
+ ui_indovinello:"acertijo ",
+ ui_nuovo:"★ NUEVO",
+ ui_nascondi:"OCULTAR ▲",
+ ui_minimo:"mínimo ",
+ ui_massimo:" · máximo ",
+ ui_conferma:"CONFIRMAR ",
+ ui_inizia:"EMPEZAR",
+ ui_sei_mr_white:"Eres MR. WHITE ",
+ ui_ricordatela_non_mostrarla_agli_altri:"Recuérdala. No se la enseñes a los demás.",
+ ui_ho_visto:"LA HE VISTO ",
+ ui_visto:"</span><span> Vista</span>",
+ ui_facile:"FÁCIL",
+ ui_parole_di_tutti_i_giorni:"Palabras de todos los días",
+ ui_media:"MEDIO",
+ ui_difficile:"DIFÍCIL",
+ ui_solo_per_coraggiosi:"Solo para valientes",
+ ui_di:" de ",
+ ui_passa:" PASAR",
+ ui_tempo:"¡TIEMPO!",
+ ui_parole_su:" palabras de ",
+ ui_caccia_all_oggetto:"CAZA DEL OBJETO",
+ ui_via:" ¡YA!",
+ ui_ha_trovato:" ¡LO ENCONTRÓ!",
+ ui_fifteen:"QUINCE",
+ ui_s_codice:" · código",
+ ui_chiede_a:"</strong> pregunta a <strong>",
+ ui_hai_il:"</strong>: ¿tienes el <strong>",
+ ui_nel_tuo_codice:"</strong> en tu código?",
+ ui_si_ce_l_ho:" SÍ, lo tengo",
+ ui_no_non_ce_l_ho:" NO, no lo tengo",
+ ui_pubblicita_assurda:"ANUNCIO ABSURDO",
+ ui_2_minuti_per_convincere_tutti:"2 minutos para convencer a todos ",
+ ui_presenta_il_tuo_prodotto_assurdo:"¡Presenta tu producto absurdo como un anuncio de verdad: nombre, eslogan y por qué comprarlo!",
+ ui_votate_lo_spot_migliore:" ¡Votad el mejor anuncio!",
+ ui_prossimo_giocatore:"↺ SIGUIENTE JUGADOR",
+ ui_inizia_lo_spot:" EMPEZAR EL ANUNCIO",
+ ui_riprendi:" REANUDAR",
+ ui_ricomincia:"↺ REINICIAR",
+ ui_pausa:" PAUSA",
+ ui_il_robot:"EL ROBOT",
+ ui_2_minuti_per_completare_la:"2 minutos para completar la misión ",
+ ui_il_programmatore_da_comandi_precisi:"El programador da órdenes precisas y el robot las cumple al pie de la letra. ¡Cuando acabe el tiempo, cambiad los papeles!",
+ ui_cambiate_ruolo:" ¡Cambiad de papel!",
+ ui_nuovo_turno:"↺ NUEVO TURNO",
+ ui_inizia_il_turno:" EMPEZAR EL TURNO",
+ ui_specchio:"ESPEJO",
+ ui_2_minuti_come_riflesso_poi:"2 minutos como reflejo, luego se cambia ",
+ ui_uno_guida_l_altro_imita:"Uno guía y el otro imita cada movimiento como un espejo. ¡Cuando acabe el tiempo, cambiad los papeles!",
+ ui_scambiate_i_ruoli:" ¡Cambiad los papeles!",
+ ui_scultura_umana:"ESCULTURA HUMANA",
+ ui_1_minuto_per_indovinare_la:"1 minuto para adivinar la escena ",
+ ui_le_statue_non_possono_muoversi:"Las estatuas no pueden moverse ni hablar. ¡El público adivina la escena antes de que acabe el tiempo!",
+ ui_tempo_rivelate_la_scena:" ¡Tiempo! ¡Desvelad la escena!",
+ ui_prossimo_scultore:" SIGUIENTE ESCULTOR",
+ ui_inizia_il_timer:" INICIAR EL TEMPORIZADOR",
+ ui_il_mimo:"EL MIMO",
+ ui_3_minuti_per_far_indovinare:"3 minutos para que tu equipo adivine ",
+ ui_mima_senza_parlare_fare_suoni:"Haz mímica sin hablar, sin hacer ruidos ni señalar objetos. ¡Tu equipo debe adivinar el título a tiempo!",
+ ui_tempo_prossimo_giocatore:" ¡Tiempo! ¡Siguiente jugador!",
+ ui_prossimo_mimo:" SIGUIENTE MIMO",
+ ui_inizia_il_mimo:" EMPEZAR LA MÍMICA",
+ ui_il_soprannome:"EL APODO",
+ ui_5_minuti_di_conversazione_libera:"5 minutos de conversación libre ",
+ ui_chiacchierate_liberamente_allo_scadere_del:"Charlad libremente. Cuando acabe el tiempo, cada uno pone un apodo a la persona de su derecha ¡y se revelan todos a la vez!",
+ ui_tempo_rivelate_i_soprannomi:" ¡Tiempo! ¡Desvelad los apodos!",
+ ui_nuovo_giro:"↺ NUEVA RONDA",
+ ui_inizia_la_conversazione:" EMPEZAR LA CONVERSACIÓN",
+ ui_cosa_hai_in_comune:"¿QUÉ TENÉIS EN COMÚN?",
+ ui_4_minuti_per_scoprirlo:"¡4 minutos para descubrirlo! ",
+ ui_trovate_almeno_3_cose_inaspettate:"Encontrad al menos 3 cosas inesperadas que tengáis en común. ¡Luego presentadlas al grupo!",
+ ui_tempo_presentatevi_al_gruppo:" ¡Tiempo! ¡Presentaos al grupo!",
+ ui_nuova_coppia:" NUEVA PAREJA",
+ ui_inizia_2:" EMPEZAR",
+ ui_chi_sei_davvero:"¿QUIÉN ERES DE VERDAD?",
+ ui_20_secondi_per_rispondere:"¡20 segundos para responder! ",
+ ui_il_moderatore_fa_una_domanda:"El moderador hace una pregunta. Todos tienen 20 segundos para responder de forma espontánea. ¡No hay respuestas incorrectas!",
+ ui_tempo_prossima_domanda:" ¡Tiempo! ¡Siguiente pregunta!",
+ ui_nuova_domanda:" NUEVA PREGUNTA",
+ ui_inizia_il_round:" EMPEZAR LA RONDA",
+ ui_il_superpotere:"EL SUPERPODER",
+ ui_30_secondi_per_convincerli_tutti:"¡30 segundos para convencerlos a todos! ",
+ ui_scegli_un_superpotere_e_spiega:"Elige un superpoder y explica qué harías con él hoy. Los demás escuchan en silencio.",
+ ui_tempo_scaduto:" ¡Se acabó el tiempo!",
+ ui_prossimo_giocatore_2:" SIGUIENTE JUGADOR",
+ ui_appello:"LISTA",
+ ui_memorizza_tutti_i_nomi_in:"¡Memoriza todos los nombres en 60 segundos!",
+ ui_il_moderatore_punta_il_dito:"El moderador señala a alguien → otro jugador tiene 3 segundos para decir su nombre. Quien falle queda eliminado.",
+ ui_via_iniziate_a_giocare:" ¡Ya! ¡A jugar!",
+ ui_nuovo_giro_2:" NUEVA RONDA",
+ ui_inizia_memorizzazione:" EMPEZAR A MEMORIZAR",
+ ui_si_no_non:"SÍ, NO, TAMPOCO",
+ ui_rispondi_senza_mai_dire_si:"Responde sin decir nunca SÍ · NO · TAMPOCO",
+ ui_si:"SÍ",
+ ui_no:"NO",
+ ui_non:"TAMPOCO",
+ ui_tempo_scaduto_hai_resistito:" ¡Se acabó el tiempo! ¡Has aguantado!",
+ ui_ha_detto_si_no_non:" HA DICHO SÍ/NO/TAMPOCO — siguiente turno",
+ ui_ha_detto_si_no_non_2:" HA DICHO SÍ/NO/TAMPOCO",
+ ui_in_attesa_degli_altri:"Esperando a los demás",
+ ui_nessun_giocatore_ancora:"Todavía no hay jugadores…",
+ ui_inizia_3:"Empezar",
+ ui_aspetta_che_si_colleghi_almeno:"Espera a que se conecte al menos otro jugador.",
+ ui_annulla_sfida:"Cancelar desafío",
+ ui_connesso:"Conectado",
+ ui_aspetta_che_l_altro_giocatore:" Espera a que el otro jugador inicie la partida…",
+ ui_esci_dalla_stanza:"Salir de la sala",
+ ui_quanti_siete:"¿Cuántos sois?",
+ ui_gli_altri_dispositivi_riceveranno_una:"Los demás dispositivos recibirán una notificación",
+ ui_invio_sfida:"Enviando desafío…",
+ ui_rivelazione_automatica_tra_40s:"Revelación automática en 40s",
+ ui_rivelazione_automatica_tra:"Revelación automática en ",
+ ui_risposta_automatica_tra_40s:"Respuesta automática en 40s",
+ ui_risposta_automatica_tra:"Respuesta automática en ",
+ ui_avanzamento_automatico_tra:"Avance automático en ",
+ ui_anno_giusto:"AÑO EXACTO",
+ ui_giocatore:"Jugador ",
+ ui_round:"Ronda ",
+ ui_turno_di:"Turno de: ",
+ ui_conferma_risposta:" CONFIRMAR RESPUESTA",
+ ui_risposta_corretta:"Respuesta correcta",
+ ui_punteggi_totali:"Puntuaciones totales",
+ ui_risultati_finali:" RESULTADOS FINALES",
+ ui_prossima_domanda:" SIGUIENTE PREGUNTA",
+ ui_ha_vinto:" ¡ha ganado! ",
+ ui_con:"Con ",
+ ui_punti_su:" puntos de ",
+ ui_gioca_ancora:"↺ JUGAR DE NUEVO",
+ ui_l_ex:"EL EX",
+ ui_2_minuti_per_raccontare_la:"2 minutos para contar la historia ",
+ ui_racconta_la_storia_piu_assurda:"Cuenta la historia más absurda, vergonzosa o surrealista sobre un ex. ¡Nada de nombres reales!",
+ ui_votate_la_storia_migliore:" ¡Votad la mejor historia!",
+ ui_confessioni_anonime:"CONFESIONES ANÓNIMAS",
+ ui_scrivi_una_confessione_anonima_qualcosa:"Escribe una confesión anónima. Algo verdadero, vergonzoso o inesperado. Nadie verá tu nombre.",
+ ui_la_mia_confessione:"Mi confesión...",
+ ui_tieni_il_telefono_verso_di:"Mantén el móvil hacia ti mientras escribes ",
+ ui_passa_al_prossimo:"Pasar al siguiente →",
+ ui_mescola_e_inizia:"Mezclar y empezar ",
+ ui_confessione:"CONFESIÓN ",
+ ui_di_2:" DE ",
+ ui_il_gruppo_vota_di_chi:"El grupo vota: ¿de quién es esta confesión?",
+ ui_prossima_confessione:"Siguiente confesión →",
+ ui_risultati_finali_2:"Resultados finales ",
+ ui_fine_del_gioco:"¡Fin del juego! ",
+ ui_tutte_le:"Las ",
+ ui_confessioni_sono_state_svelate:" confesiones han sido desveladas",
+ ui_domande_accessibili_per_tutti:"Preguntas para todos",
+ ui_qualche_sfida_in_piu:"Un poco más de desafío",
+ ui_solo_per_esperti:"Solo para expertos",
+ ui_quiz_terminato:"¡QUIZ TERMINADO!",
+ ui_domande_corrette_su:"respuestas correctas de ",
+ ui_fenomenale:"¡FENOMENAL!",
+ ui_ottimo:"¡MUY BIEN!",
+ ui_non_male:"¡NADA MAL!",
+ ui_riprova:"¡INTÉNTALO DE NUEVO!",
+ ui_punti:"PUNTOS: ",
+ ui_non_sapevo:"NO LO SABÍA",
+ ui_lo_sapevo_1:"¡LO SABÍA! +1",
+ ui_frase:"FRASE ",
+ ui_vedi_le_regole:"VER LAS REGLAS",
+ ui_modifica_menu:"EDITAR MENÚ",
+ ui_rimuovi_foto:" Quitar foto",
+ ui_tocca_per_aggiungere_foto:"Toca para añadir una foto",
+ ui_nome_prodotto:"Nombre del producto",
+ ui_descrizione:"Descripción",
+ ui_elimina_prodotto:" Eliminar producto",
+ ui_eliminare_questo_prodotto:"¿Eliminar este producto?",
+ ui_titolo:"Título",
+ ui_prezzo:"Precio (€)",
+ ui_allergeni:"Alérgenos",
+ ui_aggiungi_prodotto:"+ Añadir producto",
+ ui_massimo_10_prodotti_per_categoria:"Máximo 10 productos por categoría.",
+ ui_ripristina_menu_default:"Restaurar menú predeterminado",
+ ui_ripristinare_il_menu:"¿Restaurar el menú ",
+ ui_predefinito:" predeterminado?",
+ ui_il_codice_pub_identifica_il:"El código identifica tu local. Úsalo en las etiquetas NFC de los posavasos.",
+ ui_impostazioni:"Ajustes",
+ ui_menu:" Menú",
+ ui_es_osteria_mario:"Ej. Bar El Rincón",
+ ui_partite_totali:"Partidas totales",
+ ui_oggi:"Hoy",
+ ui_tempo_totale:"Tiempo total",
+ ui_valutazione:"Valoración ",
+ ui_giochi_piu_giocati:"Juegos más jugados",
+ ui_menu_piu_richiesti:" Lo más pedido del menú (",
+ ui_click_totali:" clics totales)",
+ ui_nessun_click_menu_ancora:"Aún no hay clics en el menú",
+ ui_i_click_verranno_tracciati_quando:"Los clics se registrarán cuando los clientes consulten el menú",
+ ui_recenti:"Recientes",
+ ui_reset_tutti_i_dati:"Borrar todos los datos",
+ ui_cancellare_tutti_i_dati_analytics:"¿Borrar todos los datos de análisis locales?\nLos datos de Firebase no se eliminarán.",
+ ui_il_tuo_locale:"Tu local",
+ ui_periodo:"Periodo",
+ ui_seleziona_periodo:"Selecciona el periodo",
+ ui_questa_settimana:"Esta semana",
+ ui_questo_mese:"Este mes",
+ ui_ultimo_trimestre:"Último trimestre",
+ ui_tutto:"Todo",
+ ui_genera_e_scarica_pdf:" Generar y descargar PDF",
+ ui_cosa_include_il_report:"Qué incluye el informe",
+ ui_partite_totali_e_giornaliere:"Partidas totales y diarias",
+ ui_conteggio_per_periodo:"Recuento por periodo",
+ ui_giochi_piu_popolari:"Juegos más populares",
+ ui_top_10_con_barra_di:"Top 10 con barra de uso",
+ ui_menu_piu_richiesti_2:"Lo más pedido del menú",
+ ui_click_su_drink_e_food:"Clics en bebidas y comida",
+ ui_valutazioni_medie:"Valoraciones medias",
+ ui_per_gioco:"Por juego",
+ ui_tempo_di_gioco:"Tiempo de juego",
+ ui_totale_e_per_gioco:"Total y por juego",
+ ui_giochi_speciali:"Juegos especiales",
+ ui_quiz_multiplayer_per_la_serata:"Quiz multijugador para la noche",
+ ui_stato:"Estado",
+ ui_firebase_non_disponibile:"Firebase no disponible",
+ ui_controlla_la_connessione:"Comprueba la conexión",
+ ui_nome_evento:"Nombre del evento",
+ ui_es_quizzone_del_mercoledi:"Ej. Quiz del miércoles",
+ ui_codici_pub_partecipanti:"Códigos de los locales participantes",
+ ui_evento_attivo:"Evento activo",
+ ui_visibile_a_tutti_i_pub:"Visible para todos los locales participantes",
+ ui_evento_in_corso:"Evento en curso",
+ ui_errore_salvataggio:" Error al guardar",
+ ui_errore:"Error",
+ ui_impossibile_leggere_firebase:"No se puede leer Firebase",
+ ui_tutto_il_periodo:"Todo el periodo",
+ ui_oggi_2:"Hoy, ",
+ ui_settimana_corrente:"Semana actual",
+ ui_mese:"Mes: ",
+ ui_generato_il:"<div class=\"header-meta\">Generado el ",
+ ui_partite:"</div><div class=\"stat-label\">Partidas</div></div>",
+ ui_giorni_attivi:"</div><div class=\"stat-label\">Días activos</div></div>",
+ ui_tempo_totale_2:"</div><div class=\"stat-label\">Tiempo total</div></div>",
+ ui_valutazione_2:"</div><div class=\"stat-label\">Valoración </div></div>",
+ ui_click_menu:"</div><div class=\"stat-label\">Clics en el menú</div></div>",
+ ui_ora_di_punta:"</div><div class=\"stat-label\">Hora punta</div></div>",
+ ui_giochi_piu_giocati_2:"<h2> Juegos más jugados</h2>",
+ ui_pt:"&nbsp;part.</span></div>",
+ ui_menu_piu_richiesti_3:"<h2> Lo más pedido del menú</h2>",
+ ui_x:"x</span></div>",
+ ui_valutazioni_per_gioco:"<h2>⭐ Valoraciones por juego</h2>",
+ ui_fil_s_report_analitico_i:"<div class=\"footer\">Fil&apos;s — Informe de análisis • Los datos no contienen información personal identificable</div>",
+ ui_il_popup_e_stato_bloccato:"La ventana emergente se ha bloqueado. Permite las ventanas emergentes en este sitio para descargar el PDF.",
+ ui_codice:"CÓDIGO",
+ ui_il_tuo_nome:"Tu nombre...",
+ ui_sei_in_lobby_aspetta_che:"</span><br><br>Estás en la sala — espera a que el anfitrión inicie el juego",
+ ui_tu:" (tú)",
+ ui_home:"Inicio",
+ ui_dove_andate:" ¿Adónde vais?",
+ ui_es_giappone_patagonia_marocco:"Ej. Japón, Patagonia, Marruecos…",
+ ui_quando_partite:" ¿Cuándo os vais?",
+ ui_es_primavera_natale_subito:"Ej. Primavera, Navidad, ya mismo…",
+ ui_per_quanto_tempo:" ¿Cuánto tiempo?",
+ ui_es_2_settimane_un_mese:"Ej. 2 semanas, un mes…",
+ ui_dove_dormite:" ¿Dónde dormís?",
+ ui_es_ryokan_tenda_villa_con:"Ej. Ryokan, tienda de campaña, villa con piscina…",
+ ui_cosa_fate_ogni_giorno:" ¿Qué hacéis cada día?",
+ ui_es_trekking_musei_spiaggia_niente:"Ej. Senderismo, museos, playa, nada…",
+ ui_cosa_mangiate:" ¿Qué coméis?",
+ ui_es_street_food_locale_ristoranti:"Ej. Comida callejera local, restaurantes con estrella…",
+ ui_il_momento_piu_bello:" ¿El mejor momento?",
+ ui_es_tramonto_sul_vulcano_mercato:"Ej. Atardecer en el volcán, mercado nocturno…",
+ ui_budget_senza_limiti:" Presupuesto (¡sin límites!)",
+ ui_es_illimitato_prima_classe_ovunque:"Ej. Ilimitado, primera clase en todo…",
+ ui_il_viaggio_dei_sogni:"EL VIAJE DE LOS SUEÑOS",
+ ui_rispondete_insieme_a_ogni_domanda:"Responded juntos a cada pregunta y construid vuestro viaje perfecto. ¡Sin límites!",
+ ui_vedi_il_vostro_viaggio:"VER VUESTRO VIAJE ",
+ ui_modifica:"← Editar",
+ ui_il_vostro_viaggio:"VUESTRO VIAJE",
+ ui_il_vostro_viaggio_dei_sogni:"VUESTRO VIAJE DE LOS SUEÑOS",
+ ui_modifica_2:" EDITAR",
+ ui_nuovo_viaggio:" NUEVO VIAJE",
+ ui_cosa_non_sai_di_me:"LO QUE NO SABES DE MÍ",
+ ui_giocatore_2:"JUGADOR ",
+ ui_scrivi_5_cose_che_l:" — escribe 5 cosas que el otro no sabe de ti",
+ ui_possono_essere_vere_o_false:"Pueden ser verdaderas o falsas — ¡el otro tendrá que adivinarlo!",
+ ui_scrivi_qualcosa:"Escribe algo…",
+ ui_passa_al_giocatore_2:"PASAR AL JUGADOR 2 →",
+ ui_inizia_il_gioco:"EMPEZAR EL JUEGO →",
+ ui_giocatore_1_ha_finito:" ¡El jugador 1 ha terminado!",
+ ui_ora_passa_il_telefono_al:"Ahora pasa el móvil al jugador 2.",
+ ui_sono_il_giocatore_2:"SOY EL JUGADOR 2 →",
+ ui_ora_tocca_al_giocatore_2:"¡Ahora le toca al jugador 2!",
+ ui_passa_il_telefono_al_giocatore:"Pasa el móvil al jugador 2 — adivinará las afirmaciones del jugador 1.",
+ ui_nessuna_affermazione:"(ninguna afirmación)",
+ ui_affermazione:"AFIRMACIÓN ",
+ ui_giocatore_3:" Jugador ",
+ ui_affermazione_nascosta:" Afirmación oculta",
+ ui_leggi_l_affermazione_all_altro:": lee la afirmación en voz alta al otro.",
+ ui_leggi_l_affermazione:"LEER LA AFIRMACIÓN →",
+ ui_e_vera_o_falsa:": ¿es verdadera o falsa?",
+ ui_vera:" VERDADERA",
+ ui_falsa:" FALSA",
+ ui_era_vera_o_falsa:": ¿era verdadera o falsa?",
+ ui_era_vera:" ERA VERDADERA",
+ ui_era_falsa:" ERA FALSA",
+ ui_la_tua_risposta:"Tu respuesta: ",
+ ui_fine_del_gioco_2:" ¡Fin del juego!",
+ ui_giocatore_1:"Jugador 1: ",
+ ui_giocatore_2_2:"Jugador 2: ",
+ ui_5_indovinati:" / 5 acertadas",
+ ui_vince_il_giocatore_1:"¡Gana el jugador 1! ",
+ ui_vince_il_giocatore_2:"¡Gana el jugador 2! ",
+ ui_pareggio_vi_conoscete_benissimo:"Empate — ¡os conocéis muy bien! ",
+ ui_gioca_ancora_2:"JUGAR DE NUEVO",
+ ui_chi_paga_il_conto:"QUIÉN PAGA LA CUENTA",
+ ui_appoggiate_tutti_un_dito:"Poned todos un dedo ",
+ ui_non_alzate_il_dito:"No levantéis el dedo... ",
+ ui_paga_lui:"¡PAGA ÉL!",
+ ui_tocca_per_chiudere:"Toca para cerrar",
+ ui_appoggiate_anche_gli_altri:"Poned también los demás ",
+ ui_dita_pronti:" dedos — ¿listos?",
+ ui_sfida_ricevuta:"Desafío recibido",
+ ui_qualcuno:"Alguien",
+ ui_vuole_giocare_a:" quiere jugar a ",
+ ui_un_gioco:"un juego",
+ ui_accetta:"Aceptar",
+ ui_stanza_non_trovata_o_scaduta:" Sala no encontrada o caducada.",
+ ui_rifiuta:"Rechazar",
+ ui_sfida_un_altro_tavolo:"Desafía a otra mesa",
+ ui_scegli_un_gioco_gli_altri:"Elige un juego — los demás recibirán la notificación.",
+ ui_con_gli_amici:"Con amigos",
+ ui_in_coppia:"En pareja",
+ ui_indovinelli:"Acertijos",
+ ui_azione:"Acción",
+ ui_invito_inviato_a_tutti_i:"¡Invitación enviada a todas las mesas!",
+ ui_annulla:"Cancelar"
+});
 function T(k){return(STRINGS[LANG]||STRINGS.it)[k]||(STRINGS.it[k])||k;}
 // ──────────────────────────────────────────────────────────
 
@@ -1752,7 +2766,7 @@ function renderQuizzoneLobby(){
  codeNum.textContent=fbRoomCode;
  var codeSub=document.createElement('div');
  codeSub.style.cssText='font-size:11px;font-weight:700;letter-spacing:3px;color:#999;text-transform:uppercase;';
- codeSub.textContent='CODICE';
+ codeSub.textContent=T("ui_codice");
  codeBox.appendChild(codeNum); codeBox.appendChild(codeSub);
  wrap.appendChild(codeBox);
 
@@ -1801,7 +2815,7 @@ function renderQuizzoneLobby(){
  wrap.appendChild(nickLabel);
 
  var nickInput=document.createElement('input');
- nickInput.type='text'; nickInput.maxLength=16; nickInput.placeholder='Il tuo nome...';
+ nickInput.type='text'; nickInput.maxLength=16; nickInput.placeholder=T("ui_il_tuo_nome");
  nickInput.style.cssText='width:280px;height:60px;font-size:24px;font-weight:700;text-align:center;border:none;border-radius:16px;outline:none;font-family:"Space Grotesk",sans-serif;padding:0 16px;';
  wrap.appendChild(nickInput);
 
@@ -1821,7 +2835,7 @@ function renderQuizzoneLobby(){
  // Già dentro — aspetta l'host
  var waitMsg=document.createElement('div');
  waitMsg.style.cssText='font-size:20px;color:#fff;font-weight:700;text-align:center;';
- waitMsg.innerHTML=' <span style="color:#FFA602">'+QZ.myNickname+'</span><br><br>Sei in lobby — aspetta che l\'host avvii il gioco';
+ waitMsg.innerHTML=' <span style="color:#FFA602">'+QZ.myNickname+T("ui_sei_in_lobby_aspetta_che");
  wrap.appendChild(waitMsg);
 
  // Avatar animato "in attesa"
@@ -2084,7 +3098,7 @@ function renderQuizzoneLeaderboard(){
  pos.textContent=medal;
  var name=document.createElement('div');
  name.style.cssText='font-family:"Space Grotesk",sans-serif;font-size:18px;font-weight:700;color:#fff;flex:1;';
- name.textContent=p.name+(isMe?' (tu)':'');
+ name.textContent=p.name+(isMe?T("ui_tu"):'');
  var pts=document.createElement('div');
  pts.style.cssText='font-family:"Space Grotesk",sans-serif;font-size:18px;font-weight:900;color:'+(i<3?'#1a1a2e':'#FFA602')+';';
  pts.textContent=p.score.toLocaleString();
@@ -2178,7 +3192,7 @@ function renderQuizzoneEnd(){
 
  var exitBtn=document.createElement('button');
  exitBtn.style.cssText='padding:16px 40px;background:#E21B3C;color:#fff;border:none;border-radius:50px;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;margin-top:8px;';
- exitBtn.textContent=T('backToGames').replace('←','').trim()||'Home';
+ exitBtn.textContent=T('backToGames').replace('←','').trim()||T("ui_home");
  exitBtn.onclick=function(){ qzFbUnlisten(); fbLeaveRoom(); goHome(); };
  wrap.appendChild(exitBtn);
  });
@@ -2215,14 +3229,14 @@ function qzHandleRemote(data){
 
 // ── IL VIAGGIO DEI SOGNI ───────────────────────────────────────────────────
 var VIAGGIO_STEPS=[
- {key:"dest",   label:" Dove andate?",         ph:"Es. Giappone, Patagonia, Marocco…"},
- {key:"quando", label:" Quando partite?",       ph:"Es. Primavera, Natale, subito…"},
- {key:"durata", label:" Per quanto tempo?",      ph:"Es. 2 settimane, un mese…"},
- {key:"alloggio",label:" Dove dormite?",        ph:"Es. Ryokan, tenda, villa con piscina…"},
- {key:"attivita",label:" Cosa fate ogni giorno?",ph:"Es. Trekking, musei, spiaggia, niente…"},
- {key:"cibo",   label:" Cosa mangiate?",        ph:"Es. Street food locale, ristoranti stellati…"},
- {key:"momento",label:" Il momento più bello?", ph:"Es. Tramonto sul vulcano, mercato notturno…"},
- {key:"budget", label:" Budget (senza limiti!)",ph:"Es. Illimitato, prima classe ovunque…"}
+ {key:"dest",   label:"ui_dove_andate",         ph:"ui_es_giappone_patagonia_marocco"},
+ {key:"quando", label:"ui_quando_partite",       ph:"ui_es_primavera_natale_subito"},
+ {key:"durata", label:"ui_per_quanto_tempo",      ph:"ui_es_2_settimane_un_mese"},
+ {key:"alloggio",label:"ui_dove_dormite",        ph:"ui_es_ryokan_tenda_villa_con"},
+ {key:"attivita",label:"ui_cosa_fate_ogni_giorno",ph:"ui_es_trekking_musei_spiaggia_niente"},
+ {key:"cibo",   label:"ui_cosa_mangiate",        ph:"ui_es_street_food_locale_ristoranti"},
+ {key:"momento",label:"ui_il_momento_piu_bello", ph:"ui_es_tramonto_sul_vulcano_mercato"},
+ {key:"budget", label:"ui_budget_senza_limiti",ph:"ui_es_illimitato_prima_classe_ovunque"}
 ];
 
 function renderViaggioPlan(){
@@ -2233,22 +3247,22 @@ function renderViaggioPlan(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backBtn"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","IL VIAGGIO DEI SOGNI"));
+ hdr.appendChild(div("dtitle",T("ui_il_viaggio_dei_sogni")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
- var intro=div("rtext");intro.style.cssText="margin-bottom:20px;";intro.textContent="Rispondete insieme a ogni domanda e costruite il vostro viaggio perfetto. Nessun limite!";body.appendChild(intro);
+ var intro=div("rtext");intro.style.cssText="margin-bottom:20px;";intro.textContent=T("ui_rispondete_insieme_a_ogni_domanda");body.appendChild(intro);
  var d=S.viaggioData;
  VIAGGIO_STEPS.forEach(function(step){
-  var lbl=div("rlabel");lbl.style.cssText="margin-top:16px;font-size:14px;";lbl.textContent=step.label;body.appendChild(lbl);
+  var lbl=div("rlabel");lbl.style.cssText="margin-top:16px;font-size:14px;";lbl.textContent=T(step.label);body.appendChild(lbl);
   var inp=document.createElement("input");
   inp.type="text";inp.className="player-name-input";inp.style.cssText="width:100%;";
-  inp.placeholder=step.ph;inp.maxLength=80;
+  inp.placeholder=T(step.ph);inp.maxLength=80;
   inp.value=d[step.key]||"";
   (function(k){inp.oninput=function(){S.viaggioData[k]=inp.value;};})(step.key);
   body.appendChild(inp);
  });
  var startWrap=div("");startWrap.style.cssText="text-align:center;margin-top:28px;";
- startWrap.appendChild(btn("ebtn","VEDI IL VOSTRO VIAGGIO ",function(){
+ startWrap.appendChild(btn("ebtn",T("ui_vedi_il_vostro_viaggio"),function(){
   // salva tutti i campi
   var inputs=body.querySelectorAll("input");
   VIAGGIO_STEPS.forEach(function(step,i){S.viaggioData[step.key]=inputs[i].value.trim();});
@@ -2266,25 +3280,25 @@ function renderViaggioCard(){
  var wrap=div("intesa-wrap intesa-setup");
  var hdr=div("dhdr");hdr.style.background=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
- dhdrTop.appendChild(btn("card-nav-btn back","← Modifica",function(){S.screen="viaggio_plan";render();}));
+ dhdrTop.appendChild(btn("card-nav-btn back",T("ui_modifica"),function(){S.screen="viaggio_plan";render();}));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle"," "+(d.dest||"IL VOSTRO VIAGGIO")));
+ hdr.appendChild(div("dtitle"," "+(d.dest||T("ui_il_vostro_viaggio"))));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
- var lbl=div("rlabel");lbl.style.cssText="margin-bottom:16px;";lbl.textContent="IL VOSTRO VIAGGIO DEI SOGNI";body.appendChild(lbl);
+ var lbl=div("rlabel");lbl.style.cssText="margin-bottom:16px;";lbl.textContent=T("ui_il_vostro_viaggio_dei_sogni");body.appendChild(lbl);
  VIAGGIO_STEPS.forEach(function(step){
   var val=d[step.key];
   if(!val) return;
   var row=div("");row.style.cssText="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;padding:12px 14px;background:var(--surface);border-radius:12px;border:1px solid var(--border);";
-  var icon=div("");icon.style.cssText="font-size:22px;flex-shrink:0;";icon.textContent=step.label.split(" ")[0];row.appendChild(icon);
+  var icon=div("");icon.style.cssText="font-size:22px;flex-shrink:0;";icon.textContent=T(step.label).split(" ")[0];row.appendChild(icon);
   var right=div("");right.style.cssText="flex:1;";
-  var qlbl=div("");qlbl.style.cssText="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px;";qlbl.textContent=step.label.replace(/^.\s/,"");right.appendChild(qlbl);
+  var qlbl=div("");qlbl.style.cssText="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px;";qlbl.textContent=T(step.label).replace(/^.\s/,"");right.appendChild(qlbl);
   var ans=div("");ans.style.cssText="font-size:16px;font-weight:600;color:var(--dark);";ans.textContent=val;right.appendChild(ans);
   row.appendChild(right);body.appendChild(row);
  });
  var btns=div("");btns.style.cssText="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;";
- btns.appendChild(btn("ebtn out"," MODIFICA",function(){S.screen="viaggio_plan";render();}));
- btns.appendChild(btn("ebtn"," NUOVO VIAGGIO",function(){
+ btns.appendChild(btn("ebtn out",T("ui_modifica_2"),function(){S.screen="viaggio_plan";render();}));
+ btns.appendChild(btn("ebtn",T("ui_nuovo_viaggio"),function(){
   S.viaggioData={dest:"",quando:"",durata:"",alloggio:"",attivita:"",cibo:"",momento:"",budget:""};
   S.screen="viaggio_plan";render();
  }));
@@ -2302,12 +3316,12 @@ function renderCnsWrite(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backBtn"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","COSA NON SAI DI ME"));
+ hdr.appendChild(div("dtitle",T("ui_cosa_non_sai_di_me")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  var pIdx=S.cnsPlayer-1;
- var label=div("rlabel");label.textContent="GIOCATORE "+S.cnsPlayer+" — scrivi 5 cose che l'altro non sa di te";body.appendChild(label);
- var hint=div("rtext");hint.style.marginBottom="20px";hint.textContent="Possono essere vere o false — l'altro dovrà indovinare!";body.appendChild(hint);
+ var label=div("rlabel");label.textContent=T("ui_giocatore_2")+S.cnsPlayer+T("ui_scrivi_5_cose_che_l");body.appendChild(label);
+ var hint=div("rtext");hint.style.marginBottom="20px";hint.textContent=T("ui_possono_essere_vere_o_false");body.appendChild(hint);
  var inputs=[];
  for(var i=0;i<5;i++){
   (function(idx){
@@ -2315,7 +3329,7 @@ function renderCnsWrite(){
    var lbl=div("player-name-label");lbl.textContent=(idx+1)+".";row.appendChild(lbl);
    var inp=document.createElement("input");
    inp.type="text";inp.className="player-name-input";
-   inp.placeholder="Scrivi qualcosa…";inp.maxLength=80;
+   inp.placeholder=T("ui_scrivi_qualcosa");inp.maxLength=80;
    inp.style.cssText="flex:1;";
    inp.value=S.cnsItems[pIdx][idx]||"";
    inp.oninput=function(){S.cnsItems[pIdx][idx]=inp.value;};
@@ -2324,7 +3338,7 @@ function renderCnsWrite(){
   })(i);
  }
  var startWrap=div("");startWrap.style.cssText="text-align:center;margin-top:24px;";
- startWrap.appendChild(btn("ebtn",S.cnsPlayer===1?"PASSA AL GIOCATORE 2 →":"INIZIA IL GIOCO →",function(){
+ startWrap.appendChild(btn("ebtn",S.cnsPlayer===1?T("ui_passa_al_giocatore_2"):T("ui_inizia_il_gioco"),function(){
   // salva valori correnti
   inputs.forEach(function(inp,i){S.cnsItems[pIdx][i]=inp.value.trim();});
   if(S.cnsPlayer===1){
@@ -2347,12 +3361,12 @@ function renderCnsPass(){
  var wrap=div("intesa-wrap intesa-setup");
  var hdr=div("dhdr");hdr.style.background=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var card=div("dcard");card.appendChild(hdr);
- hdr.appendChild(div("dtitle","COSA NON SAI DI ME"));
+ hdr.appendChild(div("dtitle",T("ui_cosa_non_sai_di_me")));
  var body=div("dbody");card.appendChild(body);
- var msg=div("rlabel");msg.style.cssText="text-align:center;font-size:22px;margin:32px 0 12px;";msg.textContent=" Giocatore 1 ha finito!";body.appendChild(msg);
- var sub=div("rtext");sub.style.cssText="text-align:center;margin-bottom:32px;";sub.textContent="Ora passa il telefono al Giocatore 2.";body.appendChild(sub);
+ var msg=div("rlabel");msg.style.cssText="text-align:center;font-size:22px;margin:32px 0 12px;";msg.textContent=T("ui_giocatore_1_ha_finito");body.appendChild(msg);
+ var sub=div("rtext");sub.style.cssText="text-align:center;margin-bottom:32px;";sub.textContent=T("ui_ora_passa_il_telefono_al");body.appendChild(sub);
  var startWrap=div("");startWrap.style.cssText="text-align:center;";
- startWrap.appendChild(btn("ebtn","SONO IL GIOCATORE 2 →",function(){
+ startWrap.appendChild(btn("ebtn",T("ui_sono_il_giocatore_2"),function(){
   S.cnsPlayer=2;S.screen="cns_write";render();
  }));
  body.appendChild(startWrap);
@@ -2383,12 +3397,12 @@ function renderCnsPlay(){
    var cat2=getCatById(S.cat);
    var hdr2=div("dhdr");hdr2.style.background=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat2.bg;
    var card2=div("dcard");card2.appendChild(hdr2);
-   hdr2.appendChild(div("dtitle","COSA NON SAI DI ME"));
+   hdr2.appendChild(div("dtitle",T("ui_cosa_non_sai_di_me")));
    var body2=div("dbody");card2.appendChild(body2);
-   var msg2=div("rlabel");msg2.style.cssText="text-align:center;font-size:20px;margin:32px 0 12px;";msg2.textContent="Ora tocca al Giocatore 2!";body2.appendChild(msg2);
-   var sub2=div("rtext");sub2.style.cssText="text-align:center;margin-bottom:32px;";sub2.textContent="Passa il telefono al Giocatore 2 — indovinerà le affermazioni del Giocatore 1.";body2.appendChild(sub2);
+   var msg2=div("rlabel");msg2.style.cssText="text-align:center;font-size:20px;margin:32px 0 12px;";msg2.textContent=T("ui_ora_tocca_al_giocatore_2");body2.appendChild(msg2);
+   var sub2=div("rtext");sub2.style.cssText="text-align:center;margin-bottom:32px;";sub2.textContent=T("ui_passa_il_telefono_al_giocatore");body2.appendChild(sub2);
    var sw2=div("");sw2.style.cssText="text-align:center;";
-   sw2.appendChild(btn("ebtn","SONO IL GIOCATORE 2 →",function(){render();}));
+   sw2.appendChild(btn("ebtn",T("ui_sono_il_giocatore_2"),function(){render();}));
    body2.appendChild(sw2);
    wrap2.appendChild(card2);
    document.getElementById("root").appendChild(wrap2);
@@ -2398,11 +3412,11 @@ function renderCnsPlay(){
    S.screen="cns_end";render();return;
   }
  }
- var phrase=items[S.cnsIdx]||"(nessuna affermazione)";
+ var phrase=items[S.cnsIdx]||T("ui_nessuna_affermazione");
  var wrap=div("starter-wrap");
  var hdr=div("starter-header");wrap.appendChild(hdr);
- hdr.appendChild(div("starter-title","COSA NON SAI DI ME"));
- hdr.appendChild(div("starter-counter","AFFERMAZIONE "+(S.cnsIdx+1)+" / 5 — Giocatore "+(writerIdx+1)));
+ hdr.appendChild(div("starter-title",T("ui_cosa_non_sai_di_me")));
+ hdr.appendChild(div("starter-counter",T("ui_affermazione")+(S.cnsIdx+1)+" / 5 — Giocatore "+(writerIdx+1)));
  var prog=div("starter-progress");wrap.appendChild(prog);
  var globalProg=guesserIdx===0?S.cnsIdx:(5+S.cnsIdx);
  var bar=div("starter-bar");bar.style.width=Math.round((globalProg/total)*100)+"%";prog.appendChild(bar);
@@ -2414,12 +3428,12 @@ function renderCnsPlay(){
  // Etichetta chi indovina
  var whoDiv=div("starter-phrase");
  whoDiv.style.fontSize="14px";whoDiv.style.opacity="0.85";whoDiv.style.marginBottom="8px";
- whoDiv.textContent=" Giocatore "+(guesserIdx+1)+" indovina";
+ whoDiv.textContent=T("ui_giocatore_3")+(guesserIdx+1)+" indovina";
  chdr.appendChild(whoDiv);
  // La frase (nascosta finché non si rivela)
  var phraseDiv=div("starter-phrase");
  if(!S.cnsReveal){
-  phraseDiv.textContent=" Affermazione nascosta";
+  phraseDiv.textContent=T("ui_affermazione_nascosta");
   phraseDiv.style.opacity="0.5";
  } else {
   phraseDiv.textContent=phrase;
@@ -2428,33 +3442,33 @@ function renderCnsPlay(){
  var body=div("starter-body");card.appendChild(body);
  if(!S.cnsReveal){
   // Prima: il giocatore che ha scritto mostra la frase all'altro
-  var readHint=div("starter-hint");readHint.textContent="Giocatore "+(writerIdx+1)+": leggi l'affermazione all'altro ad alta voce.";body.appendChild(readHint);
-  body.appendChild(btn("ebtn","LEGGI L'AFFERMAZIONE →",function(){S.cnsReveal=true;render();}));
+  var readHint=div("starter-hint");readHint.textContent=T("ui_giocatore")+(writerIdx+1)+T("ui_leggi_l_affermazione_all_altro");body.appendChild(readHint);
+  body.appendChild(btn("ebtn",T("ui_leggi_l_affermazione"),function(){S.cnsReveal=true;render();}));
  } else if(S.cnsGuess===null){
   // L'altro deve indovinare vero o falso
-  var guessHint=div("starter-hint");guessHint.textContent="Giocatore "+(guesserIdx+1)+": è vera o falsa?";body.appendChild(guessHint);
+  var guessHint=div("starter-hint");guessHint.textContent=T("ui_giocatore")+(guesserIdx+1)+T("ui_e_vera_o_falsa");body.appendChild(guessHint);
   var btnRow=div("");btnRow.style.cssText="display:flex;gap:12px;justify-content:center;margin-top:8px;";
-  btnRow.appendChild(btn("ebtn"," VERA",function(){S.cnsGuess="vera";render();}));
-  btnRow.appendChild(btn("ebtn out"," FALSA",function(){S.cnsGuess="falsa";render();}));
+  btnRow.appendChild(btn("ebtn",T("ui_vera"),function(){S.cnsGuess="vera";render();}));
+  btnRow.appendChild(btn("ebtn out",T("ui_falsa"),function(){S.cnsGuess="falsa";render();}));
   body.appendChild(btnRow);
  } else {
   // Mostra risposta
   var ansHint=div("starter-hint");
-  ansHint.textContent="Giocatore "+(writerIdx+1)+": era vera o falsa?";body.appendChild(ansHint);
+  ansHint.textContent=T("ui_giocatore")+(writerIdx+1)+T("ui_era_vera_o_falsa");body.appendChild(ansHint);
   var btnRow2=div("");btnRow2.style.cssText="display:flex;gap:12px;justify-content:center;margin-top:8px;flex-wrap:wrap;";
-  btnRow2.appendChild(btn("ebtn"," ERA VERA",function(){
+  btnRow2.appendChild(btn("ebtn",T("ui_era_vera"),function(){
    var correct=(S.cnsGuess==="vera");
    if(correct) S.cnsScore[guesserIdx]++;
    S.cnsIdx++;S.cnsGuess=null;S.cnsReveal=false;render();
   }));
-  btnRow2.appendChild(btn("ebtn out"," ERA FALSA",function(){
+  btnRow2.appendChild(btn("ebtn out",T("ui_era_falsa"),function(){
    var correct=(S.cnsGuess==="falsa");
    if(correct) S.cnsScore[guesserIdx]++;
    S.cnsIdx++;S.cnsGuess=null;S.cnsReveal=false;render();
   }));
   body.appendChild(btnRow2);
   var guessLabel=div("rtext");guessLabel.style.cssText="text-align:center;margin-top:12px;font-size:14px;opacity:0.7;";
-  guessLabel.textContent="La tua risposta: "+S.cnsGuess;body.appendChild(guessLabel);
+  guessLabel.textContent=T("ui_la_tua_risposta")+S.cnsGuess;body.appendChild(guessLabel);
  }
  document.getElementById("root").appendChild(wrap);
 }
@@ -2464,20 +3478,20 @@ function renderCnsEnd(){
  var cat=getCatById(S.cat);
  var wrap=div("intesa-wrap intesa-setup");
  var hdr=div("dhdr");hdr.style.background=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
- hdr.appendChild(div("dtitle","COSA NON SAI DI ME"));
+ hdr.appendChild(div("dtitle",T("ui_cosa_non_sai_di_me")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
- var title=div("rlabel");title.style.cssText="text-align:center;font-size:24px;margin:20px 0 8px;";title.textContent=" Fine del gioco!";body.appendChild(title);
+ var title=div("rlabel");title.style.cssText="text-align:center;font-size:24px;margin:20px 0 8px;";title.textContent=T("ui_fine_del_gioco_2");body.appendChild(title);
  var scores=S.cnsScore||[0,0];
- var s1=div("rtext");s1.style.cssText="text-align:center;font-size:20px;margin:8px 0;";s1.textContent="Giocatore 1: "+scores[0]+" / 5 indovinati";body.appendChild(s1);
- var s2=div("rtext");s2.style.cssText="text-align:center;font-size:20px;margin:8px 0;";s2.textContent="Giocatore 2: "+scores[1]+" / 5 indovinati";body.appendChild(s2);
+ var s1=div("rtext");s1.style.cssText="text-align:center;font-size:20px;margin:8px 0;";s1.textContent=T("ui_giocatore_1")+scores[0]+T("ui_5_indovinati");body.appendChild(s1);
+ var s2=div("rtext");s2.style.cssText="text-align:center;font-size:20px;margin:8px 0;";s2.textContent=T("ui_giocatore_2_2")+scores[1]+T("ui_5_indovinati");body.appendChild(s2);
  var winner;
- if(scores[0]>scores[1]) winner="Vince il Giocatore 1! ";
- else if(scores[1]>scores[0]) winner="Vince il Giocatore 2! ";
- else winner="Pareggio — vi conoscete benissimo! ";
+ if(scores[0]>scores[1]) winner=T("ui_vince_il_giocatore_1");
+ else if(scores[1]>scores[0]) winner=T("ui_vince_il_giocatore_2");
+ else winner=T("ui_pareggio_vi_conoscete_benissimo");
  var wDiv=div("rlabel");wDiv.style.cssText="text-align:center;margin:20px 0;font-size:18px;";wDiv.textContent=winner;body.appendChild(wDiv);
  var btns=div("");btns.style.cssText="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;";
- btns.appendChild(btn("ebtn","GIOCA ANCORA",function(){
+ btns.appendChild(btn("ebtn",T("ui_gioca_ancora_2"),function(){
   S.screen="cns_write";S.cnsPlayer=1;S.cnsItems=[["","","","",""],["","","","",""]];S.cnsIdx=0;S.cnsGuess=null;S.cnsReveal=false;S.cnsScore=[0,0];render();
  }));
  btns.appendChild(btn("ebtn out",T("exitBtn"),goHome));
@@ -2583,7 +3597,7 @@ document.getElementById("logoEl").addEventListener("click",function(){
 
  var btn = document.createElement('button');
  btn.id = 'chipaga-btn';
- btn.textContent = 'CHI PAGA IL CONTO';
+ btn.textContent = T("ui_chi_paga_il_conto");
  document.body.appendChild(btn);
 
  var ov = document.createElement('div');
@@ -2596,7 +3610,7 @@ document.getElementById("logoEl").addEventListener("click",function(){
 
  var hint = document.createElement('div');
  hint.id = 'chipaga-hint';
- hint.textContent = 'Appoggiate tutti un dito ';
+ hint.textContent = T("ui_appoggiate_tutti_un_dito");
  ov.appendChild(hint);
 
  var msg = document.createElement('div');
@@ -2633,7 +3647,7 @@ document.getElementById("logoEl").addEventListener("click",function(){
  touches = {};
  msg.style.opacity = 0;
  hint.style.opacity = 1;
- hint.textContent = 'Appoggiate tutti un dito ';
+ hint.textContent = T("ui_appoggiate_tutti_un_dito");
  ov.classList.add('active');
  }
 
@@ -2721,11 +3735,11 @@ document.getElementById("logoEl").addEventListener("click",function(){
  if(alive.length < 2) return;
  phase = 'countdown';
  var secs = 3;
- hint.textContent = 'Non alzate il dito... ' + secs;
+ hint.textContent = T("ui_non_alzate_il_dito") + secs;
  var iv = setInterval(function(){
  secs--;
  if(secs > 0){
- hint.textContent = 'Non alzate il dito... ' + secs;
+ hint.textContent = T("ui_non_alzate_il_dito") + secs;
  } else {
  clearInterval(iv);
  startElimination();
@@ -2760,10 +3774,10 @@ document.getElementById("logoEl").addEventListener("click",function(){
  t.el.style.transition = 'transform 0.4s cubic-bezier(.34,1.56,.64,1), box-shadow 0.4s';
  t.el.style.transform = 'translate(-50%,-50%) scale(1.7)';
  t.el.style.boxShadow = '0 8px 48px rgba(0,0,0,0.22)';
- msg.textContent = 'PAGA LUI!';
+ msg.textContent = T("ui_paga_lui");
  msg.style.opacity = 1;
  setTimeout(function(){
- hint.textContent = 'Tocca per chiudere';
+ hint.textContent = T("ui_tocca_per_chiudere");
  hint.style.opacity = 1;
  }, 800);
  }
@@ -2783,7 +3797,7 @@ document.getElementById("logoEl").addEventListener("click",function(){
  }
 
  var count = Object.keys(touches).filter(function(id){return touches[id].alive;}).length;
- hint.textContent = count < 2 ? 'Appoggiate anche gli altri ' : count + ' dita — pronti?';
+ hint.textContent = count < 2 ? T("ui_appoggiate_anche_gli_altri") : count + T("ui_dita_pronti");
  countdownTimer = setTimeout(startCountdown, 1200);
  }, {passive:false});
 
@@ -2806,7 +3820,7 @@ document.getElementById("logoEl").addEventListener("click",function(){
  delete touches[id];
  }
  var count = Object.keys(touches).filter(function(id){return touches[id] && touches[id].alive;}).length;
- hint.textContent = count === 0 ? 'Appoggiate tutti un dito ' : count < 2 ? 'Appoggiate anche gli altri ' : count + ' dita — pronti?';
+ hint.textContent = count === 0 ? T("ui_appoggiate_tutti_un_dito") : count < 2 ? T("ui_appoggiate_anche_gli_altri") : count + T("ui_dita_pronti");
  }, {passive:false});
 
  ov.addEventListener('touchcancel', function(e){
@@ -2875,10 +3889,10 @@ function showInviteBanner(inv, key){
  txt.style.cssText="flex:1;min-width:0;";
  var t1 = document.createElement("div");
  t1.style.cssText="font-size:13px;font-weight:600;color:#FF7A45;margin-bottom:2px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.3px;text-transform:uppercase;";
- t1.textContent="Sfida ricevuta";
+ t1.textContent=T("ui_sfida_ricevuta");
  var t2 = document.createElement("div");
  t2.style.cssText="font-size:15px;font-weight:500;color:#fff;line-height:1.3;";
- t2.textContent = (inv.from||"Qualcuno") + " vuole giocare a " + (inv.game||"un gioco");
+ t2.textContent = (inv.from||T("ui_qualcuno")) + T("ui_vuole_giocare_a") + (inv.game||T("ui_un_gioco"));
 
  txt.appendChild(t1);txt.appendChild(t2);
 
@@ -2887,7 +3901,7 @@ function showInviteBanner(inv, key){
  btns.style.cssText="display:flex;flex-direction:column;gap:6px;flex-shrink:0;";
 
  var acc = document.createElement("button");
- acc.textContent="Accetta";
+ acc.textContent=T("ui_accetta");
  acc.style.cssText="background:#FF7A45;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;";
  acc.onclick=function(){
   banner.remove();
@@ -2899,7 +3913,7 @@ function showInviteBanner(inv, key){
    var nick = S.qvMyName || FILOS_NAME || "Anonimo";
    S.qvMyName = nick;
    fbJoinRoom(inv.roomCode, function(ok, err){
-    if(!ok){ alert(" Stanza non trovata o scaduta."); S.screen="home"; render(); return; }
+    if(!ok){ alert(T("ui_stanza_non_trovata_o_scaduta")); S.screen="home"; render(); return; }
     try{ fbSet(fbRef(fbDB,'rooms/'+inv.roomCode+'/qv_players/'+nick), {joined:Date.now()}); }catch(e){}
     S.qvMode = 'distanza';
     S.screen = 'qv_setup';
@@ -2921,7 +3935,7 @@ function showInviteBanner(inv, key){
  };
 
  var ref = document.createElement("button");
- ref.textContent="Rifiuta";
+ ref.textContent=T("ui_rifiuta");
  ref.style.cssText="background:rgba(255,255,255,0.12);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;";
  ref.onclick=function(){
   banner.style.transform="translateX(-50%) translateY(-120%)";
@@ -3024,19 +4038,19 @@ function showChallengeModal(){
 
  var title=document.createElement("div");
  title.style.cssText="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:#111;margin-bottom:4px;";
- title.textContent="Sfida un altro tavolo";
+ title.textContent=T("ui_sfida_un_altro_tavolo");
  var sub=document.createElement("div");
  sub.style.cssText="font-size:14px;color:#8E8E93;margin-bottom:20px;";
- sub.textContent="Scegli un gioco — gli altri riceveranno la notifica.";
+ sub.textContent=T("ui_scegli_un_gioco_gli_altri");
 
  sheet.appendChild(title);sheet.appendChild(sub);
 
  // Giochi rapidi da sfidare
  var games=[
-  {name:"Con gli amici",cat:"amici"},
-  {name:"In coppia",cat:"coppia"},
-  {name:"Indovinelli",cat:"ndovinelli"},
-  {name:"Azione",cat:"azione"},
+  {name:T("ui_con_gli_amici"),cat:"amici"},
+  {name:T("ui_in_coppia"),cat:"coppia"},
+  {name:T("ui_indovinelli"),cat:"indovinelli"},
+  {name:T("ui_azione"),cat:"azione"},
  ];
  games.forEach(function(g){
   var row=document.createElement("button");
@@ -3048,7 +4062,7 @@ function showChallengeModal(){
    // Feedback visivo
    var toast=document.createElement("div");
    toast.style.cssText="position:fixed;bottom:40px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:12px;padding:12px 20px;font-size:15px;font-weight:600;z-index:9999;font-family:'Space Grotesk',sans-serif;";
-   toast.textContent="Invito inviato a tutti i tavoli!";
+   toast.textContent=T("ui_invito_inviato_a_tutti_i");
    document.body.appendChild(toast);
    setTimeout(function(){if(toast.parentNode)toast.remove();},2500);
   };
@@ -3057,7 +4071,7 @@ function showChallengeModal(){
 
  var cancel=document.createElement("button");
  cancel.style.cssText="width:100%;background:transparent;border:none;padding:14px;font-size:16px;color:#8E8E93;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:4px;";
- cancel.textContent="Annulla";
+ cancel.textContent=T("ui_annulla");
  cancel.onclick=function(){ov.remove();};
  sheet.appendChild(cancel);
 
@@ -3073,11 +4087,9 @@ function showChallengeModal(){
 (function alignGames(){
  var MAP={
   en:{amici:{"THE TRAITOR":"IL TRADITORE","YES, NO, NOT":"SÌ, NO, NON","WHO AM I?":"CHI SONO IO?","COUNT TO 21":"CONTARE FINO A 21","SYNC":"SINCRONIA","SHE'S A 10 BUT...":"E UN 10 MA...","POINT THE FINGER":"PUNTA IL DITO","FIND THE LIE":"TROVA LA BUGIA","THE WHISPER":"IL SUSSURRO"},
-      bambini:{"MY NAME AND I LIKE...":"MI CHIAMO E MI PIACE...","SCALE OF 1 TO 10":"SCALA DA 1 A 10","TWO TRUTHS AND A LIE":"DUE VERITÀ E UNA BUGIA","THE WIZARD":"IL MAGO","DREAM TRIP":"IL VIAGGIO DEI SOGNI","THE FIRST TIME...":"LA PRIMA VOLTA CHE...","IF I WERE...":"SE FOSSI...","THE QUESTION GAME":"IL GIOCO DELLE DOMANDE","THE PERFECT YEAR":"L'ANNO PERFETTO","LIGHT CONFESSIONS":"CONFESSIONI LEGGERE","THE FILM OF YOUR LIFE":"IL FILM DELLA TUA VITA","FAST LISTS":"LISTE VELOCI","THE MUSEUM OF YOUR LIFE":"IL MUSEO DELLA TUA VITA","THE QUESTIONS THAT MATTER":"LE DOMANDE CHE CONTANO","THE COMPLIMENT I HAVEN'T GIVEN YET":"IL COMPLIMENTO CHE NON HO ANCORA FATTO"},
       azione:{"FREEZE!":"FREEZE!","COUNT TO 21":"CONTARE FINO A 21","HUMAN KNOT":"IL NODO UMANO","THE VOICE ACTOR":"IL DOPPIATORE","DOMINO EFFECT":"EFFETTO DOMINO"},
       adulti:{"WHO'S MORE LIKELY?":"CHI È PIÙ PROBABILE?","THE WHISPER":"IL SUSSURRO","THE TRIAL":"IL PROCESSO","SPICY SCALE":"SCALA PICCANTE","EMBARRASSOMETER":"IMBARAZZOMETRO","FIRSTS AND LASTS":"PRIMI E ULTIMI"}},
   es:{amici:{"EL TRAIDOR":"IL TRADITORE","SÍ, NO, TAMPOCO":"SÌ, NO, NON","¿QUIÉN SOY?":"CHI SONO IO?","CONTAR HASTA 21":"CONTARE FINO A 21","SINCRONÍA":"SINCRONIA","ES UN 10 PERO...":"E UN 10 MA...","SEÑALA CON EL DEDO":"PUNTA IL DITO","ENCUENTRA LA MENTIRA":"TROVA LA BUGIA","OPINIONES POLÉMICAS":"HOT TAKES","EL SUSURRO":"IL SUSSURRO","COARTADA":"ALIBI"},
-      bambini:{"ME LLAMO Y ME GUSTA...":"MI CHIAMO E MI PIACE...","ESCALA DEL 1 AL 10":"SCALA DA 1 A 10","DOS VERDADES Y UNA MENTIRA":"DUE VERITÀ E UNA BUGIA","EL MAGO":"IL MAGO","EL VIAJE DE LOS SUEÑOS":"IL VIAGGIO DEI SOGNI","LA PRIMERA VEZ QUE...":"LA PRIMA VOLTA CHE...","SI FUERA...":"SE FOSSI...","EL JUEGO DE LAS PREGUNTAS":"IL GIOCO DELLE DOMANDE","EL AÑO PERFECTO":"L'ANNO PERFETTO","CONFESIONES LIGERAS":"CONFESSIONI LEGGERE","LA PELÍCULA DE TU VIDA":"IL FILM DELLA TUA VITA","LISTAS RÁPIDAS":"LISTE VELOCI","EL MUSEO DE TU VIDA":"IL MUSEO DELLA TUA VITA","LAS PREGUNTAS QUE IMPORTAN":"LE DOMANDE CHE CONTANO","EL CUMPLIDO QUE NO HE DADO AÚN":"IL COMPLIMENTO CHE NON HO ANCORA FATTO"},
       azione:{"¡FREEZE!":"FREEZE!","CONTAR HASTA 21":"CONTARE FINO A 21","EL NUDO HUMANO":"IL NODO UMANO","EL DOBLADOR":"IL DOPPIATORE","TOCA EL AZUL":"TOUCH BLUE","EFECTO DOMINÓ":"EFFETTO DOMINO"},
       adulti:{"¿QUIÉN ES MÁS PROBABLE?":"CHI È PIÙ PROBABILE?","EL SUSURRO":"IL SUSSURRO","VERDAD O BEBER":"TRUTH OR DRINK","EL JUICIO":"IL PROCESSO","CONFESIONES ANÓNIMAS":"CONFESSIONI ANONIME","ESCALA PICANTE":"SCALA PICCANTE","OPINIONES POLÉMICAS":"HOT TAKES","EMBARAZÓMETRO":"IMBARAZZOMETRO","PRIMEROS Y ÚLTIMOS":"PRIMI E ULTIMI"}}
  };

@@ -88,6 +88,8 @@ function getCatById(id){for(var i=0;i<CATS.length;i++){if(CATS[i].id===id)return
 // Lista giochi della lingua attiva (ricade sull'italiano se manca la traduzione della categoria)
 function gameTable(){var t=(LANG==="en"&&typeof GAMES_EN!=="undefined")?GAMES_EN:(LANG==="es"&&typeof GAMES_ES!=="undefined")?GAMES_ES:null;return (t&&S.cat&&t[S.cat])?t:GAMES;}
 // Gioco selezionato: S.game è la posizione nella lista completa della lingua attiva
+// Domande di ANNO GIUSTO nella lingua attiva
+function agData(){return (LANG==="en"&&typeof ANNO_GIUSTO_DATA_EN!=="undefined")?ANNO_GIUSTO_DATA_EN:(LANG==="es"&&typeof ANNO_GIUSTO_DATA_ES!=="undefined")?ANNO_GIUSTO_DATA_ES:ANNO_GIUSTO_DATA;}
 function curGame(){if(S.game===null||S.game===undefined||!S.cat)return null;var l=gameTable()[S.cat]||[];return l[S.game]||null;}
 function resetIdle(){clearTimeout(idleTimer);if(S.screen==="home"||S.screen==="onboarding")return;idleTimer=setTimeout(function(){S.screen="home";S.cat=null;S.game=null;render();},IDLE_MS);}
 document.addEventListener("touchstart",resetIdle);
@@ -212,9 +214,9 @@ function renderOnboarding(){
  // Titolo
  var hd=div("");
  hd.style.cssText="text-align:center;margin-bottom:36px;";
- var h1=el("h1","","Come ti fai chiamare?");
+ var h1=el("h1","",T("ui_come_ti_fai_chiamare"));
  h1.style.cssText="font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.6px;line-height:1.2;margin-bottom:10px;color:#111;";
- var sub=div("","Gli altri tavoli ti vedranno con questo nome.");
+ var sub=div("",T("ui_gli_altri_tavoli_ti_vedranno"));
  sub.style.cssText="font-size:15px;color:#8E8E93;line-height:1.55;";
  hd.appendChild(h1);hd.appendChild(sub);
  wrap.appendChild(hd);
@@ -228,7 +230,7 @@ function renderOnboarding(){
  icon.style.cssText="flex-shrink:0;color:#FF7A45;display:flex;align-items:center;";
  icon.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="8" r="4.5" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8" opacity="0.5"/><path d="M1 17c0-3 3.5-5 8-5s8 2 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/><path d="M13.5 12.5c2 .3 4 1.5 4 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
  var inp=el("input","");
- inp.type="text";inp.placeholder="Il tuo nome o soprannome";inp.maxLength=24;
+ inp.type="text";inp.placeholder=T("ui_il_tuo_nome_o_soprannome");inp.maxLength=24;
  inp.autocomplete="off";inp.autocorrect="off";inp.spellcheck=false;
  if(_savedName){inp.value=_savedName;}
  inp.style.cssText="flex:1;border:none;outline:none;background:transparent;font-size:17px;font-family:'DM Sans',sans-serif;color:#111;padding:14px 0;-webkit-appearance:none;";
@@ -237,7 +239,7 @@ function renderOnboarding(){
  wrap.appendChild(inputWrap);
 
  // Bottone
- var startBtn=btn("splash-btn","Inizia a giocare",function(){
+ var startBtn=btn("splash-btn",T("ui_inizia_a_giocare"),function(){
   var name=inp.value.trim();
   if(name.length<2)return;
   try{localStorage.setItem("filos_player_name",name);}catch(e){}
@@ -257,7 +259,7 @@ function renderOnboarding(){
  inp.addEventListener("keydown",function(e){if(e.key==="Enter")startBtn.click();});
 
  wrap.appendChild(startBtn);
- var note=div("",_savedName?"Puoi cambiare il tuo nome o confermare quello precedente.":"Il nome verrà chiesto ogni volta che apri l'app.");
+ var note=div("",_savedName?T("ui_puoi_cambiare_il_tuo_nome"):T("ui_il_nome_verra_chiesto_ogni"));
  note.style.cssText="margin-top:18px;font-size:13px;color:#8E8E93;line-height:1.5;text-align:center;max-width:310px;";
  wrap.appendChild(note);
  root.appendChild(wrap);
@@ -322,7 +324,7 @@ function renderGames(){
  
  if(S.cat==="bambini"){
  var bfrow=div("filter-row");
- [["gruppo","ROMPIGHIACCIO"],["coppia","PRIMO APPUNTAMENTO"]].forEach(function(f){
+ [["gruppo",T("ui_rompighiaccio")],["coppia",T("ui_primo_appuntamento")]].forEach(function(f){
  var t=div("ftag "+(S.bFilter===f[0]?"on":""));t.textContent=f[1];t.onclick=function(){S.bFilter=f[0];render();};bfrow.appendChild(t);
  });
  panel.appendChild(bfrow);
@@ -343,7 +345,7 @@ function renderGames(){
  var stars=diff==="facile"?"\u2605":diff==="media"?"\u2605\u2605":"\u2605\u2605\u2605";
  var row=div("grow");var info=div("");
  var q=r.q.length>70?r.q.substring(0,70)+"...":r.q;
- info.appendChild(div("gn",q));info.appendChild(div("gm","indovinello "+stars));
+ info.appendChild(div("gn",q));info.appendChild(div("gm",T("ui_indovinello")+stars));
  row.appendChild(info);row.appendChild(div("garr","\u2192"));
  row.onclick=(function(d,ri2){return function(){S.rDiff=d;S.rIdx=ri2;S.curRiddle=RIDDLES[d][ri2];logPlay("indovinelli",q.substring(0,30));S.screen="riddle";render();};})(diff,ri);
  list.appendChild(row);
@@ -370,7 +372,7 @@ function renderGames(){
  var row=div("grow");var info=div("");
  var nameWrap=div("gn");nameWrap.textContent=g.name;
  if(g.hot)nameWrap.appendChild(el("span","gbadge hot","TREND"));
- if(g.isnew)nameWrap.appendChild(el("span","gbadge new","\u2605 NUOVO"));
+ if(g.isnew)nameWrap.appendChild(el("span","gbadge new",T("ui_nuovo")));
  info.appendChild(nameWrap);info.appendChild(div("gm",g.players+" "+T("players")+" \u00b7 "+g.time));
  row.appendChild(info);row.appendChild(div("garr","\u2192"));
  row.onclick=(function(i2){return function(){
@@ -488,7 +490,7 @@ function renderRiddle(){
  hdr.appendChild(el("span","dbadge",stars));
  hdr.appendChild(div("riddle-q",r.q));
  var body=div("dbody");card.appendChild(body);
- var revBtn=btn("reveal-btn",S.revealed[key]?"NASCONDI \u25b2":T("revealAnswer"),function(){S.revealed[key]=!S.revealed[key];renderRiddle();});
+ var revBtn=btn("reveal-btn",S.revealed[key]?T("ui_nascondi"):T("revealAnswer"),function(){S.revealed[key]=!S.revealed[key];renderRiddle();});
  body.appendChild(revBtn);
  if(S.revealed[key])body.appendChild(div("riddle-ans",r.a));
  var ew=div("");ew.style.cssText="text-align:center;margin-top:24px;";
@@ -542,7 +544,7 @@ function makeStepperWidget(initVal, minVal, maxVal, onConfirm){
 
  var hint = document.createElement('div');
  hint.style.cssText = 'font-size:12px;color:var(--muted);';
- hint.textContent = minVal ? 'minimo '+minVal+(maxVal?' · massimo '+maxVal:'') : '';
+ hint.textContent = minVal ? T("ui_minimo")+minVal+(maxVal?T("ui_massimo")+maxVal:'') : '';
  if(hint.textContent) wrap.appendChild(hint);
 
  refresh();
@@ -560,7 +562,7 @@ function makeNumPadWidget(initVal, minVal, maxVal, onConfirm){
 
  var hint = document.createElement('div');
  hint.style.cssText = 'font-size:12px;color:var(--muted);';
- hint.textContent = minVal ? 'minimo '+minVal+(maxVal?' · massimo '+maxVal:'') : '';
+ hint.textContent = minVal ? T("ui_minimo")+minVal+(maxVal?T("ui_massimo")+maxVal:'') : '';
 
  var pad = document.createElement('div');
  pad.style.cssText = 'display:grid;grid-template-columns:repeat(3,1fr);gap:8px;';
@@ -597,7 +599,7 @@ function makeNumPadWidget(initVal, minVal, maxVal, onConfirm){
 
  var confBtn = document.createElement('button');
  confBtn.style.cssText = 'margin-top:4px;padding:14px 40px;background:var(--dark);color:#fff;border:none;border-radius:50px;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;width:100%;';
- confBtn.textContent = 'CONFERMA ';
+ confBtn.textContent = T("ui_conferma");
  confBtn.onclick = function(){ if(current>=minVal&&(maxVal===0||current<=maxVal)) onConfirm(current); };
 
  wrap.appendChild(display);
@@ -644,7 +646,7 @@ function renderMrWhiteSetup(){
  stepper.appendChild(minusBtn);stepper.appendChild(numDisp);stepper.appendChild(plusBtn);
  wrap.appendChild(stepper);
 
- wrap.appendChild(btn("ebtn","INIZIA",function(){S.screen="mrwhite";startMrWhite(S.mwNumPlayers);}));
+ wrap.appendChild(btn("ebtn",T("ui_inizia"),function(){S.screen="mrwhite";startMrWhite(S.mwNumPlayers);}));
  wrap.appendChild(btn("ebtn out",T("backToGames"),goBackToGames));
  document.getElementById("root").appendChild(wrap);
 }
@@ -660,15 +662,15 @@ function renderMrWhite(){
  var overlay=div("mw-reveal-screen");
  var isWhite=(S.mwRevealing===S.mwWhiteIdx);
  if(isWhite){
- overlay.appendChild(div("mw-reveal-msg","Sei MR. WHITE "));
+ overlay.appendChild(div("mw-reveal-msg",T("ui_sei_mr_white")));
  overlay.appendChild(div("mw-reveal-word",S.mwSimilar));
  overlay.appendChild(div("mw-reveal-sub",T("mrWhiteBluff")));
  } else {
  overlay.appendChild(div("mw-reveal-msg",T("mrWhiteYourWord")));
  overlay.appendChild(div("mw-reveal-word",S.mwWord));
- overlay.appendChild(div("mw-reveal-sub","Ricordatela. Non mostrarla agli altri."));
+ overlay.appendChild(div("mw-reveal-sub",T("ui_ricordatela_non_mostrarla_agli_altri")));
  }
- var closeBtn=btn("mw-reveal-btn","HO VISTO ",function(){
+ var closeBtn=btn("mw-reveal-btn",T("ui_ho_visto"),function(){
  S.mwSeen.push(S.mwRevealing);
  S.mwRevealing=-1;
  render();
@@ -697,7 +699,7 @@ function renderMrWhite(){
  (function(idx){
  var seen=S.mwSeen.indexOf(idx)>=0;
  var pb=div("mw-player-btn"+(seen?" seen":""));
- pb.innerHTML=seen?"<span>"+T("mrWhitePlayer")+(idx+1)+"</span><span> Visto</span>":"<span>"+T("mrWhitePlayer")+(idx+1)+"</span><span>"+T("mrWhiteLookWord")+"</span>";
+ pb.innerHTML=seen?"<span>"+T("mrWhitePlayer")+(idx+1)+T("ui_visto"):"<span>"+T("mrWhitePlayer")+(idx+1)+"</span><span>"+T("mrWhiteLookWord")+"</span>";
  if(!seen){pb.onclick=function(){S.mwRevealing=idx;render();};}
  playerList.appendChild(pb);
  })(i);
@@ -769,9 +771,9 @@ function renderIntesaSetup(){
 
  var grid=div("intesa-level-grid");
  var levels=[
- {id:"facile",name:"FACILE",desc:"Parole di tutti i giorni",stars:"",cls:"il-facile"},
- {id:"media",name:"MEDIA",desc:T("intesaHard"),stars:"",cls:"il-media"},
- {id:"difficile",name:"DIFFICILE",desc:"Solo per coraggiosi",stars:"",cls:"il-difficile"}
+ {id:"facile",name:T("ui_facile"),desc:T("ui_parole_di_tutti_i_giorni"),stars:"",cls:"il-facile"},
+ {id:"media",name:T("ui_media"),desc:T("intesaHard"),stars:"",cls:"il-media"},
+ {id:"difficile",name:T("ui_difficile"),desc:T("ui_solo_per_coraggiosi"),stars:"",cls:"il-difficile"}
  ];
  for(var i=0;i<levels.length;i++){
  (function(lv){
@@ -822,7 +824,7 @@ function renderIntesa(){
 
  var currentWord=S.intesaWords[S.intesaIdx]||"—";
  var wword=div("intesa-word");wword.textContent=currentWord;warea.appendChild(wword);
- var wnum=div("intesa-word-num");wnum.textContent=T("intesaWord")+(S.intesaIdx+1)+" di "+S.intesaWords.length;warea.appendChild(wnum);
+ var wnum=div("intesa-word-num");wnum.textContent=T("intesaWord")+(S.intesaIdx+1)+T("ui_di")+S.intesaWords.length;warea.appendChild(wnum);
  wcard.appendChild(warea);
 
  // Controls
@@ -845,11 +847,11 @@ function renderIntesa(){
  if(ww)ww.textContent=S.intesaWords[S.intesaIdx];
  else render();
  var wn=document.getElementById("intesaWordNum");
- if(wn)wn.textContent=T("intesaWord")+(S.intesaIdx+1)+" di "+S.intesaWords.length;
+ if(wn)wn.textContent=T("intesaWord")+(S.intesaIdx+1)+T("ui_di")+S.intesaWords.length;
  var snn=document.getElementById("intesaScoreNum");
  if(snn)snn.textContent=S.intesaScore;
  });
- var skipBtn=btn("ebtn out"," PASSA",function(){
+ var skipBtn=btn("ebtn out",T("ui_passa"),function(){
  S.intesaIdx++;
  if(S.intesaIdx>=S.intesaWords.length){
  clearInterval(intesaInterval);
@@ -884,8 +886,8 @@ function renderIntesaEnd(){
  addBackArrow(goBackToGames);
  if(intesaInterval){clearInterval(intesaInterval);}
  var wrap=div("intesa-wrap");wrap.style.textAlign="center";
-  var title=div("end-title","TEMPO!");wrap.appendChild(title);
- var sub=div("end-sub",T("intesaGuessedN")+S.intesaScore+" parole su "+S.intesaIdx+T("intesaLevelOf")+S.intesaLevel.toUpperCase());wrap.appendChild(sub);
+  var title=div("end-title",T("ui_tempo"));wrap.appendChild(title);
+ var sub=div("end-sub",T("intesaGuessedN")+S.intesaScore+T("ui_parole_su")+S.intesaIdx+T("intesaLevelOf")+S.intesaLevel.toUpperCase());wrap.appendChild(sub);
 
  // Score
  var sb=div("intesa-score-board");sb.style.maxWidth="400px";sb.style.margin="24px auto";
@@ -961,7 +963,7 @@ function renderAlfaSetup(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backBtn"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","CACCIA ALL'OGGETTO"));
+ hdr.appendChild(div("dtitle",T("ui_caccia_all_oggetto")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  body.appendChild(div("rlabel",T("howMany")));
@@ -1057,12 +1059,12 @@ function renderAlfabeto(){
  // Buttons
  var btns=div("endbtns");
  if(!S.alfaRunning){
- btns.appendChild(btn("ebtn"," VIA!",function(){startAlfaTimer();}));
+ btns.appendChild(btn("ebtn",T("ui_via"),function(){startAlfaTimer();}));
  } else {
  // Point buttons for each player
  players.forEach(function(p){
  (function(player){
- var pb=btn("ebtn"," "+player+" HA TROVATO!",function(){
+ var pb=btn("ebtn"," "+player+T("ui_ha_trovato"),function(){
  if(alfaInterval){clearInterval(alfaInterval);}
  S.alfaRunning=false;
  S.alfaScores[player]++;
@@ -1283,7 +1285,7 @@ function renderDadoSetup(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backBtn"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- var gObjCur=curGame()||{};hdr.appendChild(div("dtitle",gObjCur.name||"FIFTEEN"));
+ var gObjCur=curGame()||{};hdr.appendChild(div("dtitle",gObjCur.name||T("ui_fifteen")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  var gObjR=curGame()||{};
@@ -1546,7 +1548,7 @@ function renderCodice(){
  S.codicePlayers.forEach(function(name,pi){
  if(name===currentName)return; // skip self
  var pcard=div("codice-player-card"+(S.codiceWaiting&&S.codiceQuestion&&S.codiceQuestion.target===name?" current":""));
- var h4=document.createElement("h4");h4.textContent=name+"'s codice";pcard.appendChild(h4);
+ var h4=document.createElement("h4");h4.textContent=name+T("ui_s_codice");pcard.appendChild(h4);
 
  // Known slots
  var knownDiv=div("codice-known");
@@ -1591,11 +1593,11 @@ function renderCodice(){
  if(S.codiceWaiting&&S.codiceQuestion){
  var q=S.codiceQuestion;
  var qbox=div("dado-turn");
- qbox.innerHTML="<strong>"+q.asker+"</strong> chiede a <strong>"+q.target+"</strong>: hai il <strong>"+q.number+"</strong> nel tuo codice?";
+ qbox.innerHTML="<strong>"+q.asker+T("ui_chiede_a")+q.target+T("ui_hai_il")+q.number+T("ui_nel_tuo_codice");
  wrap.appendChild(qbox);
 
  var ansDiv=div("codice-answer-btns");
- ansDiv.appendChild(btn("ebtn"," SÌ, ce l'ho",function(){
+ ansDiv.appendChild(btn("ebtn",T("ui_si_ce_l_ho"),function(){
  // Add to found
  if(S.codiceFound[q.target].indexOf(q.number)<0)
  S.codiceFound[q.target].push(q.number);
@@ -1609,7 +1611,7 @@ function renderCodice(){
  // Same player gets another turn on correct answer
  render();
  }));
- ansDiv.appendChild(btn("ebtn out"," NO, non ce l'ho",function(){
+ ansDiv.appendChild(btn("ebtn out",T("ui_no_non_ce_l_ho"),function(){
  if(S.codiceAsked[q.target].indexOf(q.number)<0)
  S.codiceAsked[q.target].push(q.number);
  S.codiceQuestion=null;S.codiceWaiting=false;
@@ -1723,7 +1725,7 @@ function renderPub(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.pubTime!==undefined?S.pubTime:120;
  var running=S.pubRunning||false;
- var gameName=(curGame()||{}).name||"PUBBLICITA ASSURDA";
+ var gameName=(curGame()||{}).name||T("ui_pubblicita_assurda");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -1738,7 +1740,7 @@ function renderPub(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","2 minuti per convincere tutti "));
+ hdr.appendChild(div("intesa-desc",T("ui_2_minuti_per_convincere_tutti")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -1755,22 +1757,22 @@ function renderPub(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Presenta il tuo prodotto assurdo come uno spot vero: nome, slogan e perché comprarlo!";
+ rule.textContent=T("ui_presenta_il_tuo_prodotto_assurdo");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#388E3C;text-align:center;";
-  scaduto.textContent=" Votate lo spot migliore!";
+  scaduto.textContent=T("ui_votate_lo_spot_migliore");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_pubTimer){clearInterval(_pubTimer);_pubTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn","↺ PROSSIMO GIOCATORE",function(){
+  var riBtn=btn("ebtn",T("ui_prossimo_giocatore"),function(){
    S.pubTime=120;S.pubRunning=false;renderPub();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===120?" INIZIA LO SPOT":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===120?T("ui_inizia_lo_spot"):T("ui_riprendi"),function(){
    S.pubRunning=true;
    _pubTimer=setInterval(function(){
     S.pubTime=(S.pubTime||1)-1;
@@ -1781,13 +1783,13 @@ function renderPub(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<120){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_pubTimer){clearInterval(_pubTimer);_pubTimer=null;}
     S.pubTime=120;S.pubRunning=false;renderPub();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.pubRunning=false;
    if(_pubTimer){clearInterval(_pubTimer);_pubTimer=null;}
    renderPub();
@@ -1803,7 +1805,7 @@ function renderRobot(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.robotTime!==undefined?S.robotTime:120;
  var running=S.robotRunning||false;
- var gameName=(curGame()||{}).name||"IL ROBOT";
+ var gameName=(curGame()||{}).name||T("ui_il_robot");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -1818,7 +1820,7 @@ function renderRobot(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","2 minuti per completare la missione "));
+ hdr.appendChild(div("intesa-desc",T("ui_2_minuti_per_completare_la")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -1835,22 +1837,22 @@ function renderRobot(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Il programmatore dà comandi precisi, il robot esegue alla lettera. Allo scadere si scambiano i ruoli!";
+ rule.textContent=T("ui_il_programmatore_da_comandi_precisi");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#388E3C;text-align:center;";
-  scaduto.textContent=" Cambiate ruolo!";
+  scaduto.textContent=T("ui_cambiate_ruolo");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_robotTimer){clearInterval(_robotTimer);_robotTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn","↺ NUOVO TURNO",function(){
+  var riBtn=btn("ebtn",T("ui_nuovo_turno"),function(){
    S.robotTime=120;S.robotRunning=false;renderRobot();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===120?" INIZIA IL TURNO":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===120?T("ui_inizia_il_turno"):T("ui_riprendi"),function(){
    S.robotRunning=true;
    _robotTimer=setInterval(function(){
     S.robotTime=(S.robotTime||1)-1;
@@ -1861,13 +1863,13 @@ function renderRobot(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<120){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_robotTimer){clearInterval(_robotTimer);_robotTimer=null;}
     S.robotTime=120;S.robotRunning=false;renderRobot();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.robotRunning=false;
    if(_robotTimer){clearInterval(_robotTimer);_robotTimer=null;}
    renderRobot();
@@ -1884,7 +1886,7 @@ function renderSpecchio(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.specTime!==undefined?S.specTime:120;
  var running=S.specRunning||false;
- var gameName=(curGame()||{}).name||"SPECCHIO";
+ var gameName=(curGame()||{}).name||T("ui_specchio");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -1899,7 +1901,7 @@ function renderSpecchio(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","2 minuti come riflesso, poi si scambiano "));
+ hdr.appendChild(div("intesa-desc",T("ui_2_minuti_come_riflesso_poi")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -1916,22 +1918,22 @@ function renderSpecchio(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Uno guida, l'altro imita ogni movimento come uno specchio. Allo scadere si scambiano i ruoli!";
+ rule.textContent=T("ui_uno_guida_l_altro_imita");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#00838F;text-align:center;";
-  scaduto.textContent=" Scambiate i ruoli!";
+  scaduto.textContent=T("ui_scambiate_i_ruoli");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_specTimer){clearInterval(_specTimer);_specTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn","↺ NUOVO TURNO",function(){
+  var riBtn=btn("ebtn",T("ui_nuovo_turno"),function(){
    S.specTime=120;S.specRunning=false;renderSpecchio();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===120?" INIZIA IL TURNO":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===120?T("ui_inizia_il_turno"):T("ui_riprendi"),function(){
    S.specRunning=true;
    _specTimer=setInterval(function(){
     S.specTime=(S.specTime||1)-1;
@@ -1942,13 +1944,13 @@ function renderSpecchio(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<120){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_specTimer){clearInterval(_specTimer);_specTimer=null;}
     S.specTime=120;S.specRunning=false;renderSpecchio();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.specRunning=false;
    if(_specTimer){clearInterval(_specTimer);_specTimer=null;}
    renderSpecchio();
@@ -1966,7 +1968,7 @@ function renderScultura(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.sculTime!==undefined?S.sculTime:60;
  var running=S.sculRunning||false;
- var gameName=(curGame()||{}).name||"SCULTURA UMANA";
+ var gameName=(curGame()||{}).name||T("ui_scultura_umana");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -1981,7 +1983,7 @@ function renderScultura(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","1 minuto per indovinare la scena "));
+ hdr.appendChild(div("intesa-desc",T("ui_1_minuto_per_indovinare_la")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -1996,22 +1998,22 @@ function renderScultura(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Le statue non possono muoversi né parlare. Il pubblico indovina la scena entro il tempo!";
+ rule.textContent=T("ui_le_statue_non_possono_muoversi");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#5E35B1;text-align:center;";
-  scaduto.textContent=" Tempo! Rivelate la scena!";
+  scaduto.textContent=T("ui_tempo_rivelate_la_scena");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_sculTimer){clearInterval(_sculTimer);_sculTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn"," PROSSIMO SCULTORE",function(){
+  var riBtn=btn("ebtn",T("ui_prossimo_scultore"),function(){
    S.sculTime=60;S.sculRunning=false;renderScultura();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===60?" INIZIA IL TIMER":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===60?T("ui_inizia_il_timer"):T("ui_riprendi"),function(){
    S.sculRunning=true;
    _sculTimer=setInterval(function(){
     S.sculTime=(S.sculTime||1)-1;
@@ -2022,13 +2024,13 @@ function renderScultura(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<60){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_sculTimer){clearInterval(_sculTimer);_sculTimer=null;}
     S.sculTime=60;S.sculRunning=false;renderScultura();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.sculRunning=false;
    if(_sculTimer){clearInterval(_sculTimer);_sculTimer=null;}
    renderScultura();
@@ -2046,7 +2048,7 @@ function renderMimo(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.mimoTime!==undefined?S.mimoTime:180;
  var running=S.mimoRunning||false;
- var gameName=(curGame()||{}).name||"IL MIMO";
+ var gameName=(curGame()||{}).name||T("ui_il_mimo");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -2061,7 +2063,7 @@ function renderMimo(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","3 minuti per far indovinare la squadra "));
+ hdr.appendChild(div("intesa-desc",T("ui_3_minuti_per_far_indovinare")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2078,22 +2080,22 @@ function renderMimo(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Mima senza parlare, fare suoni né indicare oggetti. La tua squadra deve indovinare il titolo in tempo!";
+ rule.textContent=T("ui_mima_senza_parlare_fare_suoni");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#1565C0;text-align:center;";
-  scaduto.textContent=" Tempo! Prossimo giocatore!";
+  scaduto.textContent=T("ui_tempo_prossimo_giocatore");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_mimoTimer){clearInterval(_mimoTimer);_mimoTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn"," PROSSIMO MIMO",function(){
+  var riBtn=btn("ebtn",T("ui_prossimo_mimo"),function(){
    S.mimoTime=180;S.mimoRunning=false;renderMimo();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===180?" INIZIA IL MIMO":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===180?T("ui_inizia_il_mimo"):T("ui_riprendi"),function(){
    S.mimoRunning=true;
    _mimoTimer=setInterval(function(){
     S.mimoTime=(S.mimoTime||1)-1;
@@ -2104,13 +2106,13 @@ function renderMimo(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<180){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_mimoTimer){clearInterval(_mimoTimer);_mimoTimer=null;}
     S.mimoTime=180;S.mimoRunning=false;renderMimo();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.mimoRunning=false;
    if(_mimoTimer){clearInterval(_mimoTimer);_mimoTimer=null;}
    renderMimo();
@@ -2128,7 +2130,7 @@ function renderSoprannome(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.sopTime!==undefined?S.sopTime:300;
  var running=S.sopRunning||false;
- var gameName=(curGame()||{}).name||"IL SOPRANNOME";
+ var gameName=(curGame()||{}).name||T("ui_il_soprannome");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -2143,7 +2145,7 @@ function renderSoprannome(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","5 minuti di conversazione libera "));
+ hdr.appendChild(div("intesa-desc",T("ui_5_minuti_di_conversazione_libera")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2160,22 +2162,22 @@ function renderSoprannome(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Chiacchierate liberamente. Allo scadere del timer, ognuno assegna un soprannome alla persona alla sua destra e si rivelano tutti insieme!";
+ rule.textContent=T("ui_chiacchierate_liberamente_allo_scadere_del");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#6a1b9a;text-align:center;";
-  scaduto.textContent=" Tempo! Rivelate i soprannomi!";
+  scaduto.textContent=T("ui_tempo_rivelate_i_soprannomi");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_sopTimer){clearInterval(_sopTimer);_sopTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn","↺ NUOVO GIRO",function(){
+  var riBtn=btn("ebtn",T("ui_nuovo_giro"),function(){
    S.sopTime=300;S.sopRunning=false;renderSoprannome();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===300?" INIZIA LA CONVERSAZIONE":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===300?T("ui_inizia_la_conversazione"):T("ui_riprendi"),function(){
    S.sopRunning=true;
    _sopTimer=setInterval(function(){
     S.sopTime=(S.sopTime||1)-1;
@@ -2186,13 +2188,13 @@ function renderSoprannome(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<300){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_sopTimer){clearInterval(_sopTimer);_sopTimer=null;}
     S.sopTime=300;S.sopRunning=false;renderSoprannome();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.sopRunning=false;
    if(_sopTimer){clearInterval(_sopTimer);_sopTimer=null;}
    renderSoprannome();
@@ -2214,7 +2216,7 @@ function renderCosaInComune(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.cicTime!==undefined?S.cicTime:240;
  var running=S.cicRunning||false;
- var gameName=(curGame()||{}).name||"COSA HAI IN COMUNE?";
+ var gameName=(curGame()||{}).name||T("ui_cosa_hai_in_comune");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -2229,7 +2231,7 @@ function renderCosaInComune(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","4 minuti per scoprirlo! "));
+ hdr.appendChild(div("intesa-desc",T("ui_4_minuti_per_scoprirlo")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2248,14 +2250,14 @@ function renderCosaInComune(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Trovate almeno 3 cose inaspettate che avete in comune. Poi presentatele al gruppo!";
+ rule.textContent=T("ui_trovate_almeno_3_cose_inaspettate");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#2e7d32;text-align:center;";
-  scaduto.textContent=" Tempo! Presentatevi al gruppo!";
+  scaduto.textContent=T("ui_tempo_presentatevi_al_gruppo");
   body.appendChild(scaduto);
-  var nextBtn=btn("ebtn"," NUOVA COPPIA",function(){
+  var nextBtn=btn("ebtn",T("ui_nuova_coppia"),function(){
    S.cicTime=240;S.cicRunning=false;renderCosaInComune();
   });nextBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(nextBtn);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
@@ -2263,7 +2265,7 @@ function renderCosaInComune(){
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===240?" INIZIA":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===240?T("ui_inizia_2"):T("ui_riprendi"),function(){
    S.cicRunning=true;
    _cicTimer=setInterval(function(){
     S.cicTime=(S.cicTime||1)-1;
@@ -2274,13 +2276,13 @@ function renderCosaInComune(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<240){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_cicTimer){clearInterval(_cicTimer);_cicTimer=null;}
     S.cicTime=240;S.cicRunning=false;renderCosaInComune();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.cicRunning=false;
    if(_cicTimer){clearInterval(_cicTimer);_cicTimer=null;}
    renderCosaInComune();
@@ -2302,7 +2304,7 @@ function renderChiSeiDavvero(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.csdTime!==undefined?S.csdTime:20;
  var running=S.csdRunning||false;
- var gameName=(curGame()||{}).name||"CHI SEI DAVVERO?";
+ var gameName=(curGame()||{}).name||T("ui_chi_sei_davvero");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -2317,7 +2319,7 @@ function renderChiSeiDavvero(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","20 secondi per rispondere! "));
+ hdr.appendChild(div("intesa-desc",T("ui_20_secondi_per_rispondere")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2334,14 +2336,14 @@ function renderChiSeiDavvero(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Il moderatore fa una domanda. Tutti hanno 20 secondi per rispondere spontaneamente. Nessuna risposta sbagliata!";
+ rule.textContent=T("ui_il_moderatore_fa_una_domanda");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#1565c0;text-align:center;";
-  scaduto.textContent=" Tempo! Prossima domanda!";
+  scaduto.textContent=T("ui_tempo_prossima_domanda");
   body.appendChild(scaduto);
-  var nextBtn=btn("ebtn"," NUOVA DOMANDA",function(){
+  var nextBtn=btn("ebtn",T("ui_nuova_domanda"),function(){
    S.csdTime=20;S.csdRunning=false;renderChiSeiDavvero();
   });nextBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(nextBtn);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
@@ -2349,7 +2351,7 @@ function renderChiSeiDavvero(){
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===20?" INIZIA IL ROUND":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===20?T("ui_inizia_il_round"):T("ui_riprendi"),function(){
    S.csdRunning=true;
    _csdTimer=setInterval(function(){
     S.csdTime=(S.csdTime||1)-1;
@@ -2360,13 +2362,13 @@ function renderChiSeiDavvero(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<20){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_csdTimer){clearInterval(_csdTimer);_csdTimer=null;}
     S.csdTime=20;S.csdRunning=false;renderChiSeiDavvero();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.csdRunning=false;
    if(_csdTimer){clearInterval(_csdTimer);_csdTimer=null;}
    renderChiSeiDavvero();
@@ -2388,7 +2390,7 @@ function renderSuperpotere(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.superTime!==undefined?S.superTime:30;
  var running=S.superRunning||false;
- var gameName=(curGame()||{}).name||"IL SUPERPOTERE";
+ var gameName=(curGame()||{}).name||T("ui_il_superpotere");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -2403,7 +2405,7 @@ function renderSuperpotere(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","30 secondi per convincerli tutti! "));
+ hdr.appendChild(div("intesa-desc",T("ui_30_secondi_per_convincerli_tutti")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2420,14 +2422,14 @@ function renderSuperpotere(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Scegli un superpotere e spiega cosa faresti con esso oggi. Gli altri ascoltano in silenzio.";
+ rule.textContent=T("ui_scegli_un_superpotere_e_spiega");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#7b1fa2;text-align:center;";
-  scaduto.textContent=" Tempo scaduto!";
+  scaduto.textContent=T("ui_tempo_scaduto");
   body.appendChild(scaduto);
-  var nextBtn=btn("ebtn"," PROSSIMO GIOCATORE",function(){
+  var nextBtn=btn("ebtn",T("ui_prossimo_giocatore_2"),function(){
    S.superTime=30;S.superRunning=false;renderSuperpotere();
   });nextBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(nextBtn);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
@@ -2435,7 +2437,7 @@ function renderSuperpotere(){
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===30?" INIZIA IL TURNO":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===30?T("ui_inizia_il_turno"):T("ui_riprendi"),function(){
    S.superRunning=true;
    _superTimer=setInterval(function(){
     S.superTime=(S.superTime||1)-1;
@@ -2446,13 +2448,13 @@ function renderSuperpotere(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<30){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_superTimer){clearInterval(_superTimer);_superTimer=null;}
     S.superTime=30;S.superRunning=false;renderSuperpotere();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.superRunning=false;
    if(_superTimer){clearInterval(_superTimer);_superTimer=null;}
    renderSuperpotere();
@@ -2474,7 +2476,7 @@ function renderAppello(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.appelloTime!==undefined?S.appelloTime:60;
  var running=S.appelloRunning||false;
- var gameName=(curGame()||{}).name||"APPELLO";
+ var gameName=(curGame()||{}).name||T("ui_appello");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -2489,7 +2491,7 @@ function renderAppello(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","Memorizza tutti i nomi in 60 secondi!"));
+ hdr.appendChild(div("intesa-desc",T("ui_memorizza_tutti_i_nomi_in")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2507,14 +2509,14 @@ function renderAppello(){
 
  // Regola breve
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Il moderatore punta il dito su qualcuno → un altro giocatore ha 3 secondi per dire il suo nome. Chi sbaglia è eliminato.";
+ rule.textContent=T("ui_il_moderatore_punta_il_dito");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:20px;font-weight:700;color:#2E7D32;text-align:center;";
-  scaduto.textContent=" Via! Iniziate a giocare!";
+  scaduto.textContent=T("ui_via_iniziate_a_giocare");
   body.appendChild(scaduto);
-  var riBtn=btn("ebtn"," NUOVO GIRO",function(){
+  var riBtn=btn("ebtn",T("ui_nuovo_giro_2"),function(){
    S.appelloTime=60;S.appelloRunning=false;renderAppello();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
@@ -2522,7 +2524,7 @@ function renderAppello(){
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===60?" INIZIA MEMORIZZAZIONE":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===60?T("ui_inizia_memorizzazione"):T("ui_riprendi"),function(){
    S.appelloRunning=true;
    _appelloTimer=setInterval(function(){
     S.appelloTime=(S.appelloTime||1)-1;
@@ -2533,13 +2535,13 @@ function renderAppello(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<60){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_appelloTimer){clearInterval(_appelloTimer);_appelloTimer=null;}
     S.appelloTime=60;S.appelloRunning=false;renderAppello();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.appelloRunning=false;
    if(_appelloTimer){clearInterval(_appelloTimer);_appelloTimer=null;}
    renderAppello();
@@ -2574,8 +2576,8 @@ function renderSiNon(){
   if(_sinonTimer){clearInterval(_sinonTimer);_sinonTimer=null;}
   goHome();
  }));
- hdr.appendChild(div("intesa-title","SÌ, NO, NON"));
- hdr.appendChild(div("intesa-desc","Rispondi senza mai dire SÌ · NO · NON"));
+ hdr.appendChild(div("intesa-title",T("ui_si_no_non")));
+ hdr.appendChild(div("intesa-desc",T("ui_rispondi_senza_mai_dire_si")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -2591,7 +2593,7 @@ function renderSiNon(){
 
  // Parole vietate
  var forbidWrap=div("");forbidWrap.style.cssText="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;";
- ["SÌ","NO","NON"].forEach(function(w){
+ [T("ui_si"),T("ui_no"),T("ui_non")].forEach(function(w){
   var badge=div("");badge.style.cssText="font-size:18px;font-weight:900;padding:8px 20px;border-radius:30px;background:#e53935;color:#fff;letter-spacing:.06em;text-decoration:line-through;";
   badge.textContent=w;
   forbidWrap.appendChild(badge);
@@ -2602,17 +2604,17 @@ function renderSiNon(){
  if(timeLeft<=0){
   // Tempo scaduto
   var scaduto=div("");scaduto.style.cssText="font-size:18px;font-weight:700;color:#2E7D32;text-align:center;";
-  scaduto.textContent=" Tempo scaduto! Hai resistito!";
+  scaduto.textContent=T("ui_tempo_scaduto_hai_resistito");
   body.appendChild(scaduto);
-  var riBtn=btn("ebtn"," PROSSIMO GIOCATORE",function(){
+  var riBtn=btn("ebtn",T("ui_prossimo_giocatore_2"),function(){
    S.sinonTime=180;S.sinonRunning=false;renderSiNon();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_sinonTimer){clearInterval(_sinonTimer);_sinonTimer=null;}
-   endGame("SÌ, NO, NON");
+   endGame(T("ui_si_no_non"));
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===180?" INIZIA":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===180?T("ui_inizia_2"):T("ui_riprendi"),function(){
    S.sinonRunning=true;
    _sinonTimer=setInterval(function(){
     S.sinonTime=(S.sinonTime||1)-1;
@@ -2623,24 +2625,24 @@ function renderSiNon(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<180){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     S.sinonTime=180;S.sinonRunning=false;renderSiNon();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
   // Bottone "ha sbagliato" per azzerare
   if(timeLeft<180){
-   var errBtn=btn("ebtn out"," HA DETTO SÌ/NO/NON — turno successivo",function(){
+   var errBtn=btn("ebtn out",T("ui_ha_detto_si_no_non"),function(){
     S.sinonTime=180;S.sinonRunning=false;renderSiNon();
    });errBtn.style.cssText="width:100%;max-width:280px;font-size:13px;";body.appendChild(errBtn);
   }
  } else {
   // In esecuzione — mostra pausa e pulsante "ha sbagliato"
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.sinonRunning=false;
    if(_sinonTimer){clearInterval(_sinonTimer);_sinonTimer=null;}
    renderSiNon();
   });pauseBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(pauseBtn);
-  var errBtn2=btn("ebtn"," HA DETTO SÌ/NO/NON",function(){
+  var errBtn2=btn("ebtn",T("ui_ha_detto_si_no_non_2"),function(){
    S.sinonRunning=false;
    if(_sinonTimer){clearInterval(_sinonTimer);_sinonTimer=null;}
    S.sinonTime=180;renderSiNon();
@@ -3250,13 +3252,13 @@ function renderQvSetup(){
  if(S.qvMode==='distanza' && fbRoomCode && fbIsHost){
   var waitTitle=document.createElement("div");
   waitTitle.style.cssText="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;text-align:center;margin:20px 0 6px;";
-  waitTitle.textContent="In attesa degli altri";
+  waitTitle.textContent=T("ui_in_attesa_degli_altri");
   body.appendChild(waitTitle);
 
   var playersDiv=document.createElement("div");
   playersDiv.id="qv-players-list";
   playersDiv.style.cssText="text-align:center;font-size:15px;color:#444;min-height:32px;margin-bottom:20px;font-weight:500;";
-  playersDiv.textContent="Nessun giocatore ancora…";
+  playersDiv.textContent=T("ui_nessun_giocatore_ancora");
   body.appendChild(playersDiv);
 
   if(fbDB && !window._qvPlayersListening){
@@ -3269,20 +3271,20 @@ function renderQvSetup(){
      var names=Object.keys(pl);
      el.innerHTML='<span style="font-weight:700;color:var(--dark);">'+names.join(" · ")+'</span>';
     } else {
-     el.textContent="Nessun giocatore ancora…";
+     el.textContent=T("ui_nessun_giocatore_ancora");
     }
    });
   }
 
   var startBtn=document.createElement("button");
   startBtn.style.cssText="width:100%;padding:16px;background:var(--dark);color:#fff;border:none;border-radius:16px;font-family:inherit;font-weight:800;font-size:18px;cursor:pointer;margin-top:4px;";
-  startBtn.textContent="Inizia";
+  startBtn.textContent=T("ui_inizia_3");
   startBtn.onclick=function(){
    if(!fbDB||!fbRoomCode)return;
    fbGet(fbRef(fbDB,'rooms/'+fbRoomCode+'/qv_players')).then(function(snap){
     var pl=snap.val()||{};
     var playerNames=Object.keys(pl);
-    if(playerNames.length<2){alert("Aspetta che si colleghi almeno un altro giocatore.");return;}
+    if(playerNames.length<2){alert(T("ui_aspetta_che_si_colleghi_almeno"));return;}
     window._qvPlayersListening=false;
     startQuantoValeDistanza(playerNames);
    });
@@ -3291,7 +3293,7 @@ function renderQvSetup(){
 
   var leaveBtn=document.createElement("button");
   leaveBtn.style.cssText="width:100%;padding:10px;background:transparent;border:none;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;color:#bbb;margin-top:14px;";
-  leaveBtn.textContent="Annulla sfida";
+  leaveBtn.textContent=T("ui_annulla_sfida");
   leaveBtn.onclick=function(){window._qvPlayersListening=false;fbLeaveRoom();S.qvMode='locale';renderQvSetup();};
   body.appendChild(leaveBtn);
 
@@ -3299,17 +3301,17 @@ function renderQvSetup(){
  } else if(S.qvMode==='distanza' && fbRoomCode && !fbIsHost){
   var clientTitle=document.createElement("div");
   clientTitle.style.cssText="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;text-align:center;margin:20px 0 6px;";
-  clientTitle.textContent="Connesso";
+  clientTitle.textContent=T("ui_connesso");
   body.appendChild(clientTitle);
 
   var waitMsg=document.createElement("div");
   waitMsg.style.cssText="text-align:center;font-size:16px;color:#666;margin-bottom:24px;";
-  waitMsg.textContent=" Aspetta che l'altro giocatore avvii la partita…";
+  waitMsg.textContent=T("ui_aspetta_che_l_altro_giocatore");
   body.appendChild(waitMsg);
 
   var discBtn=document.createElement("button");
   discBtn.style.cssText="width:100%;padding:10px;background:transparent;border:none;font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;color:#bbb;margin-top:8px;";
-  discBtn.textContent="Esci dalla stanza";
+  discBtn.textContent=T("ui_esci_dalla_stanza");
   discBtn.onclick=function(){fbLeaveRoom();S.qvMode='locale';renderQvSetup();};
   body.appendChild(discBtn);
 
@@ -3321,7 +3323,7 @@ function renderQvSetup(){
 
   var numLabel=document.createElement("div");
   numLabel.style.cssText="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;text-align:center;margin:20px 0 14px;";
-  numLabel.textContent="Quanti siete?";
+  numLabel.textContent=T("ui_quanti_siete");
   body.appendChild(numLabel);
 
   var stepper=document.createElement("div");
@@ -3385,12 +3387,12 @@ function renderQvSetup(){
 
    var sfidaHint=document.createElement("div");
    sfidaHint.style.cssText="font-size:12px;color:#c0c0c0;text-align:center;margin-top:8px;margin-bottom:4px;";
-   sfidaHint.textContent="Gli altri dispositivi riceveranno una notifica";
+   sfidaHint.textContent=T("ui_gli_altri_dispositivi_riceveranno_una");
 
    sfidaBtn.onclick=function(){
     sfidaBtn.disabled=true;
     sfidaBtn.style.opacity="0.5";
-    sfidaBtn.querySelector("span").textContent="Invio sfida…";
+    sfidaBtn.querySelector("span").textContent=T("ui_invio_sfida");
     sendQvChallenge(function(code){
      S.qvMode='distanza';
      renderQvSetup();
@@ -3813,14 +3815,14 @@ function renderQuantoVale(){
   var _timerEl=document.createElement("div");
   _timerEl.id="qv-reveal-timer";
   _timerEl.style.cssText="text-align:center;font-size:12px;color:#aaa;margin-top:8px;";
-  _timerEl.textContent="Rivelazione automatica tra 40s";
+  _timerEl.textContent=T("ui_rivelazione_automatica_tra_40s");
   ww.appendChild(_timerEl);
   var _revSec=40;
   if(window._qvRevealInterval)clearInterval(window._qvRevealInterval);
   window._qvRevealInterval=setInterval(function(){
    _revSec--;
    var tel=document.getElementById("qv-reveal-timer");
-   if(tel)tel.textContent="Rivelazione automatica tra "+_revSec+"s";
+   if(tel)tel.textContent=T("ui_rivelazione_automatica_tra")+_revSec+"s";
    if(_revSec<=0)clearInterval(window._qvRevealInterval);
   },1000);
   window._qvRevealTimer=setTimeout(function(){
@@ -3880,7 +3882,7 @@ function renderQuantoVale(){
  var turnDiv=div("dado-turn");turnDiv.textContent=T("qvPassTablet")+currentPlayer;wrap.appendChild(turnDiv);
  // Timer automatico 40 secondi
  var timerDiv=div("");timerDiv.id="qv-timer";timerDiv.style.cssText="text-align:center;font-size:13px;color:#aaa;margin-bottom:8px;";
- timerDiv.textContent="Risposta automatica tra 40s";wrap.appendChild(timerDiv);
+ timerDiv.textContent=T("ui_risposta_automatica_tra_40s");wrap.appendChild(timerDiv);
  if(window._qvAutoTimer)clearTimeout(window._qvAutoTimer);
  var _qvSecondi=40;
  if(window._qvCountdownInterval)clearInterval(window._qvCountdownInterval);
@@ -3888,7 +3890,7 @@ function renderQuantoVale(){
   _qvSecondi--;
   var el=document.getElementById("qv-timer");
   if(!el){clearInterval(window._qvCountdownInterval);return;}
-  el.textContent="Risposta automatica tra "+_qvSecondi+"s";
+  el.textContent=T("ui_risposta_automatica_tra")+_qvSecondi+"s";
   if(_qvSecondi<=0){clearInterval(window._qvCountdownInterval);}
  },1000);
  window._qvAutoTimer=setTimeout(function(){
@@ -4024,10 +4026,10 @@ function renderQuantoVale(){
  var isLast=(S.qvRound>=S.qvTotalRounds-1);
  // Timer automatico 40s
  var _ntDiv=div("");_ntDiv.id="qv-next-timer";_ntDiv.style.cssText="text-align:center;font-size:12px;color:#aaa;margin-bottom:6px;";
- var _ntSec=40;_ntDiv.textContent="Avanzamento automatico tra "+_ntSec+"s";wrap.appendChild(_ntDiv);
+ var _ntSec=40;_ntDiv.textContent=T("ui_avanzamento_automatico_tra")+_ntSec+"s";wrap.appendChild(_ntDiv);
  if(window._qvNextInterval)clearInterval(window._qvNextInterval);
  if(window._qvNextTimer)clearTimeout(window._qvNextTimer);
- window._qvNextInterval=setInterval(function(){_ntSec--;var te=document.getElementById("qv-next-timer");if(te)te.textContent="Avanzamento automatico tra "+_ntSec+"s";if(_ntSec<=0)clearInterval(window._qvNextInterval);},1000);
+ window._qvNextInterval=setInterval(function(){_ntSec--;var te=document.getElementById("qv-next-timer");if(te)te.textContent=T("ui_avanzamento_automatico_tra")+_ntSec+"s";if(_ntSec<=0)clearInterval(window._qvNextInterval);},1000);
  var _ntBtn=btn("ebtn",isLast?T("qvFinalScore"):T("qvNextQuestion"),function(){
  if(window._qvNextTimer){clearTimeout(window._qvNextTimer);window._qvNextTimer=null;}
  if(window._qvNextInterval){clearInterval(window._qvNextInterval);window._qvNextInterval=null;}
@@ -4104,14 +4106,14 @@ function renderAgSetup(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","ANNO GIUSTO"));
+ hdr.appendChild(div("dtitle",T("ui_anno_giusto")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  if(!S.agNumPlayers)S.agNumPlayers=2;
  var selectedNum=S.agNumPlayers;
  var numLabel=document.createElement("div");
  numLabel.style.cssText="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;text-align:center;margin:20px 0 14px;";
- numLabel.textContent="Quanti siete?";
+ numLabel.textContent=T("ui_quanti_siete");
  body.appendChild(numLabel);
  var stepper=document.createElement("div");
  stepper.style.cssText="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;";
@@ -4133,10 +4135,10 @@ function renderAgSetup(){
  for(var i=0;i<selectedNum;i++){
   (function(pidx){
    var row=div("player-name-row");
-   var lbl=div("player-name-label");lbl.textContent="Giocatore "+(pidx+1);row.appendChild(lbl);
+   var lbl=div("player-name-label");lbl.textContent=T("ui_giocatore")+(pidx+1);row.appendChild(lbl);
    var inp=document.createElement("input");
    inp.type="text";inp.className="player-name-input";
-   inp.placeholder="Giocatore "+(pidx+1);inp.maxLength=16;
+   inp.placeholder=T("ui_giocatore")+(pidx+1);inp.maxLength=16;
    if(S.agPlayerNames&&S.agPlayerNames[pidx])inp.value=S.agPlayerNames[pidx];
    row.appendChild(inp);inputs.push(inp);
    namesGrid.appendChild(row);
@@ -4144,8 +4146,8 @@ function renderAgSetup(){
  }
  body.appendChild(namesGrid);
  var startWrap=div("");startWrap.style.cssText="text-align:center;margin-top:20px;";
- startWrap.appendChild(btn("ebtn"," INIZIA",function(){
-  var names=inputs.map(function(inp,i){return inp.value.trim()||"Giocatore "+(i+1);});
+ startWrap.appendChild(btn("ebtn",T("ui_inizia_2"),function(){
+  var names=inputs.map(function(inp,i){return inp.value.trim()||T("ui_giocatore")+(i+1);});
   S.agPlayerNames=names;
   S.agNumPlayers=selectedNum;
   startAnnoGiusto(names);
@@ -4161,7 +4163,7 @@ function startAnnoGiusto(players){
  players.forEach(function(p){S.agScores[p]=0;});
  S.agRound=0;
  S.agTotalRounds=10;
- var _agData=ANNO_GIUSTO_DATA.slice();
+ var _agData=agData().slice();
  for(var i=_agData.length-1;i>0;i--){
   var j=Math.floor(Math.random()*(i+1));
   var t=_agData[i];_agData[i]=_agData[j];_agData[j]=t;
@@ -4185,8 +4187,8 @@ function renderAnnoGiusto(){
  var top=div("dhdr-top");hdr.appendChild(top);
  top.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  top.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("intesa-title","ANNO GIUSTO"));
- hdr.appendChild(div("intesa-desc","Round "+(S.agRound+1)+" / "+S.agTotalRounds));
+ hdr.appendChild(div("intesa-title",T("ui_anno_giusto")));
+ hdr.appendChild(div("intesa-desc",T("ui_round")+(S.agRound+1)+" / "+S.agTotalRounds));
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 16px;";
  var q=S.agQuestions[S.agRound];
@@ -4200,7 +4202,7 @@ function renderAnnoGiusto(){
   var curPlayer=S.agPlayers[S.agCurrentPlayerIdx];
   var turnLbl=div("");
   turnLbl.style.cssText="font-size:15px;color:var(--muted,#888);text-align:center;";
-  turnLbl.textContent="Turno di: "+curPlayer;
+  turnLbl.textContent=T("ui_turno_di")+curPlayer;
   body.appendChild(turnLbl);
   // Slider anno
   var sliderVal=S.agCurrentSlider!==undefined?S.agCurrentSlider:1000;
@@ -4225,7 +4227,7 @@ function renderAnnoGiusto(){
   rangeRow.appendChild(el("span","","2025"));
   sliderWrap.appendChild(rangeRow);
   body.appendChild(sliderWrap);
-  var confirmBtn=btn("ebtn"," CONFERMA RISPOSTA",function(){
+  var confirmBtn=btn("ebtn",T("ui_conferma_risposta"),function(){
    if(!S.agAnswers)S.agAnswers={};
    var v=S.agCurrentSlider!==undefined?S.agCurrentSlider:1000;
    S.agAnswers[curPlayer]=v;
@@ -4244,7 +4246,7 @@ function renderAnnoGiusto(){
   var rispostaText=risposta<0?Math.abs(risposta)+" a.C.":risposta+" d.C.";
   var answerBox=div("");
   answerBox.style.cssText="background:var(--surface2,#f0f0f0);border-radius:16px;padding:16px;width:100%;max-width:340px;text-align:center;";
-  var ansLbl=div("");ansLbl.style.cssText="font-size:13px;color:var(--muted,#888);margin-bottom:4px;";ansLbl.textContent="Risposta corretta";
+  var ansLbl=div("");ansLbl.style.cssText="font-size:13px;color:var(--muted,#888);margin-bottom:4px;";ansLbl.textContent=T("ui_risposta_corretta");
   answerBox.appendChild(ansLbl);
   var ansVal=div("");ansVal.style.cssText="font-size:36px;font-weight:900;color:#388E3C;";ansVal.textContent=rispostaText;
   answerBox.appendChild(ansVal);
@@ -4278,7 +4280,7 @@ function renderAnnoGiusto(){
   body.appendChild(rankDiv);
   // Punteggi
   var scoreDiv=div("");scoreDiv.style.cssText="width:100%;max-width:340px;display:flex;flex-direction:column;gap:4px;";
-  var scoreLbl=div("");scoreLbl.style.cssText="font-size:13px;font-weight:700;color:var(--muted,#888);";scoreLbl.textContent="Punteggi totali";
+  var scoreLbl=div("");scoreLbl.style.cssText="font-size:13px;font-weight:700;color:var(--muted,#888);";scoreLbl.textContent=T("ui_punteggi_totali");
   scoreDiv.appendChild(scoreLbl);
   S.agPlayers.slice().sort(function(a,b){return S.agScores[b]-S.agScores[a];}).forEach(function(p){
    var r=div("");r.style.cssText="display:flex;justify-content:space-between;font-size:14px;";
@@ -4289,11 +4291,11 @@ function renderAnnoGiusto(){
   body.appendChild(scoreDiv);
   var nextBtn;
   if(S.agRound+1>=S.agTotalRounds){
-   nextBtn=btn("ebtn"," RISULTATI FINALI",function(){
+   nextBtn=btn("ebtn",T("ui_risultati_finali"),function(){
     S.screen="ag_end";render();
    });
   } else {
-   nextBtn=btn("ebtn"," PROSSIMA DOMANDA",function(){
+   nextBtn=btn("ebtn",T("ui_prossima_domanda"),function(){
     S.agRound++;
     S.agAnswers={};
     S.agCurrentPlayerIdx=0;
@@ -4314,8 +4316,8 @@ function renderAgEnd(){
  var wrap=div("qv-wrap");
  var maxScore=Math.max.apply(null,S.agPlayers.map(function(p){return S.agScores[p];}));
  var winner=S.agPlayers.filter(function(p){return S.agScores[p]===maxScore;})[0];
- var wt=div("end-title");wt.textContent=winner+" ha vinto! ";wrap.appendChild(wt);
- wrap.appendChild(div("end-sub","Con "+maxScore+" punti su "+S.agTotalRounds+" round"));
+ var wt=div("end-title");wt.textContent=winner+T("ui_ha_vinto");wrap.appendChild(wt);
+ wrap.appendChild(div("end-sub",T("ui_con")+maxScore+T("ui_punti_su")+S.agTotalRounds+" round"));
  var pd=div("qv-players-answers");
  S.agPlayers.slice().sort(function(a,b){return S.agScores[b]-S.agScores[a];}).forEach(function(p,i){
   var row=div("qv-player-answer"+(i===0?" winner":""));
@@ -4325,7 +4327,7 @@ function renderAgEnd(){
  });
  wrap.appendChild(pd);
  var btns=div("endbtns");
- btns.appendChild(btn("ebtn","↺ GIOCA ANCORA",function(){startAnnoGiusto(S.agPlayers);}));
+ btns.appendChild(btn("ebtn",T("ui_gioca_ancora"),function(){startAnnoGiusto(S.agPlayers);}));
  btns.appendChild(btn("ebtn out",T("exitBtn"),goHome));
  wrap.appendChild(btns);
  document.getElementById("root").appendChild(wrap);
@@ -4341,7 +4343,7 @@ function renderLex(){
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var timeLeft=S.lexTime!==undefined?S.lexTime:120;
  var running=S.lexRunning||false;
- var gameName=(curGame()||{}).name||"L'EX";
+ var gameName=(curGame()||{}).name||T("ui_l_ex");
 
  var wrap=div("panel");
  var card=div("dcard");wrap.appendChild(card);
@@ -4356,7 +4358,7 @@ function renderLex(){
   goHome();
  }));
  hdr.appendChild(div("intesa-title",gameName));
- hdr.appendChild(div("intesa-desc","2 minuti per raccontare la storia "));
+ hdr.appendChild(div("intesa-desc",T("ui_2_minuti_per_raccontare_la")));
 
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:24px;padding:32px 16px;";
@@ -4373,22 +4375,22 @@ function renderLex(){
  barWrap.appendChild(barFill);body.appendChild(barWrap);
 
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
- rule.textContent="Racconta la storia più assurda, imbarazzante o surreale legata a un ex. Nessun nome vero!";
+ rule.textContent=T("ui_racconta_la_storia_piu_assurda");
  body.appendChild(rule);
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#c2185b;text-align:center;";
-  scaduto.textContent=" Votate la storia migliore!";
+  scaduto.textContent=T("ui_votate_la_storia_migliore");
   body.appendChild(scaduto);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_lexTimer){clearInterval(_lexTimer);_lexTimer=null;}
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
-  var riBtn=btn("ebtn","↺ PROSSIMO GIOCATORE",function(){
+  var riBtn=btn("ebtn",T("ui_prossimo_giocatore"),function(){
    S.lexTime=120;S.lexRunning=false;renderLex();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
-  var startBtn=btn("ebtn",timeLeft===120?" INIZIA":" RIPRENDI",function(){
+  var startBtn=btn("ebtn",timeLeft===120?T("ui_inizia_2"):T("ui_riprendi"),function(){
    S.lexRunning=true;
    _lexTimer=setInterval(function(){
     S.lexTime=(S.lexTime||1)-1;
@@ -4399,13 +4401,13 @@ function renderLex(){
   });startBtn.style.cssText="width:100%;max-width:280px;font-size:18px;padding:18px;";
   body.appendChild(startBtn);
   if(timeLeft<120){
-   var resetBtn=btn("ebtn out","↺ RICOMINCIA",function(){
+   var resetBtn=btn("ebtn out",T("ui_ricomincia"),function(){
     if(_lexTimer){clearInterval(_lexTimer);_lexTimer=null;}
     S.lexTime=120;S.lexRunning=false;renderLex();
    });resetBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(resetBtn);
   }
  } else {
-  var pauseBtn=btn("ebtn out"," PAUSA",function(){
+  var pauseBtn=btn("ebtn out",T("ui_pausa"),function(){
    S.lexRunning=false;
    if(_lexTimer){clearInterval(_lexTimer);_lexTimer=null;}
    renderLex();
@@ -4427,14 +4429,14 @@ function renderCaSetup(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","CONFESSIONI ANONIME"));
+ hdr.appendChild(div("dtitle",T("ui_confessioni_anonime")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  if(!S.caNumPlayers)S.caNumPlayers=3;
  var selectedNum=S.caNumPlayers;
  var numLabel=document.createElement("div");
  numLabel.style.cssText="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#aaa;text-align:center;margin:20px 0 14px;";
- numLabel.textContent="Quanti siete?";
+ numLabel.textContent=T("ui_quanti_siete");
  body.appendChild(numLabel);
  var stepper=document.createElement("div");
  stepper.style.cssText="display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:24px;";
@@ -4456,10 +4458,10 @@ function renderCaSetup(){
  for(var i=0;i<selectedNum;i++){
   (function(pidx){
    var row=div("player-name-row");
-   var lbl=div("player-name-label");lbl.textContent="Giocatore "+(pidx+1);row.appendChild(lbl);
+   var lbl=div("player-name-label");lbl.textContent=T("ui_giocatore")+(pidx+1);row.appendChild(lbl);
    var inp=document.createElement("input");
    inp.type="text";inp.className="player-name-input";
-   inp.placeholder="Giocatore "+(pidx+1);inp.maxLength=20;
+   inp.placeholder=T("ui_giocatore")+(pidx+1);inp.maxLength=20;
    if(S.caPlayerNames&&S.caPlayerNames[pidx])inp.value=S.caPlayerNames[pidx];
    row.appendChild(inp);inputs.push(inp);
    namesGrid.appendChild(row);
@@ -4467,8 +4469,8 @@ function renderCaSetup(){
  }
  body.appendChild(namesGrid);
  var startWrap=div("");startWrap.style.cssText="text-align:center;margin-top:20px;";
- startWrap.appendChild(btn("ebtn"," INIZIA",function(){
-  var names=inputs.map(function(inp,i){return inp.value.trim()||"Giocatore "+(i+1);});
+ startWrap.appendChild(btn("ebtn",T("ui_inizia_2"),function(){
+  var names=inputs.map(function(inp,i){return inp.value.trim()||T("ui_giocatore")+(i+1);});
   S.caPlayerNames=names;
   S.caNumPlayers=selectedNum;
   startCa(names);
@@ -4497,7 +4499,7 @@ function renderCaWrite(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","CONFESSIONI ANONIME"));
+ hdr.appendChild(div("dtitle",T("ui_confessioni_anonime")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  var pidx=S.caCurrentPlayer;
@@ -4513,19 +4515,19 @@ function renderCaWrite(){
  body.appendChild(nameDiv);
  var instrDiv=document.createElement("div");
  instrDiv.style.cssText="font-size:14px;text-align:center;color:#888;margin-bottom:20px;line-height:1.4;padding:0 12px;";
- instrDiv.textContent="Scrivi una confessione anonima. Qualcosa di vero, imbarazzante o inaspettato. Nessuno vedrà il tuo nome.";
+ instrDiv.textContent=T("ui_scrivi_una_confessione_anonima_qualcosa");
  body.appendChild(instrDiv);
  var ta=document.createElement("textarea");
- ta.placeholder="La mia confessione...";
+ ta.placeholder=T("ui_la_mia_confessione");
  ta.style.cssText="width:100%;min-height:120px;border:2px solid #e0e0e0;border-radius:14px;padding:14px;font-size:16px;font-family:inherit;resize:none;box-sizing:border-box;outline:none;color:var(--dark);background:var(--bg);";
  ta.onfocus=function(){this.style.borderColor=bg;};
  ta.onblur=function(){this.style.borderColor="#e0e0e0";};
  body.appendChild(ta);
  var hint=document.createElement("div");
  hint.style.cssText="font-size:12px;color:#aaa;text-align:center;margin:8px 0 20px;";
- hint.textContent="Tieni il telefono verso di te mentre scrivi ";
+ hint.textContent=T("ui_tieni_il_telefono_verso_di");
  body.appendChild(hint);
- var btnLabel=pidx<total-1?"Passa al prossimo →":"Mescola e inizia ";
+ var btnLabel=pidx<total-1?T("ui_passa_al_prossimo"):T("ui_mescola_e_inizia");
  var submitWrap=div("");submitWrap.style.cssText="text-align:center;";
  submitWrap.appendChild(btn("ebtn",btnLabel,function(){
   var txt=ta.value.trim();
@@ -4558,7 +4560,7 @@ function renderCaRead(){
  var dhdrTop=div("dhdr-top");hdr.appendChild(dhdrTop);
  dhdrTop.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
- hdr.appendChild(div("dtitle","CONFESSIONI ANONIME"));
+ hdr.appendChild(div("dtitle",T("ui_confessioni_anonime")));
  var card=div("dcard");card.appendChild(hdr);
  var body=div("dbody");card.appendChild(body);
  var idx=S.caReadIdx;
@@ -4566,7 +4568,7 @@ function renderCaRead(){
  /* Contatore */
  var stepDiv=document.createElement("div");
  stepDiv.style.cssText="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;text-align:center;margin:18px 0 14px;";
- stepDiv.textContent="CONFESSIONE "+(idx+1)+" DI "+total;
+ stepDiv.textContent=T("ui_confessione")+(idx+1)+T("ui_di_2")+total;
  body.appendChild(stepDiv);
  /* Bolla confessione */
  var bubble=document.createElement("div");
@@ -4575,16 +4577,16 @@ function renderCaRead(){
  body.appendChild(bubble);
  var voteDiv=document.createElement("div");
  voteDiv.style.cssText="font-size:14px;color:#888;text-align:center;margin-bottom:24px;";
- voteDiv.textContent="Il gruppo vota: di chi è questa confessione?";
+ voteDiv.textContent=T("ui_il_gruppo_vota_di_chi");
  body.appendChild(voteDiv);
  var btnsWrap=div("endbtns");
  if(idx<total-1){
-  btnsWrap.appendChild(btn("ebtn","Prossima confessione →",function(){
+  btnsWrap.appendChild(btn("ebtn",T("ui_prossima_confessione"),function(){
    S.caReadIdx++;
    render();
   }));
  } else {
-  btnsWrap.appendChild(btn("ebtn","Risultati finali ",function(){
+  btnsWrap.appendChild(btn("ebtn",T("ui_risultati_finali_2"),function(){
    S.screen="ca_end";render();
   }));
  }
@@ -4597,10 +4599,10 @@ function renderCaEnd(){
  clr();
  addBackArrow(goBackToGames);
  var wrap=div("qv-wrap");
- var wt=div("end-title");wt.textContent="Fine del gioco! ";wrap.appendChild(wt);
- wrap.appendChild(div("end-sub","Tutte le "+S.caOrder.length+" confessioni sono state svelate"));
+ var wt=div("end-title");wt.textContent=T("ui_fine_del_gioco");wrap.appendChild(wt);
+ wrap.appendChild(div("end-sub",T("ui_tutte_le")+S.caOrder.length+T("ui_confessioni_sono_state_svelate")));
  var btns=div("endbtns");
- btns.appendChild(btn("ebtn","↺ GIOCA ANCORA",function(){startCa(S.caPlayers);}));
+ btns.appendChild(btn("ebtn",T("ui_gioca_ancora"),function(){startCa(S.caPlayers);}));
  btns.appendChild(btn("ebtn out",T("exitBtn"),goHome));
  wrap.appendChild(btns);
  document.getElementById("root").appendChild(wrap);
@@ -4709,7 +4711,7 @@ function renderEnd(){
 function startQuizWithLevel(level){
  S.quizLevel=level;
  S.quizIdx=0;S.quizRevealed=false;S.quizScore=0;
- var allQ=QUIZ_DATA[S.quizGame].questions;
+ var allQ=quizDataFor(S.quizGame).questions;
  var total=allQ.length;
  // Split into thirds: facile=first third, media=middle, difficile=last third
  var third=Math.floor(total/3);
@@ -4729,15 +4731,15 @@ function renderQuizLevel(){
  addBackArrow(goBackToGames);
  var cat=getCatById(S.cat);
  var wrap=div("quiz-level-wrap");
- var gameName=S.quizGame;
+ var gameName=(curGame()||{}).name||S.quizGame;
  var title=div("quiz-level-title",gameName);wrap.appendChild(title);
  wrap.appendChild(div("quiz-level-sub",T("quizChooseLevel")));
  var grid=div("quiz-level-grid");wrap.appendChild(grid);
 
  var levels=[
- {id:"facile",stars:"",name:"FACILE",desc:"Domande accessibili per tutti",cls:"ql-facile"},
- {id:"media",stars:"",name:"MEDIA",desc:"Qualche sfida in piu",cls:"ql-media"},
- {id:"difficile",stars:"",name:"DIFFICILE",desc:"Solo per esperti",cls:"ql-difficile"}
+ {id:"facile",stars:"",name:T("ui_facile"),desc:T("ui_domande_accessibili_per_tutti"),cls:"ql-facile"},
+ {id:"media",stars:"",name:T("ui_media"),desc:T("ui_qualche_sfida_in_piu"),cls:"ql-media"},
+ {id:"difficile",stars:"",name:T("ui_difficile"),desc:T("ui_solo_per_esperti"),cls:"ql-difficile"}
  ];
 
  for(var i=0;i<levels.length;i++){
@@ -4760,15 +4762,15 @@ function renderQuizLevel(){
 function renderQuiz(){
  clr();
  addBackArrow(goBackToGames);
- var qdata=QUIZ_DATA[S.quizGame];var total=S.quizQuestions.length;
+ var qdata=quizDataFor(S.quizGame);var total=S.quizQuestions.length;
  if(S.quizIdx>=total){
  var wrap=div("quiz-wrap");var sc=div("quiz-score");wrap.appendChild(sc);
  
- sc.appendChild(div("quiz-score-title","QUIZ TERMINATO!"));
+ sc.appendChild(div("quiz-score-title",T("ui_quiz_terminato")));
  sc.appendChild(div("quiz-score-num",S.quizScore+"/"+total));
- sc.appendChild(div("quiz-score-sub","domande corrette su "+total));
+ sc.appendChild(div("quiz-score-sub",T("ui_domande_corrette_su")+total));
  var pct=S.quizScore/total;
- var msg=pct>=0.9?"FENOMENALE!":pct>=0.7?"OTTIMO!":pct>=0.5?"NON MALE!":"RIPROVA!";
+ var msg=pct>=0.9?T("ui_fenomenale"):pct>=0.7?T("ui_ottimo"):pct>=0.5?T("ui_non_male"):T("ui_riprova");
  var msgEl=div("quiz-score-msg",msg);msgEl.style.color=pct>=0.7?"var(--orange)":"var(--muted)";sc.appendChild(msgEl);
  var btns=div("endbtns");sc.appendChild(btns);
  btns.appendChild(btn("ebtn",T("changeLevel"),function(){S.screen="quizlevel";render();}));
@@ -4779,10 +4781,10 @@ function renderQuiz(){
  var q=S.quizQuestions[S.quizIdx];
  var wrap=div("quiz-wrap");
  var hdr=div("quiz-header");wrap.appendChild(hdr);
- hdr.appendChild(div("quiz-title",S.quizGame));hdr.appendChild(div("quiz-counter",T("quizQuestion")+(S.quizIdx+1)+" / "+total));
+ hdr.appendChild(div("quiz-title",(curGame()||{}).name||S.quizGame));hdr.appendChild(div("quiz-counter",T("quizQuestion")+(S.quizIdx+1)+" / "+total));
  var prog=div("quiz-progress");wrap.appendChild(prog);
  var bar=div("quiz-progress-bar");bar.style.width=Math.round((S.quizIdx/total)*100)+"%";prog.appendChild(bar);
- var sb=div("");sb.style.cssText="font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:2px;color:var(--teal);margin-bottom:16px;";sb.textContent="PUNTI: "+S.quizScore;wrap.appendChild(sb);
+ var sb=div("");sb.style.cssText="font-family:'Space Grotesk',sans-serif;font-size:18px;letter-spacing:2px;color:var(--teal);margin-bottom:16px;";sb.textContent=T("ui_punti")+S.quizScore;wrap.appendChild(sb);
  var card=div("quiz-card");wrap.appendChild(card);
  var chdr=div("quiz-card-hdr");chdr.style.background=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:qdata.bg;card.appendChild(chdr);
  var qnav=div("dhdr-top");chdr.appendChild(qnav);
@@ -4798,8 +4800,8 @@ function renderQuiz(){
  var ans=div("quiz-answer correct");ans.textContent=q.a;body.appendChild(ans);
  if(q.extra){body.appendChild(div("quiz-answer-sub",q.extra));}
  var nav=div("quiz-nav");body.appendChild(nav);
- var wb=btn("ebtn out","NON SAPEVO",function(){S.quizIdx++;S.quizRevealed=false;render();});wb.style.cssText+="border-color:#E87A7A;color:#C83030;";
- var rb=btn("ebtn","LO SAPEVO! +1",function(){S.quizScore++;S.quizIdx++;S.quizRevealed=false;render();});rb.style.cssText+="background:var(--teal);box-shadow:3px 3px 0 #1A6A60;";
+ var wb=btn("ebtn out",T("ui_non_sapevo"),function(){S.quizIdx++;S.quizRevealed=false;render();});wb.style.cssText+="border-color:#E87A7A;color:#C83030;";
+ var rb=btn("ebtn",T("ui_lo_sapevo_1"),function(){S.quizScore++;S.quizIdx++;S.quizRevealed=false;render();});rb.style.cssText+="background:var(--teal);box-shadow:3px 3px 0 #1A6A60;";
  nav.appendChild(wb);nav.appendChild(rb);
  }
  document.getElementById("root").appendChild(wrap);
@@ -4828,7 +4830,7 @@ function renderStarter(){
  var phrase=phrases[S.starterIdx];var cat=getCatById(S.cat);
  var wrap=div("starter-wrap");
  var hdr=div("starter-header");wrap.appendChild(hdr);
- hdr.appendChild(div("starter-title",gameName));hdr.appendChild(div("starter-counter","FRASE "+(S.starterIdx+1)+" / "+total));
+ hdr.appendChild(div("starter-title",gameName));hdr.appendChild(div("starter-counter",T("ui_frase")+(S.starterIdx+1)+" / "+total));
  var prog=div("starter-progress");wrap.appendChild(prog);
  var bar=div("starter-bar");bar.style.width=Math.round((S.starterIdx/total)*100)+"%";prog.appendChild(bar);
  var card=div("starter-card");wrap.appendChild(card);
@@ -4842,13 +4844,13 @@ function renderStarter(){
  var nav=div("starter-nav");body.appendChild(nav);
  if(S.starterIdx<total-1){nav.appendChild(btn("ebtn",T("starterNext"),function(){S.starterIdx++;renderStarter();}));}
  else{nav.appendChild(btn("ebtn",T("starterDone"),function(){S.starterIdx++;renderStarter();}));}
- nav.appendChild(btn("ebtn out","VEDI LE REGOLE",function(){S.fromStarter=true;S.screen="game";render();}));
+ nav.appendChild(btn("ebtn out",T("ui_vedi_le_regole"),function(){S.fromStarter=true;S.screen="game";render();}));
  document.getElementById("root").appendChild(wrap);
 }
 
 function renderMenuEditor(panel){
  var me=div("");me.style.marginTop="28px";
- var metitle=div("");metitle.style.cssText="font-family:'Space Grotesk',sans-serif;font-size:28px;letter-spacing:2px;color:var(--dark);margin-bottom:16px;";metitle.textContent="MODIFICA MENU";me.appendChild(metitle);
+ var metitle=div("");metitle.style.cssText="font-family:'Space Grotesk',sans-serif;font-size:28px;letter-spacing:2px;color:var(--dark);margin-bottom:16px;";metitle.textContent=T("ui_modifica_menu");me.appendChild(metitle);
  var mtabs=div("me-tabs");me.appendChild(mtabs);
  var tD=div("me-tab "+(S.menuEdTab==="drink"?"on":""));tD.textContent=T("menuDrink");
  var tF=div("me-tab "+(S.menuEdTab==="food"?"on":""));tF.textContent=T("menuFood");
@@ -4875,7 +4877,7 @@ function renderMenuEditor(panel){
     imgEl.style.cssText="width:100%;height:180px;object-fit:cover;display:block;";
     photoZone.appendChild(imgEl);
     var rmBtn=document.createElement("button");
-    rmBtn.innerHTML=" Rimuovi foto";
+    rmBtn.innerHTML=T("ui_rimuovi_foto");
     rmBtn.style.cssText="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;";
     rmBtn.onclick=function(){MENU[tab][idx].photo=null;saveMenu();refreshPhoto();};
     photoZone.appendChild(rmBtn);
@@ -4883,7 +4885,7 @@ function renderMenuEditor(panel){
     var addLbl=document.createElement("label");
     addLbl.style.cssText="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:140px;cursor:pointer;gap:8px;";
     var ic=document.createElement("div");ic.style.fontSize="36px";ic.textContent="";
-    var lt=document.createElement("div");lt.style.cssText="font-size:13px;font-weight:700;letter-spacing:1px;color:#aaa;text-transform:uppercase;";lt.textContent="Tocca per aggiungere foto";
+    var lt=document.createElement("div");lt.style.cssText="font-size:13px;font-weight:700;letter-spacing:1px;color:#aaa;text-transform:uppercase;";lt.textContent=T("ui_tocca_per_aggiungere_foto");
     var fi=document.createElement("input");fi.type="file";fi.accept="image/*";fi.style.display="none";
     fi.onchange=function(){
      var file=this.files[0];if(!file)return;
@@ -4917,8 +4919,8 @@ function renderMenuEditor(panel){
   function mkLabel(t){var l=document.createElement("div");l.style.cssText="font-size:11px;font-weight:700;letter-spacing:1px;color:#aaa;text-transform:uppercase;margin-bottom:2px;";l.textContent=t;return l;}
   function mkInput(val,ph,w){var i=document.createElement("input");i.type="text";i.value=val||"";i.placeholder=ph;i.style.cssText="width:"+(w||"100%")+";border:none;border-bottom:1.5px solid #e0e0e0;padding:4px 0;font-size:15px;font-family:'DM Sans',sans-serif;background:transparent;outline:none;box-sizing:border-box;";return i;}
 
-  var inName=mkInput(it.name,"Nome prodotto","100%");
-  var inDesc=document.createElement("textarea");inDesc.value=it.desc||"";inDesc.placeholder="Descrizione";inDesc.rows=2;
+  var inName=mkInput(it.name,T("ui_nome_prodotto"),"100%");
+  var inDesc=document.createElement("textarea");inDesc.value=it.desc||"";inDesc.placeholder=T("ui_descrizione");inDesc.rows=2;
   inDesc.style.cssText="width:100%;border:none;border-bottom:1.5px solid #e0e0e0;padding:4px 0;font-size:14px;font-family:'DM Sans',sans-serif;background:transparent;outline:none;resize:none;box-sizing:border-box;";
   var inPrice=mkInput(it.price,"0.00","100px");
 
@@ -4952,14 +4954,14 @@ function renderMenuEditor(panel){
   inName.onblur=saveFields;inDesc.onblur=saveFields;inPrice.onblur=saveFields;
 
   var delBtn=document.createElement("button");
-  delBtn.textContent=" Elimina prodotto";
+  delBtn.textContent=T("ui_elimina_prodotto");
   delBtn.style.cssText="margin-top:4px;border:none;background:none;color:#ccc;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;cursor:pointer;text-align:left;padding:0;";
-  delBtn.onclick=function(){if(confirm("Eliminare questo prodotto?")){MENU[tab].splice(idx,1);saveMenu();buildEditor(tab);}};
+  delBtn.onclick=function(){if(confirm(T("ui_eliminare_questo_prodotto"))){MENU[tab].splice(idx,1);saveMenu();buildEditor(tab);}};
 
-  body.appendChild(mkLabel("Titolo"));body.appendChild(inName);
-  body.appendChild(mkLabel("Descrizione"));body.appendChild(inDesc);
-  body.appendChild(mkLabel("Prezzo (€)"));body.appendChild(inPrice);
-  body.appendChild(mkLabel("Allergeni"));body.appendChild(algGrid);
+  body.appendChild(mkLabel(T("ui_titolo")));body.appendChild(inName);
+  body.appendChild(mkLabel(T("ui_descrizione")));body.appendChild(inDesc);
+  body.appendChild(mkLabel(T("ui_prezzo")));body.appendChild(inPrice);
+  body.appendChild(mkLabel(T("ui_allergeni")));body.appendChild(algGrid);
   body.appendChild(delBtn);
   card.appendChild(body);
   return card;
@@ -4972,14 +4974,14 @@ function renderMenuEditor(panel){
   mContent.appendChild(list);
   for(var i=0;i<items.length;i++){list.appendChild(makeProductCard(tab,i));}
   var addBtn=document.createElement("button");
-  addBtn.textContent="+ Aggiungi prodotto";
+  addBtn.textContent=T("ui_aggiungi_prodotto");
   addBtn.style.cssText="width:100%;padding:14px;margin-top:4px;border:2px dashed #ddd;border-radius:14px;background:none;font-size:14px;font-weight:700;letter-spacing:1px;color:#aaa;cursor:pointer;";
-  addBtn.onclick=function(){if(MENU[tab].length>=10){alert("Massimo 10 prodotti per categoria.");return;}MENU[tab].push({name:"NUOVO PRODOTTO",desc:"",price:"0.00",photo:null,allergeni:[]});saveMenu();buildEditor(tab);};
+  addBtn.onclick=function(){if(MENU[tab].length>=10){alert(T("ui_massimo_10_prodotti_per_categoria"));return;}MENU[tab].push({name:"NUOVO PRODOTTO",desc:"",price:"0.00",photo:null,allergeni:[]});saveMenu();buildEditor(tab);};
   list.appendChild(addBtn);
   var resetBtn=document.createElement("button");
-  resetBtn.textContent="Ripristina menu default";
+  resetBtn.textContent=T("ui_ripristina_menu_default");
   resetBtn.style.cssText="margin-top:12px;width:100%;padding:10px;border:1px solid #eee;border-radius:10px;background:none;font-size:12px;color:#bbb;cursor:pointer;";
-  resetBtn.onclick=function(){if(confirm("Ripristinare il menu "+tab+" predefinito?")){MENU[tab]=MENU_DEFAULT[tab].map(function(x){return Object.assign({},x,{photo:null,allergeni:[]});});saveMenu();buildEditor(tab);}};
+  resetBtn.onclick=function(){if(confirm(T("ui_ripristinare_il_menu")+tab+T("ui_predefinito"))){MENU[tab]=MENU_DEFAULT[tab].map(function(x){return Object.assign({},x,{photo:null,allergeni:[]});});saveMenu();buildEditor(tab);}};
   list.appendChild(resetBtn);
  }
 
@@ -5070,7 +5072,7 @@ function renderAnalytics(){
   fCode.style.borderBottom="none";
   obCard.appendChild(fNome);obCard.appendChild(fCode);
   ob.appendChild(obCard);
-  var obHint=div("");obHint.style.cssText="font-size:12px;color:#aeaeb2;text-align:center;margin-top:-12px;";obHint.textContent="Il codice pub identifica il tuo locale. Usalo nei tag NFC dei sottobicchieri.";ob.appendChild(obHint);
+  var obHint=div("");obHint.style.cssText="font-size:12px;color:#aeaeb2;text-align:center;margin-top:-12px;";obHint.textContent=T("ui_il_codice_pub_identifica_il");ob.appendChild(obHint);
   // Bottone
   var obErr=div("");obErr.style.cssText="font-size:13px;color:#ff3b30;font-weight:600;text-align:center;min-height:18px;";ob.appendChild(obErr);
   var obBtn=document.createElement("button");
@@ -5145,7 +5147,7 @@ function renderAnalytics(){
 
  // Header
  var hdr=div("as-header");page.appendChild(hdr);
- hdr.appendChild(div("as-title","Impostazioni"));
+ hdr.appendChild(div("as-title",T("ui_impostazioni")));
  var closeX=document.createElement("button");closeX.className="as-close";closeX.innerHTML="&#10005;";
  closeX.onclick=function(){S.screen="home";S.pinOK=false;render();};hdr.appendChild(closeX);
 
@@ -5154,7 +5156,7 @@ function renderAnalytics(){
  var TAB_DEFS=[
   {id:"profilo",label:T("tabProfilo")},
   {id:"analytics",label:T("tabAnalytics")},
-  {id:"menu",label:" Menu"},
+  {id:"menu",label:T("ui_menu")},
   {id:"report",label:T("tabReport")},
   {id:"speciali",label:T("tabSerate")},
   {id:"admin",label:T("tabAdmin")}
@@ -5216,7 +5218,7 @@ function renderAnalytics(){
   try{pubName=localStorage.getItem("filos_pub_name")||"";}catch(e){}
   try{pubCode=localStorage.getItem("filos_pub_code")||"";}catch(e){}
 
-  var rName=inputRow("","#ff9f0a",T("obFieldName"),"Es. Osteria Mario",pubName,40);
+  var rName=inputRow("","#ff9f0a",T("obFieldName"),T("ui_es_osteria_mario"),pubName,40);
   var rCode=inputRow("","#636366",T("obFieldCode"),"Es. osteria_mario",pubCode,30,function(v){return v.toLowerCase().replace(/[^a-z0-9_]/g,"");});
   section(T("settingsIlTuoLocale"),[rName,rCode]);
 
@@ -5291,10 +5293,10 @@ function renderAnalytics(){
   // Stat grid
   var grid=div("as-stat-grid");page.appendChild(grid);
   function stat(val,label){var c=div("as-stat");c.appendChild(Object.assign(div("as-stat-val"),{textContent:String(val)}));c.appendChild(Object.assign(div("as-stat-label"),{textContent:label}));return c;}
-  grid.appendChild(stat(total,"Partite totali"));
-  grid.appendChild(stat(today,"Oggi"));
-  grid.appendChild(stat(fmtTime(totalSec),"Tempo totale"));
-  grid.appendChild(stat(avgR,"Valutazione "));
+  grid.appendChild(stat(total,T("ui_partite_totali")));
+  grid.appendChild(stat(today,T("ui_oggi")));
+  grid.appendChild(stat(fmtTime(totalSec),T("ui_tempo_totale")));
+  grid.appendChild(stat(avgR,T("ui_valutazione")));
 
   // Giochi top
   var gc={};for(var i=0;i<ANALYTICS.plays.length;i++){var p=ANALYTICS.plays[i];gc[p.game]=(gc[p.game]||0)+1;}
@@ -5303,7 +5305,7 @@ function renderAnalytics(){
 
   if(topGames.length){
    var gSec=div("as-section");page.appendChild(gSec);
-   gSec.appendChild(Object.assign(div("as-section-title"),{textContent:"Giochi più giocati"}));
+   gSec.appendChild(Object.assign(div("as-section-title"),{textContent:T("ui_giochi_piu_giocati")}));
    var gGrp=div("as-group");gGrp.style.padding="10px 16px";gSec.appendChild(gGrp);
    topGames.forEach(function(g,idx){
     var br=div("as-bar-row");
@@ -5321,7 +5323,7 @@ function renderAnalytics(){
    menuArr.sort(function(a,b){return b.count-a.count;});menuArr=menuArr.slice(0,8);
    var maxM=menuArr[0].count;
    var mSec=div("as-section");page.appendChild(mSec);
-   mSec.appendChild(Object.assign(div("as-section-title"),{textContent:" Menu più richiesti ("+totalMenuClicks+" click totali)"}));
+   mSec.appendChild(Object.assign(div("as-section-title"),{textContent:T("ui_menu_piu_richiesti")+totalMenuClicks+T("ui_click_totali")}));
    var mGrp=div("as-group");mGrp.style.padding="10px 16px";mSec.appendChild(mGrp);
    menuArr.forEach(function(m,idx){
     var br=div("as-bar-row");
@@ -5332,14 +5334,14 @@ function renderAnalytics(){
     mGrp.appendChild(br);
    });
   } else {
-   section(" Menu",[row("ℹ","#e5e5ea","Nessun click menu ancora","I click verranno tracciati quando i clienti sfogliano il menu","","")]);
+   section(T("ui_menu"),[row("ℹ","#e5e5ea",T("ui_nessun_click_menu_ancora"),T("ui_i_click_verranno_tracciati_quando"),"","")]);
   }
 
   // Ultimi 10
   var recent=ANALYTICS.plays.slice().reverse().slice(0,10);
   if(recent.length){
    var rSec=div("as-section");page.appendChild(rSec);
-   rSec.appendChild(Object.assign(div("as-section-title"),{textContent:"Recenti"}));
+   rSec.appendChild(Object.assign(div("as-section-title"),{textContent:T("ui_recenti")}));
    var rGrp=div("as-group");rSec.appendChild(rGrp);
    recent.forEach(function(p){
     var d=new Date(p.ts);var hm=d.getHours().toString().padStart(2,"0")+":"+d.getMinutes().toString().padStart(2,"0");
@@ -5350,8 +5352,8 @@ function renderAnalytics(){
 
   // Reset
   var resetSec=div("as-section");page.appendChild(resetSec);
-  var resetB=document.createElement("button");resetB.className="as-btn as-btn-destructive";resetB.textContent="Reset tutti i dati";
-  resetB.onclick=function(){if(confirm("Cancellare tutti i dati analytics locali?\nI dati su Firebase non vengono eliminati.")){ANALYTICS={plays:[],ratings:{},menuClicks:{}};saveA();renderAnalytics();}};
+  var resetB=document.createElement("button");resetB.className="as-btn as-btn-destructive";resetB.textContent=T("ui_reset_tutti_i_dati");
+  resetB.onclick=function(){if(confirm(T("ui_cancellare_tutti_i_dati_analytics"))){ANALYTICS={plays:[],ratings:{},menuClicks:{}};saveA();renderAnalytics();}};
   resetSec.appendChild(resetB);
 
  // ═══════════════════════════════════════════════
@@ -5365,31 +5367,31 @@ function renderAnalytics(){
  // TAB REPORT PDF
  // ═══════════════════════════════════════════════
  } else if(S.settingsTab==="report"){
-  var pubName2="";try{pubName2=localStorage.getItem("filos_pub_name")||"Il tuo locale";}catch(e){}
+  var pubName2="";try{pubName2=localStorage.getItem("filos_pub_name")||T("ui_il_tuo_locale");}catch(e){}
 
-  section("Periodo",[ 
-   (function(){var r=div("as-row");var body=div("as-row-body");body.appendChild(Object.assign(div("as-row-label"),{textContent:"Seleziona periodo"}));
+  section(T("ui_periodo"),[ 
+   (function(){var r=div("as-row");var body=div("as-row-body");body.appendChild(Object.assign(div("as-row-label"),{textContent:T("ui_seleziona_periodo")}));
    var sel=document.createElement("select");sel.className="as-input";sel.style.cssText="font-size:15px;background:transparent;color:var(--dark,#111);border:none;outline:none;width:100%;";
-   [["oggi","Oggi"],["settimana","Questa settimana"],["mese","Questo mese"],["trimestre","Ultimo trimestre"],["tutto","Tutto"]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sel.appendChild(op);});
+   [["oggi",T("ui_oggi")],["settimana",T("ui_questa_settimana")],["mese",T("ui_questo_mese")],["trimestre",T("ui_ultimo_trimestre")],["tutto",T("ui_tutto")]].forEach(function(o){var op=document.createElement("option");op.value=o[0];op.textContent=o[1];sel.appendChild(op);});
    body.appendChild(sel);r.appendChild(body);r._sel=sel;return r;})()
   ]);
 
   var periodRow=page.querySelector(".as-group .as-row");
 
   var repSec=div("as-section");page.appendChild(repSec);
-  var genBtn=document.createElement("button");genBtn.className="as-btn as-btn-pdf";genBtn.textContent=" Genera e scarica PDF";
+  var genBtn=document.createElement("button");genBtn.className="as-btn as-btn-pdf";genBtn.textContent=T("ui_genera_e_scarica_pdf");
   genBtn.onclick=function(){
    var period=periodRow&&periodRow._sel?periodRow._sel.value:"tutto";
    generatePDFReport(pubName2,period);
   };
   repSec.appendChild(genBtn);
 
-  section("Cosa include il report",[
-   row("","#5856d6","Partite totali e giornaliere","Conteggio per periodo","",""),
-   row("","#ff9f0a","Giochi più popolari","Top 10 con barra di utilizzo","",""),
-   row("","#34c759","Menu più richiesti","Click su drink e food","",""),
-   row("⭐","#ff9f0a","Valutazioni medie","Per gioco","",""),
-   row("","#636366","Tempo di gioco","Totale e per gioco","","")
+  section(T("ui_cosa_include_il_report"),[
+   row("","#5856d6",T("ui_partite_totali_e_giornaliere"),T("ui_conteggio_per_periodo"),"",""),
+   row("","#ff9f0a",T("ui_giochi_piu_popolari"),T("ui_top_10_con_barra_di"),"",""),
+   row("","#34c759",T("ui_menu_piu_richiesti_2"),T("ui_click_su_drink_e_food"),"",""),
+   row("⭐","#ff9f0a",T("ui_valutazioni_medie"),T("ui_per_gioco"),"",""),
+   row("","#636366",T("ui_tempo_di_gioco"),T("ui_totale_e_per_gioco"),"","")
   ]);
 
  // ═══════════════════════════════════════════════
@@ -5397,8 +5399,8 @@ function renderAnalytics(){
  // ═══════════════════════════════════════════════
  } else if(S.settingsTab==="speciali"){
   var qzEnabled=false;try{qzEnabled=localStorage.getItem("filos_quizzone")==="1";}catch(e){}
-  section("Giochi speciali",[
-   toggleRow("","#ff3b30","Quizzone","Quiz multiplayer per la serata",qzEnabled,function(on){try{localStorage.setItem("filos_quizzone",on?"1":"0");}catch(e){}})
+  section(T("ui_giochi_speciali"),[
+   toggleRow("","#ff3b30","Quizzone",T("ui_quiz_multiplayer_per_la_serata"),qzEnabled,function(on){try{localStorage.setItem("filos_quizzone",on?"1":"0");}catch(e){}})
   ]);
 
  // ═══════════════════════════════════════════════
@@ -5406,20 +5408,20 @@ function renderAnalytics(){
  // ═══════════════════════════════════════════════
  } else if(S.settingsTab==="admin"){
   if(!fbDB){
-   section("Stato",[row("","#ff3b30","Firebase non disponibile","Controlla la connessione","","")]);
+   section(T("ui_stato"),[row("","#ff3b30",T("ui_firebase_non_disponibile"),T("ui_controlla_la_connessione"),"","")]);
   } else {
    var eventoRef=fbRef(fbDB,"filos_admin/evento");
    fbGet(eventoRef).then(function(snap){
     var ev=snap.val()||{attivo:false,nome:"",pubs:[]};
-    var rEvNome=inputRow("","#ff9f0a","Nome evento","Es. Quizzone del mercoledì",ev.nome||"",50);
-    var pubsRow=div("as-row");var pubBody=div("as-row-body");pubBody.appendChild(Object.assign(div("as-row-label"),{textContent:"Codici pub partecipanti"}));
+    var rEvNome=inputRow("","#ff9f0a",T("ui_nome_evento"),T("ui_es_quizzone_del_mercoledi"),ev.nome||"",50);
+    var pubsRow=div("as-row");var pubBody=div("as-row-body");pubBody.appendChild(Object.assign(div("as-row-label"),{textContent:T("ui_codici_pub_partecipanti")}));
     var ta=document.createElement("textarea");ta.style.cssText="width:100%;background:none;border:none;outline:none;font-family:'SF Mono',monospace;font-size:13px;color:var(--dark,#111);resize:none;padding:6px 0;";ta.rows=4;ta.value=(ev.pubs||[]).join("\n");ta.placeholder="osteria_mario\nbar_centrale";
     pubBody.appendChild(ta);pubsRow.appendChild(pubBody);
 
     var isAttivo=ev.attivo||false;
-    var togEv=toggleRow("","#34c759","Evento attivo","Visibile a tutti i pub partecipanti",isAttivo,function(on){isAttivo=on;});
+    var togEv=toggleRow("","#34c759",T("ui_evento_attivo"),T("ui_visibile_a_tutti_i_pub"),isAttivo,function(on){isAttivo=on;});
 
-    section("Evento in corso",[rEvNome,pubsRow,togEv]);
+    section(T("ui_evento_in_corso"),[rEvNome,pubsRow,togEv]);
 
     var adminBanner=savedBanner(page);
     var adminSec=div("as-section");page.appendChild(adminSec);
@@ -5428,10 +5430,10 @@ function renderAnalytics(){
      var pubList=ta.value.split("\n").map(function(s){return s.trim().toLowerCase();}).filter(Boolean);
      fbSet(eventoRef,{attivo:isAttivo,nome:rEvNome._input.value.trim(),pubs:pubList,ts:Date.now()}).then(function(){
       adminBanner.textContent=T("adminSaved");setTimeout(function(){adminBanner.textContent="";},2500);
-     }).catch(function(){adminBanner.style.color="#ff3b30";adminBanner.textContent=" Errore salvataggio";});
+     }).catch(function(){adminBanner.style.color="#ff3b30";adminBanner.textContent=T("ui_errore_salvataggio");});
     };
     adminSec.appendChild(saveAdminB);
-   }).catch(function(){section("Errore",[row("","#ff3b30","Impossibile leggere Firebase","","","")]);});
+   }).catch(function(){section(T("ui_errore"),[row("","#ff3b30",T("ui_impossibile_leggere_firebase"),"","","")]);});
   }
  }
 }
@@ -5439,11 +5441,11 @@ function renderAnalytics(){
 function generatePDFReport(pubName, period){
  // Calcola range temporale
  var now=Date.now();var fromTs=0;
- var periodLabel="Tutto il periodo";
- if(period==="oggi"){fromTs=new Date().setHours(0,0,0,0);periodLabel="Oggi, "+new Date().toLocaleDateString("it-IT",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});}
- else if(period==="settimana"){var d=new Date();d.setDate(d.getDate()-d.getDay()+1);d.setHours(0,0,0,0);fromTs=d.getTime();periodLabel="Settimana corrente";}
- else if(period==="mese"){var d=new Date();d.setDate(1);d.setHours(0,0,0,0);fromTs=d.getTime();periodLabel="Mese: "+new Date().toLocaleDateString("it-IT",{month:"long",year:"numeric"});}
- else if(period==="trimestre"){var d=new Date();d.setMonth(d.getMonth()-2);d.setDate(1);d.setHours(0,0,0,0);fromTs=d.getTime();periodLabel="Ultimo trimestre";}
+ var periodLabel=T("ui_tutto_il_periodo");
+ if(period==="oggi"){fromTs=new Date().setHours(0,0,0,0);periodLabel=T("ui_oggi_2")+new Date().toLocaleDateString("it-IT",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});}
+ else if(period==="settimana"){var d=new Date();d.setDate(d.getDate()-d.getDay()+1);d.setHours(0,0,0,0);fromTs=d.getTime();periodLabel=T("ui_settimana_corrente");}
+ else if(period==="mese"){var d=new Date();d.setDate(1);d.setHours(0,0,0,0);fromTs=d.getTime();periodLabel=T("ui_mese")+new Date().toLocaleDateString("it-IT",{month:"long",year:"numeric"});}
+ else if(period==="trimestre"){var d=new Date();d.setMonth(d.getMonth()-2);d.setDate(1);d.setHours(0,0,0,0);fromTs=d.getTime();periodLabel=T("ui_ultimo_trimestre");}
 
  // Filtra dati
  var plays=ANALYTICS.plays.filter(function(p){return p.ts>=fromTs;});
@@ -5496,53 +5498,53 @@ function generatePDFReport(pubName, period){
 
  html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;">';
  html+='<div><h1>'+pubName+'</h1><div class="sub">'+periodLabel+'</div></div>';
- html+='<div class="header-meta">Generato il '+reportDate+'</div></div>';
+ html+=T("ui_generato_il")+reportDate+'</div></div>';
 
  html+='<div class="stat-grid">';
- html+='<div class="stat-box"><div class="stat-val">'+total+'</div><div class="stat-label">Partite</div></div>';
- html+='<div class="stat-box"><div class="stat-val">'+dayCount+'</div><div class="stat-label">Giorni attivi</div></div>';
- html+='<div class="stat-box"><div class="stat-val">'+fmtT(totalSec)+'</div><div class="stat-label">Tempo totale</div></div>';
- html+='<div class="stat-box"><div class="stat-val">'+avgR+'</div><div class="stat-label">Valutazione </div></div>';
+ html+='<div class="stat-box"><div class="stat-val">'+total+T("ui_partite");
+ html+='<div class="stat-box"><div class="stat-val">'+dayCount+T("ui_giorni_attivi");
+ html+='<div class="stat-box"><div class="stat-val">'+fmtT(totalSec)+T("ui_tempo_totale_2");
+ html+='<div class="stat-box"><div class="stat-val">'+avgR+T("ui_valutazione_2");
  html+='</div>';
 
  html+='<div class="stat-grid" style="grid-template-columns:1fr 1fr;margin-top:12px;">';
- html+='<div class="stat-box"><div class="stat-val">'+totalClicks+'</div><div class="stat-label">Click menu</div></div>';
- html+='<div class="stat-box"><div class="stat-val">'+peakHour+'</div><div class="stat-label">Ora di punta</div></div>';
+ html+='<div class="stat-box"><div class="stat-val">'+totalClicks+T("ui_click_menu");
+ html+='<div class="stat-box"><div class="stat-val">'+peakHour+T("ui_ora_di_punta");
  html+='</div>';
 
  if(topGames.length){
-  html+='<h2> Giochi più giocati</h2>';
+  html+=T("ui_giochi_piu_giocati_2");
   topGames.slice(0,10).forEach(function(g,i){
-   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+g[0]+'</span>'+bar(g[1]/maxG*100,"#007aff")+'<span class="bar-val">'+g[1]+'&nbsp;pt</span></div>';
+   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+g[0]+'</span>'+bar(g[1]/maxG*100,"#007aff")+'<span class="bar-val">'+g[1]+T("ui_pt");
   });
  }
 
  if(menuArr.length){
   var maxM=menuArr[0].count;
-  html+='<h2> Menu più richiesti</h2>';
+  html+=T("ui_menu_piu_richiesti_3");
   menuArr.slice(0,10).forEach(function(m,i){
    var icon=m.tab==="drink"?"":"";
-   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+icon+' '+m.name+'</span>'+bar(m.count/maxM*100,"#ff9f0a")+'<span class="bar-val">'+m.count+'x</span></div>';
+   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+icon+' '+m.name+'</span>'+bar(m.count/maxM*100,"#ff9f0a")+'<span class="bar-val">'+m.count+T("ui_x");
   });
  }
 
  if(Object.keys(allRatings).length){
   var ratArr=[];for(var k in allRatings)ratArr.push([k,allRatings[k]]);
   ratArr.sort(function(a,b){return (b[1].t/b[1].c)-(a[1].t/a[1].c);});var maxRat=5;
-  html+='<h2>⭐ Valutazioni per gioco</h2>';
+  html+=T("ui_valutazioni_per_gioco");
   ratArr.slice(0,10).forEach(function(r,i){
    var avg=(r[1].t/r[1].c).toFixed(1);
    html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+r[0]+'</span>'+bar(r[1].t/r[1].c/5*100,"#ff9f0a")+'<span class="bar-val">&nbsp;'+avg+'</span></div>';
   });
  }
 
- html+='<div class="footer">Fil&apos;s — Report analitico • I dati non contengono informazioni personali identificabili</div>';
+ html+=T("ui_fil_s_report_analitico_i");
  html+='<br><button onclick="window.print()" style="display:block;margin:0 auto;padding:12px 32px;background:#007aff;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">Stampa / Salva PDF</button>';
  html+='</body></html>';
 
  var win=window.open("","_blank","width=860,height=700");
  if(win){win.document.write(html);win.document.close();}
- else{alert("Il popup è stato bloccato. Abilita i popup per questo sito per scaricare il PDF.");}
+ else{alert(T("ui_il_popup_e_stato_bloccato"));}
 }
 
 
