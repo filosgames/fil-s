@@ -1300,7 +1300,8 @@ function renderNomeCognome(){
 }
 
 
-var DADO_FACES=["","","","","","",""];
+var DADO_PIPS={1:[4],2:[2,6],3:[2,4,6],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+function dadoFill(face,n){face.innerHTML="";var on=DADO_PIPS[n]||[];for(var k=0;k<9;k++){var c=document.createElement("span");if(on.indexOf(k)>=0)c.className="dado-pip";face.appendChild(c);}face.setAttribute("aria-label",String(n));}
 
 function startDado(names){
  S.dadoPlayerNames=names;
@@ -1410,14 +1411,16 @@ function renderDado(){
 
  // Dice
  var dadoBox=div("dado-box"+(S.dadoRolled?" rolled":""));
- var face=div("dado-face");
- face.textContent=S.dadoValue>0?DADO_FACES[S.dadoValue]:"";
+ var face=div("dado-face"+(S.dadoValue>0?"":" idle"));
+ dadoFill(face,S.dadoValue>0?S.dadoValue:5);
  dadoBox.appendChild(face);
  if(!S.dadoRolled){
+ var _rolling=false;
  dadoBox.onclick=function(){
- dadoBox.classList.add("rolling");
- setTimeout(function(){dadoBox.classList.remove("rolling");},400);
- rollDado();
+ if(_rolling)return;_rolling=true;
+ face.classList.remove("idle");dadoBox.classList.add("rolling");
+ var n=0,last=0;
+ var spin=setInterval(function(){var v;do{v=Math.floor(Math.random()*6)+1;}while(v===last);last=v;dadoFill(face,v);if(++n>=7){clearInterval(spin);if(S.screen==="dado")rollDado();}},85);
  };
  }
  wrap.appendChild(dadoBox);
