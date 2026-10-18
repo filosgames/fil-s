@@ -425,8 +425,65 @@ h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-title,
 .codice-num-btn:hover{border-color:var(--dark);color:var(--dark);background:var(--surface2);}
 .codice-num-btn.asked{background:var(--surface2);color:var(--muted);cursor:not-allowed;}
 .codice-num-btn.found{background:var(--green);border-color:var(--green);color:#fff;}
+.codice-step{font-size:12px;color:var(--muted);letter-spacing:2px;font-weight:600;margin:12px 0 18px;}
+.codice-big{font-weight:800;font-size:26px;color:var(--dark);letter-spacing:-0.4px;margin-bottom:10px;line-height:1.25;}
+.codice-sub{font-size:15px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.codice-result{font-weight:700;font-size:17px;color:var(--dark);margin:6px 0 24px;}
+.codice-slots{display:flex;gap:10px;justify-content:center;margin:8px 0 18px;}
+.codice-slot{width:56px;height:66px;border-radius:14px;border:1.5px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:30px;color:var(--dark);}
+.codice-slot.filled{background:var(--surface);border-color:var(--dark);}
+.codice-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:300px;margin:0 auto 18px;}
+.codice-key{height:58px;border-radius:16px;border:1px solid var(--border);background:var(--surface);font-size:26px;font-weight:600;color:var(--dark);cursor:pointer;font-family:inherit;box-shadow:0 1px 3px rgba(0,0,0,0.06);-webkit-tap-highlight-color:transparent;}
+.codice-key:active{transform:scale(0.95);background:var(--surface2);}
+.codice-key:disabled{opacity:0.35;cursor:default;}
+.codice-key.del{font-size:22px;color:var(--muted);}
+.codice-key.blank{border:none;background:transparent;box-shadow:none;}
+.codice-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;}
+.codice-tab{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);font-weight:600;font-size:14px;color:var(--dark);cursor:pointer;font-family:inherit;}
+.codice-tab.on{background:var(--dark);color:#fff;border-color:var(--dark);}
+.codice-hist{display:flex;flex-direction:column;gap:6px;margin-bottom:18px;}
+.codice-hist-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;}
+.codice-hist-by{flex:1;font-size:13px;color:var(--muted);font-weight:600;text-align:left;}
+.codice-hist-guess{font-weight:800;font-size:22px;letter-spacing:4px;color:var(--dark);}
+.codice-fb{display:grid;grid-template-columns:repeat(2,12px);gap:4px;}
+.codice-fb.big{display:flex;gap:10px;justify-content:center;margin:0 0 6px;}
+.codice-peg{width:12px;height:12px;border-radius:50%;background:var(--surface2);border:1.5px solid var(--border);}
+.codice-fb.big .codice-peg{width:22px;height:22px;}
+.codice-peg.g{background:#34c759;border-color:#34c759;}
+.codice-peg.y{background:#ffcc00;border-color:#ffcc00;}
+.codice-legend{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.5;}
 .codice-turn-info{background:var(--dark);border-radius:10px;padding:12px 16px;color:#fff;font-weight:600;font-size:14px;margin-bottom:16px;text-align:center;}
 .codice-answer-btns{display:flex;gap:10px;justify-content:center;margin-top:12px;}
+/* ── Indovina il codice: stile iOS ── */
+.codice-wrap{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;max-width:520px;}
+.codice-head{text-align:center;margin:6px 0 18px;}
+.codice-eyebrow{font-size:13px;font-weight:600;color:#8e8e93;letter-spacing:0.2px;margin-bottom:4px;}
+.codice-big{font-size:28px;font-weight:700;letter-spacing:-0.6px;color:#1c1c1e;line-height:1.2;margin-bottom:8px;}
+.codice-sub{font-size:16px;color:#8e8e93;line-height:1.45;margin-bottom:22px;}
+.codice-step{font-size:13px;font-weight:600;color:#8e8e93;margin:18px 0 10px;letter-spacing:0;}
+.codice-section{font-size:13px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:0.4px;margin:4px 0 8px 16px;text-align:left;}
+.codice-otp{position:relative;display:inline-block;cursor:text;margin:6px 0 22px;}
+.codice-otp-input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;caret-color:transparent;}
+.codice-slots{display:flex;gap:12px;justify-content:center;margin:0;}
+.codice-slot{width:60px;height:72px;border-radius:16px;background:#fff;border:1px solid rgba(60,60,67,0.12);box-shadow:0 1px 2px rgba(0,0,0,0.04);display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:600;color:#1c1c1e;transition:border-color .15s,box-shadow .15s;}
+.codice-slot.filled{border-color:rgba(60,60,67,0.22);}
+.codice-slot.active{border-color:#007aff;box-shadow:0 0 0 3px rgba(0,122,255,0.18);}
+.codice-cta{display:block;width:100%;max-width:340px;margin:0 auto;height:52px;border:0;border-radius:14px;background:#007aff;color:#fff;font-size:17px;font-weight:600;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s,transform .1s;}
+.codice-cta:active{transform:scale(0.98);opacity:0.85;}
+.codice-cta:disabled{background:#d1d1d6;color:#fff;cursor:default;transform:none;opacity:1;}
+.codice-tabs{display:flex;background:rgba(118,118,128,0.12);border-radius:10px;padding:2px;gap:2px;margin:0 auto 18px;max-width:420px;}
+.codice-tab{flex:1;border:0;background:transparent;border-radius:8px;padding:7px 10px;font-size:14px;font-weight:600;color:#1c1c1e;font-family:inherit;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.codice-tab.on{background:#fff;box-shadow:0 3px 8px rgba(0,0,0,0.12),0 3px 1px rgba(0,0,0,0.04);color:#1c1c1e;border:0;}
+.codice-hist{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:24px;gap:0;border:0;}
+.codice-hist-row{border:0;border-radius:0;background:transparent;padding:12px 16px;position:relative;}
+.codice-hist-row+.codice-hist-row::before{content:"";position:absolute;left:16px;right:0;top:0;height:0.5px;background:rgba(60,60,67,0.18);}
+.codice-hist-by{font-size:15px;color:#8e8e93;font-weight:400;}
+.codice-hist-guess{font-size:22px;font-weight:600;letter-spacing:6px;color:#1c1c1e;font-variant-numeric:tabular-nums;}
+.codice-peg{background:#e5e5ea;border:0;}
+.codice-peg.g{background:#34c759;}
+.codice-peg.y{background:#ffcc00;}
+.codice-result{font-size:17px;font-weight:600;color:#1c1c1e;margin:10px 0 28px;}
+.codice-legend{font-size:13px;color:#8e8e93;margin-top:16px;}
 @media(max-width:768px){
  .codice-wrap{padding:16px;}
  .codice-setup-grid{grid-template-columns:1fr;}
@@ -908,9 +965,9 @@ try {
 <script src="data-ag.js?v=3"></script>
 <script src="data-qv.js?v=3"></script>
 <script src="data-sp.js?v=3"></script>
-<script src="data-cats.js?v=3"></script>
+<script src="data-cats.js?v=4"></script>
 <script src="data-quizdata.js?v=2"></script>
-<script src="data-quiz.js?v=24b"></script>
+<script src="data-quiz.js?v=25"></script>
 <script>
 
 
@@ -2151,6 +2208,12 @@ Object.assign(STRINGS.it,{"nfcChecking": "Verifica del tag in corso…", "nfcInv
 Object.assign(STRINGS.en,{"nfcChecking": "Checking the tag…", "nfcInvalid": "This tag isn't valid or has been deactivated. Please ask the venue staff.", "nfcOffline": "I can't check the tag: check your connection and try again.", "nfcRetry": "Try again", "nfcInfo": "Generate the link to write on the NFC tags of your coasters. Anyone who taps a tag with their phone can play for 2 hours. Without a tag the app stays locked, except on this phone.", "nfcNeedPub": "First set and save the venue code above.", "nfcSaving": "Saving…", "nfcDenied": "Not authorised: this venue code is already managed by another phone. Enter the manager key below.", "nfcGenerate": "Generate tag link", "nfcKeyLabel": "Manager key", "nfcKeyHint": "Keep it safe: you need it to manage the tags from another phone or if you clear your browser data.", "nfcKeyPlaceholder": "Paste an existing key", "nfcKeyUse": "Use this key", "nfcKeyBad": "Invalid key.", "nfcSection": "NFC tags", "nfcRegenBtn": "Regenerate link (deactivates old tags)", "nfcRegenConfirm": "Regenerate the link? All NFC tags already written will stop working and must be rewritten."});
 Object.assign(STRINGS.es,{"nfcChecking": "Comprobando la etiqueta…", "nfcInvalid": "Esta etiqueta no es válida o se ha desactivado. Pregunta al personal del local.", "nfcOffline": "No puedo comprobar la etiqueta: revisa la conexión e inténtalo de nuevo.", "nfcRetry": "Reintentar", "nfcInfo": "Genera el enlace que hay que grabar en las etiquetas NFC de los posavasos. Quien toque una etiqueta con el móvil puede jugar durante 2 horas. Sin etiqueta la app queda bloqueada, salvo en este móvil.", "nfcNeedPub": "Primero configura y guarda el código del local arriba.", "nfcSaving": "Guardando…", "nfcDenied": "No autorizado: este código de local ya lo gestiona otro móvil. Introduce abajo la clave del gestor.", "nfcGenerate": "Generar enlace para las etiquetas", "nfcKeyLabel": "Clave del gestor", "nfcKeyHint": "Guárdala: la necesitas para gestionar las etiquetas desde otro móvil o si borras los datos del navegador.", "nfcKeyPlaceholder": "Pega una clave existente", "nfcKeyUse": "Usar esta clave", "nfcKeyBad": "Clave no válida.", "nfcSection": "Etiquetas NFC", "nfcRegenBtn": "Regenerar enlace (desactiva las etiquetas antiguas)", "nfcRegenConfirm": "¿Regenerar el enlace? Todas las etiquetas NFC ya grabadas dejarán de funcionar y habrá que volver a grabarlas."});
 Object.assign(STRINGS.it,{qvTie:"Pareggio!"});Object.assign(STRINGS.en,{qvTie:"It's a tie!"});Object.assign(STRINGS.es,{qvTie:"¡Empate!"});
+Object.assign(STRINGS.it,{"codicePassTo": "Passa il telefono a ", "codicePassSub": "Gli altri non devono guardare lo schermo.", "codiceIAm": "Sono ", "codiceChooseSecret": ", scegli il tuo codice segreto", "codiceSecretSub": "4 cifre. L'app lo ricorda: nessun altro lo vedrà.", "codiceSave": "Salva e nascondi", "codiceGuessOf": " — indovina il codice di ", "codiceNoTries": "Nessun tentativo ancora. Scrivi un codice di 4 cifre e prova!", "codiceTry": "Prova", "codiceTriedOn": " ha provato il codice di ", "codicePassTurn": "Passa il turno a ", "codiceFbG": "{n} al posto giusto", "codiceFbY": "{n} giuste ma al posto sbagliato", "codiceLegend": "Verde = cifra giusta al posto giusto · Giallo = cifra giusta al posto sbagliato", "codiceDesc": "Scrivete i nomi. Poi ognuno, a turno e di nascosto, sceglie il suo codice segreto di 4 cifre."});
+Object.assign(STRINGS.en,{"codicePassTo": "Pass the phone to ", "codicePassSub": "Nobody else should look at the screen.", "codiceIAm": "I'm ", "codiceChooseSecret": ", choose your secret code", "codiceSecretSub": "4 digits. The app remembers it: nobody else will see it.", "codiceSave": "Save and hide", "codiceGuessOf": " — guess the code of ", "codiceNoTries": "No guesses yet. Enter a 4-digit code and try!", "codiceTry": "Try", "codiceTriedOn": " tried the code of ", "codicePassTurn": "Pass the turn to ", "codiceFbG": "{n} in the right place", "codiceFbY": "{n} right but in the wrong place", "codiceLegend": "Green = right digit, right place · Yellow = right digit, wrong place", "codiceDesc": "Enter the names. Then each player, in turn and in secret, picks a 4-digit secret code."});
+Object.assign(STRINGS.es,{"codicePassTo": "Pasa el móvil a ", "codicePassSub": "Los demás no deben mirar la pantalla.", "codiceIAm": "Soy ", "codiceChooseSecret": ", elige tu código secreto", "codiceSecretSub": "4 cifras. La app lo recuerda: nadie más lo verá.", "codiceSave": "Guardar y ocultar", "codiceGuessOf": " — adivina el código de ", "codiceNoTries": "Aún no hay intentos. ¡Escribe un código de 4 cifras y prueba!", "codiceTry": "Probar", "codiceTriedOn": " probó el código de ", "codicePassTurn": "Pasa el turno a ", "codiceFbG": "{n} en su sitio", "codiceFbY": "{n} correctas pero fuera de sitio", "codiceLegend": "Verde = cifra correcta en su sitio · Amarillo = cifra correcta fuera de sitio", "codiceDesc": "Escribid los nombres. Después cada uno, por turnos y en secreto, elige su código secreto de 4 cifras."});
+Object.assign(STRINGS.it,{"codiceGuessShort": "Indovina il codice di ", "codiceTries": "Tentativi"});
+Object.assign(STRINGS.en,{"codiceGuessShort": "Guess the code of ", "codiceTries": "Guesses"});
+Object.assign(STRINGS.es,{"codiceGuessShort": "Adivina el código de ", "codiceTries": "Intentos"});
 function T(k){return(STRINGS[LANG]||STRINGS.it)[k]||(STRINGS.it[k])||k;}
 // ──────────────────────────────────────────────────────────
 
@@ -2245,8 +2308,8 @@ var GAMES={
  rules:"L'app lancia un dado. A turno ogni giocatore sceglie se aggiungere il valore al proprio punteggio oppure sottrarlo a quello di un avversario. Chi arriva a 15 per primo vince. Si può anche andare oltre — ma attenzione, gli altri possono farti scendere!",
  tip:"La strategia è tutto: quando sei vicino a 15 gli altri ti attaccano. A volte conviene restare bassi e far salire gli altri."},
  {name:T("codiceTitle"),players:"2+",time:"15 min",hot:true,codice:true,
- rules:"Ogni giocatore sceglie un codice segreto di 4 cifre (es. 3-7-1-9). A turno si chiede a un avversario se uno specifico numero è nel suo codice — lui risponde solo SÌ o NO. Chi per primo indovina tutte e 4 le cifre del codice avversario vince il round!",
- tip:"Non chiedere numeri a caso — tieni traccia di quelli già scartati. E cerca di capire dall'ordine delle domande degli altri quale codice stanno cercando di decifrare."},
+ rules:"Ognuno sceglie di nascosto un codice segreto di 4 cifre (es. 3-7-1-9) e l'app lo ricorda. A turno provi a indovinare il codice di un avversario scrivendo tutte e 4 le cifre: l'app ti dice quante sono giuste al posto giusto (verde) e quante sono giuste ma al posto sbagliato (giallo). Chi per primo indovina un codice intero vince!",
+ tip:"Usa i tentativi precedenti, anche quelli degli altri: sono tutti visibili. Se una cifra non dà né verde né giallo, scartala subito."},
  
  ],
  coppia:[
@@ -3562,6 +3625,7 @@ else if(S.screen==="specchio")renderSpecchio();
  else if(S.screen==="ca_write")renderCaWrite();
  else if(S.screen==="ca_read")renderCaRead();
  else if(S.screen==="ca_end")renderCaEnd();
+ else if(S.screen==="codice_secret")renderCodiceSecret();
  else if(S.screen==="codice")renderCodice();
  else if(S.screen==="codice_win")renderCodiceWin();
  else if(S.screen==="dado")renderDado();

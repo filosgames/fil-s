@@ -1506,22 +1506,6 @@ function renderDadoWin(){
 }
 
 
-function startCodice(players, codes){
- S.codicePlayers=players;
- S.codiceCodes=codes; // {name: [1,2,3,4]}
- S.codiceFound={};
- S.codiceAsked={};
- players.forEach(function(p){
- S.codiceFound[p]=[];
- S.codiceAsked[p]=[];
- });
- S.codiceCurrentIdx=0;
- S.codiceQuestion=null;
- S.codiceWaiting=false;
- S.screen="codice";
- render();
-}
-
 function renderCodiceSetup(){
  clr();
  var cat=getCatById(S.cat);
@@ -1539,11 +1523,10 @@ function renderCodiceSetup(){
  if(!S.codiceNumPlayers) S.codiceNumPlayers=2;
 
  var nameInputs=[];
- var codeInputs=[];
  var grid=div("codice-setup-grid");
 
  function buildCodiceGrid(n){
- grid.innerHTML=''; nameInputs=[]; codeInputs=[];
+ grid.innerHTML=''; nameInputs=[];
  for(var i=0;i<n;i++){
  (function(idx){
  var pcard=div("codice-player-setup");
@@ -1557,24 +1540,6 @@ function renderCodiceSetup(){
  if(S.codicePlayerNames&&S.codicePlayerNames[idx]) nameInp.value=S.codicePlayerNames[idx];
  pcard.appendChild(nameInp);
  nameInputs.push(nameInp);
- var digitRow=div("codice-digits");
- var digits=[];
- for(var d=0;d<4;d++){
- (function(di){
- var inp=document.createElement("input");
- inp.type="number";inp.className="codice-digit";
- inp.min=0;inp.max=9;inp.maxLength=1;inp.placeholder="?";
- inp.oninput=function(){
- if(this.value.length>1)this.value=this.value.slice(-1);
- if(this.value<0)this.value=0;
- if(this.value>9)this.value=9;
- };
- digits.push(inp);
- digitRow.appendChild(inp);
- })(d);
- }
- pcard.appendChild(digitRow);
- codeInputs.push(digits);
  grid.appendChild(pcard);
  })(i);
  }
@@ -1583,16 +1548,9 @@ function renderCodiceSetup(){
  var startWrap=div("");startWrap.style.cssText="text-align:center;margin-top:20px;";
  startWrap.appendChild(btn("ebtn",T("qvStart"),function(){
  var names=nameInputs.map(function(inp,i){return inp.value.trim()||(T("qvPlayer")+(i+1));});
- var codes={};
- var valid=true;
- names.forEach(function(name,i){
- var code=codeInputs[i].map(function(inp){return inp.value;});
- if(code.some(function(v){return v==="";})){valid=false;}
- codes[name]=code;
- });
- if(!valid){alert(T("codiceAllDigits"));return;}
+ var seen={};names=names.map(function(n){var b=n,c=2;while(seen[n]){n=b+" "+c++;}seen[n]=1;return n;});
  S.codicePlayerNames=names;
- startCodice(names,codes);
+ startCodice(names);
  }));
  body.appendChild(makeStepperWidget(S.codiceNumPlayers||2, 2, 20, function(n){
  S.codiceNumPlayers=n;
@@ -1605,96 +1563,152 @@ function renderCodiceSetup(){
  document.getElementById("root").appendChild(wrap);
 }
 
+// ══════════════════════════════════════════
+// INDOVINA IL CODICE — codici segreti salvati dall'app,
+// tentativi con la sequenza completa e risposta automatica
+// (verde = cifra giusta al posto giusto, giallo = cifra giusta al posto sbagliato)
+// ══════════════════════════════════════════
+function codiceScore(code,guess){
+ var g=0,y=0,cc={},gc={};
+ for(var k=0;k<4;k++){if(code[k]===guess[k])g++;else{cc[code[k]]=(cc[code[k]]||0)+1;gc[guess[k]]=(gc[guess[k]]||0)+1;}}
+ Object.keys(gc).forEach(function(d){if(cc[d])y+=Math.min(cc[d],gc[d]);});
+ return {g:g,y:y};
+}
+function startCodice(players){
+ S.codicePlayers=players;
+ S.codiceCodes={};
+ S.codiceHist={};
+ players.forEach(function(p){S.codiceHist[p]=[];});
+ S.codiceSecretIdx=0;S.codiceSecretShown=false;S.codiceEntry=[];
+ S.codiceCurrentIdx=0;S.codiceTarget=null;S.codiceLast=null;
+ S.screen="codice_secret";
+ render();
+}
+// Campo di 4 cifre che usa la tastiera numerica del telefono (niente freccette)
+function codiceOtp(onChange){
+ var box=div("codice-otp");
+ var inp=document.createElement("input");
+ inp.type="text";inp.setAttribute("inputmode","numeric");inp.setAttribute("pattern","[0-9]*");
+ inp.setAttribute("autocomplete","one-time-code");inp.maxLength=4;inp.className="codice-otp-input";
+ inp.setAttribute("aria-label","Codice");
+ var slots=[];var row=div("codice-slots big");
+ for(var k=0;k<4;k++){var sl=div("codice-slot");slots.push(sl);row.appendChild(sl);}
+ function paint(){
+  var v=inp.value;
+  for(var k=0;k<4;k++){slots[k].textContent=v[k]||"";slots[k].className="codice-slot"+(v[k]?" filled":"")+(document.activeElement===inp&&k===Math.min(v.length,3)?" active":"");}
+  onChange(v.split(""));
+ }
+ inp.oninput=function(){var c=inp.value.replace(/[^0-9]/g,"").slice(0,4);if(c!==inp.value)inp.value=c;paint();};
+ inp.onfocus=paint;inp.onblur=paint;
+ box.onclick=function(){inp.focus();};
+ box.appendChild(row);box.appendChild(inp);
+ box._input=inp;box._paint=paint;
+ setTimeout(function(){try{inp.focus({preventScroll:true});}catch(e){}paint();},60);
+ return box;
+}
+function codiceSlots(arr,cls){
+ var row=div("codice-slots"+(cls?" "+cls:""));
+ for(var k=0;k<4;k++){var v=arr[k];var sl=div("codice-slot"+(v!==undefined?" filled":""));sl.textContent=v===undefined?"":v;row.appendChild(sl);}
+ return row;
+}
+function renderCodiceSecret(){
+ clr();
+ addBackArrow(goBackToGames);
+ var wrap=div("codice-wrap");wrap.style.textAlign="center";
+ var name=S.codicePlayers[S.codiceSecretIdx];
+ if(!S.codiceSecretShown){
+  wrap.appendChild(div("codice-step",(S.codiceSecretIdx+1)+" / "+S.codicePlayers.length));
+  wrap.appendChild(div("codice-big",T("codicePassTo")+name));
+  wrap.appendChild(div("codice-sub",T("codicePassSub")));
+  wrap.appendChild(btn("codice-cta",T("codiceIAm")+name,function(){S.codiceSecretShown=true;S.codiceEntry=[];render();}));
+  document.getElementById("root").appendChild(wrap);return;
+ }
+ wrap.appendChild(div("codice-big",name+T("codiceChooseSecret")));
+ wrap.appendChild(div("codice-sub",T("codiceSecretSub")));
+ var ok;S.codiceEntry=[];
+ var otp=codiceOtp(function(arr){S.codiceEntry=arr;if(ok){ok.disabled=arr.length!==4;}});
+ wrap.appendChild(otp);
+ ok=btn("codice-cta",T("codiceSave"),function(){
+  if(S.codiceEntry.length!==4)return;
+  S.codiceCodes[name]=S.codiceEntry.slice();
+  S.codiceEntry=[];S.codiceSecretShown=false;S.codiceSecretIdx++;
+  if(S.codiceSecretIdx>=S.codicePlayers.length){S.codiceCurrentIdx=0;S.codiceTarget=null;S.codiceLast=null;S.screen="codice";}
+  render();
+ });
+ ok.disabled=S.codiceEntry.length!==4;
+ wrap.appendChild(ok);
+ document.getElementById("root").appendChild(wrap);
+}
+function codiceOpponents(){var me=S.codicePlayers[S.codiceCurrentIdx];return S.codicePlayers.filter(function(p){return p!==me;});}
+function codiceFeedback(g,y,big){
+ var f=div("codice-fb"+(big?" big":""));
+ for(var k=0;k<4;k++){f.appendChild(div("codice-peg"+(k<g?" g":k<g+y?" y":"")));}
+ return f;
+}
+function codiceFeedbackText(g,y){
+ return T("codiceFbG").replace("{n}",g)+" · "+T("codiceFbY").replace("{n}",y);
+}
 function renderCodice(){
  clr();
  addBackArrow(goBackToGames);
  var wrap=div("codice-wrap");
- var currentName=S.codicePlayers[S.codiceCurrentIdx];
-
- // Turn info
- var ti=div("codice-turn-info");
- ti.textContent=S.codiceWaiting?T("codiceWaiting")+S.codiceQuestion.target+"...":T("codiceTurn")+currentName+T("codiceAsk");
- wrap.appendChild(ti);
-
- // Game area - one card per player
- var gameArea=div("codice-game-area");
- S.codicePlayers.forEach(function(name,pi){
- if(name===currentName)return; // skip self
- var pcard=div("codice-player-card"+(S.codiceWaiting&&S.codiceQuestion&&S.codiceQuestion.target===name?" current":""));
- var h4=document.createElement("h4");h4.textContent=name+T("ui_s_codice");pcard.appendChild(h4);
-
- // Known slots
- var knownDiv=div("codice-known");
- var found=S.codiceFound[name]||[];
- var code=S.codiceCodes[name];
- for(var s=0;s<4;s++){
- var slot=div("codice-known-slot"+(found.indexOf(code[s])>=0?" found":"empty"));
- slot.textContent=found.indexOf(code[s])>=0?code[s]:"?";
- knownDiv.appendChild(slot);
+ var me=S.codicePlayers[S.codiceCurrentIdx];
+ var opps=codiceOpponents();
+ if(!S.codiceTarget||opps.indexOf(S.codiceTarget)<0)S.codiceTarget=opps[0];
+ var target=S.codiceTarget;
+ if(!S.codiceEntry)S.codiceEntry=[];
+ // Esito dell'ultimo tentativo e passaggio del turno
+ if(S.codiceLast){
+  var L=S.codiceLast;
+  wrap.style.textAlign="center";
+  wrap.appendChild(div("codice-sub",L.by+T("codiceTriedOn")+L.target+":"));
+  wrap.appendChild(codiceSlots(L.guess,"big"));
+  wrap.appendChild(codiceFeedback(L.g,L.y,true));
+  wrap.appendChild(div("codice-result",codiceFeedbackText(L.g,L.y)));
+  var next=S.codicePlayers[(S.codiceCurrentIdx+1)%S.codicePlayers.length];
+  wrap.appendChild(btn("codice-cta",T("codicePassTurn")+next,function(){
+   S.codiceLast=null;S.codiceCurrentIdx=(S.codiceCurrentIdx+1)%S.codicePlayers.length;S.codiceTarget=null;S.codiceEntry=[];render();
+  }));
+  document.getElementById("root").appendChild(wrap);return;
  }
- pcard.appendChild(knownDiv);
-
- // Number pad (0-9)
- if(!S.codiceWaiting){
- var asked=S.codiceAsked[name]||[];
- var foundNums=S.codiceFound[name]||[];
- var numpad=div("codice-numpad");
- for(var n=0;n<=9;n++){
- (function(num){
- var isAsked=asked.indexOf(String(num))>=0;
- var isFound=foundNums.indexOf(String(num))>=0;
- var nb=div("codice-num-btn"+(isFound?" found":isAsked?" asked":""));
- nb.textContent=num;
- if(!isAsked&&!isFound){
- nb.onclick=function(){
- S.codiceQuestion={asker:currentName,target:name,number:String(num)};
- S.codiceWaiting=true;
- render();
- };
+ var th=div("codice-head");th.appendChild(div("codice-eyebrow",T("codiceTurn")+me));th.appendChild(div("codice-big",T("codiceGuessShort")+target));wrap.appendChild(th);
+ if(opps.length>1){
+  var tabs=div("codice-tabs");
+  opps.forEach(function(p){tabs.appendChild(btn("codice-tab"+(p===target?" on":""),p,function(){S.codiceTarget=p;S.codiceEntry=[];render();}));});
+  wrap.appendChild(tabs);
  }
- numpad.appendChild(nb);
- })(n);
+ // Storico dei tentativi su questo avversario
+ var hist=S.codiceHist[target]||[];
+ if(hist.length){
+  wrap.appendChild(div("codice-section",T("codiceTries")));
+  var hd=div("codice-hist");
+  hist.forEach(function(h){
+   var r=div("codice-hist-row");
+   r.appendChild(div("codice-hist-by",h.by));
+   r.appendChild(div("codice-hist-guess",h.guess.join(" ")));
+   r.appendChild(codiceFeedback(h.g,h.y,false));
+   hd.appendChild(r);
+  });
+  wrap.appendChild(hd);
+ } else {
+  wrap.appendChild(div("codice-sub",T("codiceNoTries")));
  }
- pcard.appendChild(numpad);
- }
-
- gameArea.appendChild(pcard);
+ var box=div("");box.style.textAlign="center";
+ var tryB;S.codiceEntry=[];
+ box.appendChild(codiceOtp(function(arr){S.codiceEntry=arr;if(tryB)tryB.disabled=arr.length!==4;}));
+ tryB=btn("codice-cta",T("codiceTry"),function(){
+  var guess=S.codiceEntry.slice();if(guess.length!==4)return;
+  var sc=codiceScore(S.codiceCodes[target],guess);
+  S.codiceHist[target].push({by:me,guess:guess,g:sc.g,y:sc.y});
+  S.codiceEntry=[];
+  if(sc.g===4){S.codiceWinner=me;S.codiceWinnerTarget=target;S.screen="codice_win";render();return;}
+  S.codiceLast={by:me,target:target,guess:guess,g:sc.g,y:sc.y};
+  render();
  });
- wrap.appendChild(gameArea);
-
- // Answer buttons (shown to target player)
- if(S.codiceWaiting&&S.codiceQuestion){
- var q=S.codiceQuestion;
- var qbox=div("dado-turn");
- qbox.innerHTML="<strong>"+q.asker+T("ui_chiede_a")+q.target+T("ui_hai_il")+q.number+T("ui_nel_tuo_codice");
- wrap.appendChild(qbox);
-
- var ansDiv=div("codice-answer-btns");
- ansDiv.appendChild(btn("ebtn",T("ui_si_ce_l_ho"),function(){
- // Add to found
- if(S.codiceFound[q.target].indexOf(q.number)<0)
- S.codiceFound[q.target].push(q.number);
- if(S.codiceAsked[q.target].indexOf(q.number)<0)
- S.codiceAsked[q.target].push(q.number);
- // Check if all 4 found
- var code=S.codiceCodes[q.target];
- var allFound=code.every(function(digit){return S.codiceFound[q.target].indexOf(digit)>=0;});
- S.codiceQuestion=null;S.codiceWaiting=false;
- if(allFound){S.codiceWinner=q.asker;S.codiceWinnerTarget=q.target;S.screen="codice_win";render();return;}
- // Same player gets another turn on correct answer
- render();
- }));
- ansDiv.appendChild(btn("ebtn out",T("ui_no_non_ce_l_ho"),function(){
- if(S.codiceAsked[q.target].indexOf(q.number)<0)
- S.codiceAsked[q.target].push(q.number);
- S.codiceQuestion=null;S.codiceWaiting=false;
- // Next player
- S.codiceCurrentIdx=(S.codiceCurrentIdx+1)%S.codicePlayers.length;
- render();
- }));
- wrap.appendChild(ansDiv);
- }
-
+ tryB.disabled=S.codiceEntry.length!==4;
+ box.appendChild(tryB);
+ box.appendChild(div("codice-legend",T("codiceLegend")));
+ wrap.appendChild(box);
  document.getElementById("root").appendChild(wrap);
 }
 
@@ -1709,7 +1723,7 @@ function renderCodiceWin(){
  S.codicePlayers.forEach(function(name){
  var row=div("dado-player-row");
  var ne=div("dado-player-name");ne.textContent=name;row.appendChild(ne);
- var ce=div("dado-player-score");ce.textContent=S.codiceCodes[name].join(" - ");ce.style.fontSize="18px";row.appendChild(ce);
+ var ce=div("dado-player-score");ce.textContent=(S.codiceCodes[name]||[]).join(" - ");ce.style.fontSize="18px";row.appendChild(ce);
  revDiv.appendChild(row);
  });
  wrap.appendChild(revDiv);
