@@ -1093,7 +1093,7 @@ function renderAlfabeto(){
 
  if(winner){
  // Win screen
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("firstTo")+S.alfaTarget+T("pointsHunter")));
  var btns=div("endbtns");
  btns.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startAlfa(S.alfaNumPlayers);}));
@@ -1247,7 +1247,7 @@ function renderNomeCognome(){
  for(var p in S.ncScores){if(S.ncScores[p]>=S.ncTarget){winner=p;break;}}
 
  if(winner){
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("firstTo")+S.ncTarget+T("pointsWin")));
  var btns2=div("endbtns");
  btns2.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startNomeCognome(S.ncNumPlayers);}));
@@ -1487,7 +1487,7 @@ function renderDadoWin(){
  var winner="";
  S.dadoPlayerNames.forEach(function(n){if(S.dadoScores[n]>=S.dadoTarget)winner=n;});
  var wrap=div("dado-wrap");
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("dadoFirst15")));
  // Final scores
  var pd=div("dado-players");
@@ -1721,6 +1721,22 @@ function renderCodiceWin(){
 }
 
 
+// Quanto vale: il punto va a chi si avvicina di più; a pari distanza, a tutti i pari merito
+function qvWinners(q,answers,players){
+ var best=Infinity,w=[];
+ (players||Object.keys(answers||{})).forEach(function(p){
+  var a=answers?answers[p]:undefined;if(typeof a!=="number"||isNaN(a))return;
+  var d=Math.abs(a-q.risposta);
+  if(d<best){best=d;w=[p];}else if(d===best){w.push(p);}
+ });
+ return w;
+}
+function qvScoreRound(q,players){
+ var w=qvWinners(q,S.qvAnswers,players);
+ w.forEach(function(p){S.qvScores[p]=(S.qvScores[p]||0)+1;});
+ S.qvRoundWinner=w;
+ return w;
+}
 function startQuantoVale(players){
  S.qvPlayers=players;
  S.qvScores={};
@@ -3871,10 +3887,7 @@ function renderQuantoVale(){
  var rb=btn("ebtn",T("qvRevealAnswers"),function(){
  if(window._qvRevealTimer)clearTimeout(window._qvRevealTimer);
  if(window._qvRevealInterval){clearInterval(window._qvRevealInterval);window._qvRevealInterval=null;}
- var minD=Infinity,rw=null;
- players.forEach(function(p){var d=Math.abs(S.qvAnswers[p]-q.risposta);if(d<minD){minD=d;rw=p;}});
- S.qvRoundWinner=rw;
- if(rw)S.qvScores[rw]++;
+ qvScoreRound(q,players);
  S.qvPhase="reveal";S.qvHostAnswered=false;
  if(fbDB&&fbRoomCode){
  fbSet(fbRef(fbDB,'rooms/'+fbRoomCode+'/screen'),{type:'qv_reveal',answers:S.qvAnswers,scores:S.qvScores});
@@ -3930,10 +3943,7 @@ function renderQuantoVale(){
  if(allDone&&!document.getElementById("qv-rb")){
  S.qvAnswers=ans;
  var rb=btn("ebtn",T("qvRevealAnswers"),function(){
- var minD=Infinity,rw=null;
- players.forEach(function(p){var d=Math.abs(S.qvAnswers[p]-q.risposta);if(d<minD){minD=d;rw=p;}});
- S.qvRoundWinner=rw;
- if(rw)S.qvScores[rw]++;
+ qvScoreRound(q,players);
  S.qvPhase="reveal";S.qvHostAnswered=false;
  if(fbDB&&fbRoomCode){
  fbSet(fbRef(fbDB,'rooms/'+fbRoomCode+'/screen'),{type:'qv_reveal',answers:S.qvAnswers,scores:S.qvScores});
@@ -3978,10 +3988,7 @@ function renderQuantoVale(){
   if(S.qvCurrentPlayerIdx>=players.length){
    // Calcola vincitore round
    var _q2=S.qvQuestions[S.qvRound];
-   var _minD=Infinity;var _rw=null;
-   players.forEach(function(p){var d=Math.abs(S.qvAnswers[p]-_q2.risposta);if(d<_minD){_minD=d;_rw=p;}});
-   S.qvRoundWinner=_rw;
-   if(_rw)S.qvScores[_rw]++;
+   qvScoreRound(_q2,players);
    S.qvPhase="reveal";
   }
   render();
@@ -4038,10 +4045,7 @@ function renderQuantoVale(){
  if(window._qvAutoTimer){clearTimeout(window._qvAutoTimer);window._qvAutoTimer=null;}
  if(window._qvCountdownInterval){clearInterval(window._qvCountdownInterval);window._qvCountdownInterval=null;}
  var q2=S.qvQuestions[S.qvRound];
- var minDiff2=Infinity;var rw=null;
- players.forEach(function(p){var d=Math.abs(S.qvAnswers[p]-q2.risposta);if(d<minDiff2){minDiff2=d;rw=p;}});
- S.qvRoundWinner=rw;
- if(rw)S.qvScores[rw]++;
+ qvScoreRound(q2,players);
  S.qvPhase="reveal";
  if(S.qvDistanza && fbIsHost && fbDB && fbRoomCode){
  fbSet(fbRef(fbDB,'rooms/'+fbRoomCode+'/screen'),{
@@ -4080,14 +4084,14 @@ function renderQuantoVale(){
  wrap.appendChild(revealBox);
 
  // Usa il vincitore già calcolato (evita doppio incremento)
- var roundWinner=S.qvRoundWinner||null;
+ var roundWinners=Array.isArray(S.qvRoundWinner)?S.qvRoundWinner:(S.qvRoundWinner?[S.qvRoundWinner]:[]);
 
  // Show all answers
  var answersDiv=div("qv-players-answers");
  players.forEach(function(p){
  var diff=Math.abs(S.qvAnswers[p]-q.risposta);
- var row=div("qv-player-answer"+(p===roundWinner?" winner":""));
- var nameEl=div("qv-answer-name");nameEl.textContent=p+(p===roundWinner?" ":"");row.appendChild(nameEl);
+ var isW=roundWinners.indexOf(p)>=0;var row=div("qv-player-answer"+(isW?" winner":""));
+ var nameEl=div("qv-answer-name");nameEl.textContent=p+(isW?" +1":"");row.appendChild(nameEl);
  var valEl=div("qv-answer-val");
  valEl.textContent=S.qvAnswers[p].toLocaleString(LANG==="en"?"en-US":LANG==="es"?"es-ES":"it-IT")+" (diff: "+diff.toLocaleString(LANG==="en"?"en-US":LANG==="es"?"es-ES":"it-IT")+")";
  row.appendChild(valEl);
@@ -4148,13 +4152,14 @@ function renderQvEnd(){
  var wrap=div("qv-wrap");
  // Find overall winner
  var maxScore=Math.max.apply(null,S.qvPlayers.map(function(p){return S.qvScores[p];}));
- var winner=S.qvPlayers.filter(function(p){return S.qvScores[p]===maxScore;})[0];
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+ var _winners=S.qvPlayers.filter(function(p){return S.qvScores[p]===maxScore;});
+ var winner=_winners[0];
+  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("qvPoints")+" "+maxScore+" "+T("qvPointsOf")+" "+S.qvTotalRounds));
  var pd=div("qv-players-answers");
  S.qvPlayers.sort(function(a,b){return S.qvScores[b]-S.qvScores[a];}).forEach(function(p,i){
- var row=div("qv-player-answer"+(i===0?" winner":""));
- row.appendChild(el("span","qv-answer-name",(i===0?" ":i===1?" ":"")+p));
+ var row=div("qv-player-answer"+(S.qvScores[p]===maxScore?" winner":""));
+ row.appendChild(el("span","qv-answer-name",p));
  row.appendChild(el("span","qv-answer-val",S.qvScores[p]+" pt"));
  pd.appendChild(row);
  });

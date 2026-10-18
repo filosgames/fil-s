@@ -910,7 +910,7 @@ try {
 <script src="data-sp.js?v=3"></script>
 <script src="data-cats.js?v=3"></script>
 <script src="data-quizdata.js?v=2"></script>
-<script src="data-quiz.js?v=23"></script>
+<script src="data-quiz.js?v=24"></script>
 <script>
 
 
@@ -1039,7 +1039,7 @@ function fbHandleRemoteScreen(data) {
  S.qvScores = data.scores || S.qvScores;
  // Calcola vincitore del round lato client (per mostrarlo)
  var _q=S.qvQuestions&&S.qvQuestions[S.qvRound];
- if(_q&&S.qvAnswers){var _minD=Infinity;var _rw=null;Object.keys(S.qvAnswers).forEach(function(p){var d=Math.abs(S.qvAnswers[p]-_q.risposta);if(d<_minD){_minD=d;_rw=p;}});S.qvRoundWinner=_rw;}
+ if(_q&&S.qvAnswers){S.qvRoundWinner=qvWinners(_q,S.qvAnswers,S.qvPlayers&&S.qvPlayers.length?S.qvPlayers:null);}
  render();
  } else if (data && data.type === 'qv_end') {
  S.screen = 'qv_end';
@@ -2150,6 +2150,7 @@ Object.assign(STRINGS.es,{
 Object.assign(STRINGS.it,{"nfcChecking": "Verifica del tag in corso…", "nfcInvalid": "Questo tag non è valido o è stato disattivato. Chiedi al personale del locale.", "nfcOffline": "Non riesco a verificare il tag: controlla la connessione e riprova.", "nfcRetry": "Riprova", "nfcInfo": "Genera il link da scrivere nei tag NFC dei sottobicchieri. Chi tocca un tag con il telefono può giocare per 2 ore. Senza tag l'app resta bloccata, tranne su questo telefono.", "nfcNeedPub": "Prima imposta e salva il codice del locale qui sopra.", "nfcSaving": "Salvataggio…", "nfcDenied": "Non autorizzato: questo codice locale è già gestito da un altro telefono. Inserisci qui sotto la chiave del gestore.", "nfcGenerate": "Genera link per i tag", "nfcKeyLabel": "Chiave del gestore", "nfcKeyHint": "Conservala: serve per gestire i tag da un altro telefono o se cancelli i dati del browser.", "nfcKeyPlaceholder": "Incolla una chiave esistente", "nfcKeyUse": "Usa questa chiave", "nfcKeyBad": "Chiave non valida.", "nfcSection": "Tag NFC", "nfcRegenBtn": "Rigenera link (disattiva i vecchi tag)", "nfcRegenConfirm": "Rigenerare il link? Tutti i tag NFC già scritti smetteranno di funzionare e andranno riscritti."});
 Object.assign(STRINGS.en,{"nfcChecking": "Checking the tag…", "nfcInvalid": "This tag isn't valid or has been deactivated. Please ask the venue staff.", "nfcOffline": "I can't check the tag: check your connection and try again.", "nfcRetry": "Try again", "nfcInfo": "Generate the link to write on the NFC tags of your coasters. Anyone who taps a tag with their phone can play for 2 hours. Without a tag the app stays locked, except on this phone.", "nfcNeedPub": "First set and save the venue code above.", "nfcSaving": "Saving…", "nfcDenied": "Not authorised: this venue code is already managed by another phone. Enter the manager key below.", "nfcGenerate": "Generate tag link", "nfcKeyLabel": "Manager key", "nfcKeyHint": "Keep it safe: you need it to manage the tags from another phone or if you clear your browser data.", "nfcKeyPlaceholder": "Paste an existing key", "nfcKeyUse": "Use this key", "nfcKeyBad": "Invalid key.", "nfcSection": "NFC tags", "nfcRegenBtn": "Regenerate link (deactivates old tags)", "nfcRegenConfirm": "Regenerate the link? All NFC tags already written will stop working and must be rewritten."});
 Object.assign(STRINGS.es,{"nfcChecking": "Comprobando la etiqueta…", "nfcInvalid": "Esta etiqueta no es válida o se ha desactivado. Pregunta al personal del local.", "nfcOffline": "No puedo comprobar la etiqueta: revisa la conexión e inténtalo de nuevo.", "nfcRetry": "Reintentar", "nfcInfo": "Genera el enlace que hay que grabar en las etiquetas NFC de los posavasos. Quien toque una etiqueta con el móvil puede jugar durante 2 horas. Sin etiqueta la app queda bloqueada, salvo en este móvil.", "nfcNeedPub": "Primero configura y guarda el código del local arriba.", "nfcSaving": "Guardando…", "nfcDenied": "No autorizado: este código de local ya lo gestiona otro móvil. Introduce abajo la clave del gestor.", "nfcGenerate": "Generar enlace para las etiquetas", "nfcKeyLabel": "Clave del gestor", "nfcKeyHint": "Guárdala: la necesitas para gestionar las etiquetas desde otro móvil o si borras los datos del navegador.", "nfcKeyPlaceholder": "Pega una clave existente", "nfcKeyUse": "Usar esta clave", "nfcKeyBad": "Clave no válida.", "nfcSection": "Etiquetas NFC", "nfcRegenBtn": "Regenerar enlace (desactiva las etiquetas antiguas)", "nfcRegenConfirm": "¿Regenerar el enlace? Todas las etiquetas NFC ya grabadas dejarán de funcionar y habrá que volver a grabarlas."});
+Object.assign(STRINGS.it,{qvTie:"Pareggio!"});Object.assign(STRINGS.en,{qvTie:"It's a tie!"});Object.assign(STRINGS.es,{qvTie:"¡Empate!"});
 function T(k){return(STRINGS[LANG]||STRINGS.it)[k]||(STRINGS.it[k])||k;}
 // ──────────────────────────────────────────────────────────
 
