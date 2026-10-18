@@ -494,7 +494,7 @@ function renderGames(){
  S.screen="ca_setup";render();return;
  }
  if(g.lex){
- S.screen="lex";S.lexTime=120;S.lexRunning=false;render();return;
+ S.screen="lex";S.lexQ=null;S.lexTime=120;S.lexRunning=false;render();return;
  }
  if(g.pub){ S.screen="pub";S.pubTime=120;S.pubRunning=false;render();return; }
  if(g.robot){ S.screen="robot";S.robotTime=120;S.robotRunning=false;render();return; }
@@ -514,7 +514,7 @@ function renderGames(){
  S.screen="cosaincomune";S.cicTime=240;S.cicRunning=false;render();return;
  }
  if(g.chiseidavvero){
- S.screen="chiseidavvero";S.csdTime=20;S.csdRunning=false;render();return;
+ S.screen="chiseidavvero";S.csdQ=null;S.csdTime=20;S.csdRunning=false;render();return;
  }
  if(g.superpotere){
  S.screen="superpotere";S.superTime=30;S.superRunning=false;render();return;
@@ -2441,13 +2441,21 @@ function renderChiSeiDavvero(){
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
  rule.textContent=T("ui_il_moderatore_fa_una_domanda");
  body.appendChild(rule);
+ var _aq=adultiPick("csdQ");
+ if(_aq){
+  rule.style.display="none";
+  var qc=div("adulti-q");qc.appendChild(div("adulti-q-text",_aq));
+  if(!running){var cb=btn("adulti-q-next",T("adultiOther"),function(){adultiNext("csdQ");render();});qc.appendChild(cb);}
+  body.appendChild(qc);
+ }
+
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#1565c0;text-align:center;";
   scaduto.textContent=T("ui_tempo_prossima_domanda");
   body.appendChild(scaduto);
   var nextBtn=btn("ebtn",T("ui_nuova_domanda"),function(){
-   S.csdTime=20;S.csdRunning=false;renderChiSeiDavvero();
+   S.csdTime=20;adultiNext("csdQ");S.csdRunning=false;renderChiSeiDavvero();
   });nextBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(nextBtn);
   var fineBtn=btn("ebtn out",T("endGame"),function(){
    if(_csdTimer){clearInterval(_csdTimer);_csdTimer=null;}
@@ -4469,6 +4477,14 @@ function renderLex(){
  var rule=div("rtext");rule.style.cssText="text-align:center;font-size:14px;max-width:280px;";
  rule.textContent=T("ui_racconta_la_storia_piu_assurda");
  body.appendChild(rule);
+ var _aq=adultiPick("lexQ");
+ if(_aq){
+  rule.style.display="none";
+  var qc=div("adulti-q");qc.appendChild(div("adulti-q-text",_aq));
+  if(!running){var cb=btn("adulti-q-next",T("adultiOther"),function(){adultiNext("lexQ");render();});qc.appendChild(cb);}
+  body.appendChild(qc);
+ }
+
 
  if(timeLeft<=0){
   var scaduto=div("");scaduto.style.cssText="font-size:22px;font-weight:700;color:#c2185b;text-align:center;";
@@ -4479,7 +4495,7 @@ function renderLex(){
    endGame(gameName);
   });fineBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(fineBtn);
   var riBtn=btn("ebtn",T("ui_prossimo_giocatore"),function(){
-   S.lexTime=120;S.lexRunning=false;renderLex();
+   S.lexTime=120;adultiNext("lexQ");S.lexRunning=false;renderLex();
   });riBtn.style.cssText="width:100%;max-width:280px;";body.appendChild(riBtn);
  } else if(!running){
   var startBtn=btn("ebtn",timeLeft===120?T("ui_inizia_2"):T("ui_riprendi"),function(){
@@ -4609,6 +4625,13 @@ function renderCaWrite(){
  instrDiv.style.cssText="font-size:14px;text-align:center;color:#888;margin-bottom:20px;line-height:1.4;padding:0 12px;";
  instrDiv.textContent=T("ui_scrivi_una_confessione_anonima_qualcosa");
  body.appendChild(instrDiv);
+ var _sq=adultiPick("caQ");
+ if(_sq){
+  var qc=div("adulti-q");qc.appendChild(div("adulti-q-label",T("adultiIdea")));
+  var qt=div("adulti-q-text",_sq);qc.appendChild(qt);
+  qc.appendChild(btn("adulti-q-next",T("adultiOtherIdea"),function(){adultiNext("caQ");qt.textContent=adultiPick("caQ");}));
+  body.appendChild(qc);
+ }
  var ta=document.createElement("textarea");
  ta.placeholder=T("ui_la_mia_confessione");
  ta.style.cssText="width:100%;min-height:120px;border:2px solid #e0e0e0;border-radius:14px;padding:14px;font-size:16px;font-family:inherit;resize:none;box-sizing:border-box;outline:none;color:var(--dark);background:var(--bg);";
@@ -4904,8 +4927,14 @@ function renderStarter(){
  addBackArrow(goBackToGames);
  var gameName=S.starterGame;var _sp=(LANG==="en"?STARTER_PACK_EN:LANG==="es"?STARTER_PACK_ES:STARTER_PACK);var allPhrases=_sp[gameName]||[];
  // Shuffle and pick random phrases each session (10 for IL SUSSURRO, 25 for others)
- var shuffled=allPhrases.slice();
- for(var si=shuffled.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=shuffled[si];shuffled[si]=shuffled[sj];shuffled[sj]=st;}
+ // Mescola una volta sola per partita (prima si rimescolava a ogni frase e alcune si ripetevano)
+ var _dk=gameName+"|"+LANG;
+ if(!S.starterDeck||S.starterDeck.key!==_dk||S.starterIdx===0||S.starterDeck.src!==allPhrases.length){
+  var sh=allPhrases.slice();
+  for(var si=sh.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=sh[si];sh[si]=sh[sj];sh[sj]=st;}
+  S.starterDeck={key:_dk,list:sh,src:allPhrases.length};
+ }
+ var shuffled=S.starterDeck.list;
  var maxPhrases=(gameName==="IL SUSSURRO"||gameName==="THE WHISPER"||gameName==="EL SUSURRO")?10:(gameName==="CHI E PIU PROBABILE (COPPIA)"||gameName==="WHO'S MORE LIKELY? (COUPLE)"||gameName==="¿QUIÉN ES MÁS PROBABLE? (PAREJA)")?15:(gameName==="SCALA DA 1 A 10"||gameName==="SCALE OF 1 TO 10"||gameName==="ESCALA DEL 1 AL 10")?20:25;
  var phrases=shuffled.slice(0,Math.min(maxPhrases,shuffled.length));var total=phrases.length;
  if(S.starterIdx>=total){

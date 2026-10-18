@@ -452,6 +452,10 @@ h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-title,
 .codice-peg.g{background:#34c759;border-color:#34c759;}
 .codice-peg.y{background:#ffcc00;border-color:#ffcc00;}
 .codice-legend{font-size:13px;color:var(--muted);margin-top:14px;line-height:1.5;}
+.adulti-q{width:100%;max-width:420px;margin:0 auto 18px;background:linear-gradient(135deg,#1c1c1e,#3a1020);color:#fff;border-radius:18px;padding:18px 20px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.15);}
+.adulti-q-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:8px;}
+.adulti-q-text{font-size:19px;font-weight:700;line-height:1.35;letter-spacing:-0.2px;}
+.adulti-q-next{margin-top:12px;border:1px solid rgba(255,255,255,0.35);background:transparent;color:#fff;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
 .codice-turn-info{background:var(--dark);border-radius:10px;padding:12px 16px;color:#fff;font-weight:600;font-size:14px;margin-bottom:16px;text-align:center;}
 .codice-answer-btns{display:flex;gap:10px;justify-content:center;margin-top:12px;}
 /* ── Indovina il codice: stile iOS ── */
@@ -967,7 +971,8 @@ try {
 <script src="data-sp.js?v=3"></script>
 <script src="data-cats.js?v=4"></script>
 <script src="data-quizdata.js?v=2"></script>
-<script src="data-quiz.js?v=25"></script>
+<script src="data-adulti.js?v=1"></script>
+<script src="data-quiz.js?v=26"></script>
 <script>
 
 
@@ -2214,6 +2219,9 @@ Object.assign(STRINGS.es,{"codicePassTo": "Pasa el móvil a ", "codicePassSub": 
 Object.assign(STRINGS.it,{"codiceGuessShort": "Indovina il codice di ", "codiceTries": "Tentativi"});
 Object.assign(STRINGS.en,{"codiceGuessShort": "Guess the code of ", "codiceTries": "Guesses"});
 Object.assign(STRINGS.es,{"codiceGuessShort": "Adivina el código de ", "codiceTries": "Intentos"});
+Object.assign(STRINGS.it,{"adultiOther": "Cambia domanda", "adultiIdea": "Spunto", "adultiOtherIdea": "Altro spunto"});
+Object.assign(STRINGS.en,{"adultiOther": "Another one", "adultiIdea": "Idea", "adultiOtherIdea": "Another idea"});
+Object.assign(STRINGS.es,{"adultiOther": "Otra pregunta", "adultiIdea": "Idea", "adultiOtherIdea": "Otra idea"});
 function T(k){return(STRINGS[LANG]||STRINGS.it)[k]||(STRINGS.it[k])||k;}
 // ──────────────────────────────────────────────────────────
 
@@ -4157,6 +4165,7 @@ function showChallengeModal(){
 // Le liste tradotte hanno ordine e numero di giochi diversi dall'italiano.
 // Ogni gioco tradotto viene collegato al suo originale italiano (_it) e ne
 // eredita i flag che attivano il gioco interattivo, oltre a hidden/min/max.
+try{if(typeof applyAdulti==="function")applyAdulti();}catch(e){}
 (function alignGames(){
  var MAP={
   en:{amici:{"THE TRAITOR":"IL TRADITORE","YES, NO, NOT":"SÌ, NO, NON","WHO AM I?":"CHI SONO IO?","COUNT TO 21":"CONTARE FINO A 21","SYNC":"SINCRONIA","SHE'S A 10 BUT...":"E UN 10 MA...","POINT THE FINGER":"PUNTA IL DITO","FIND THE LIE":"TROVA LA BUGIA","THE WHISPER":"IL SUSSURRO"},
