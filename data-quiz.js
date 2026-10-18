@@ -1093,7 +1093,7 @@ function renderAlfabeto(){
 
  if(winner){
  // Win screen
-  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("firstTo")+S.alfaTarget+T("pointsHunter")));
  var btns=div("endbtns");
  btns.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startAlfa(S.alfaNumPlayers);}));
@@ -1247,7 +1247,7 @@ function renderNomeCognome(){
  for(var p in S.ncScores){if(S.ncScores[p]>=S.ncTarget){winner=p;break;}}
 
  if(winner){
-  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("firstTo")+S.ncTarget+T("pointsWin")));
  var btns2=div("endbtns");
  btns2.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startNomeCognome(S.ncNumPlayers);}));
@@ -1487,7 +1487,7 @@ function renderDadoWin(){
  var winner="";
  S.dadoPlayerNames.forEach(function(n){if(S.dadoScores[n]>=S.dadoTarget)winner=n;});
  var wrap=div("dado-wrap");
-  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("dadoFirst15")));
  // Final scores
  var pd=div("dado-players");
