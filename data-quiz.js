@@ -78,7 +78,10 @@ function nfcHash(venue,tok){
 function nfcCleanVenue(v){return String(v||"").toLowerCase().replace(/[^a-z0-9_]/g,"").slice(0,40);}
 // Telefono del gestore (locale configurato dal pannello protetto da PIN): mai bloccato
 function nfcIsOwnerDevice(){try{return !!localStorage.getItem("filos_pub_code");}catch(e){return false;}}
+// INTERRUTTORE: metti true per riattivare il blocco con tag NFC
+var NFC_LOCK_ENABLED=false;
 function nfcGateNeeded(){
+ if(!NFC_LOCK_ENABLED)return false;
  if(NFC_STATE.status==="checking")return true;
  if(nfcIsOwnerDevice())return false;
  return !isNfcValid();
