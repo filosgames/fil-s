@@ -65,18 +65,81 @@ function getNfcToken(){try{return localStorage.getItem("filos_nfc_token")||"";}c
 function getNfcExpiry(){try{return parseInt(localStorage.getItem("filos_nfc_expiry")||"0",10);}catch(e){return 0;}}
 function isNfcValid(){var t=getNfcToken();if(!t)return false;return Date.now()<getNfcExpiry();}
 function setNfcToken(token){try{localStorage.setItem("filos_nfc_token",token);localStorage.setItem("filos_nfc_expiry",String(Date.now()+NFC_TOKEN_DURATION));}catch(e){}}
-// Leggi token dall'URL ?t=... al caricamento
+// ── SBLOCCO CON TAG NFC (verifica online) ─────────
+// Il tag contiene un link ...?p=CODICE_LOCALE&t=CODICE_TAG.
+// Su Firebase si salva solo l'impronta SHA-256 del codice tag (nfc_h/<locale>/h):
+// leggerla non permette di sbloccare l'app.
+var NFC_STATE={status:"idle",venue:"",tok:""}; // idle | checking | invalid | offline
+function nfcRandom(n){var a="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789",out="";try{var b=new Uint8Array(n);crypto.getRandomValues(b);for(var i=0;i<n;i++)out+=a[b[i]%a.length];}catch(e){for(var j=0;j<n;j++)out+=a[Math.floor(Math.random()*a.length)];}return out;}
+function nfcHash(venue,tok){
+ var data=new TextEncoder().encode("filos:"+venue+":"+tok);
+ return crypto.subtle.digest("SHA-256",data).then(function(buf){return Array.prototype.map.call(new Uint8Array(buf),function(x){return("0"+x.toString(16)).slice(-2);}).join("");});
+}
+function nfcCleanVenue(v){return String(v||"").toLowerCase().replace(/[^a-z0-9_]/g,"").slice(0,40);}
+// Telefono del gestore (locale configurato dal pannello protetto da PIN): mai bloccato
+function nfcIsOwnerDevice(){try{return !!localStorage.getItem("filos_pub_code");}catch(e){return false;}}
+function nfcGateNeeded(){
+ if(NFC_STATE.status==="checking")return true;
+ if(nfcIsOwnerDevice())return false;
+ return !isNfcValid();
+}
+function nfcVerify(){
+ var v=NFC_STATE.venue,t=NFC_STATE.tok;
+ if(!v||!t){NFC_STATE.status="invalid";return;}
+ NFC_STATE.status="checking";
+ if(!fbDB||!fbGet||!fbRef||!window.crypto||!crypto.subtle){NFC_STATE.status="offline";if(typeof render==="function")render();return;}
+ var done=false;
+ var timer=setTimeout(function(){if(done)return;done=true;NFC_STATE.status="offline";if(typeof render==="function")render();},12000);
+ Promise.all([nfcHash(v,t),fbGet(fbRef(fbDB,"nfc_h/"+v+"/h"))]).then(function(r){
+  if(done)return;done=true;clearTimeout(timer);
+  var saved=r[1]&&r[1].val?r[1].val():null;
+  if(saved&&saved===r[0]){
+   setNfcToken(t);try{localStorage.setItem("filos_nfc_venue",v);}catch(e){}
+   NFC_STATE.status="idle";NFC_STATE.tok="";
+  } else {NFC_STATE.status="invalid";}
+  if(typeof render==="function")render();
+ }).catch(function(){
+  if(done)return;done=true;clearTimeout(timer);
+  NFC_STATE.status="offline";if(typeof render==="function")render();
+ });
+}
+// Legge il link del tag al caricamento e lo toglie dalla barra degli indirizzi
 (function(){
  try{
   var params=new URLSearchParams(window.location.search);
-  var t=params.get("t");
-  if(t&&t.length>=4){
-   // Verifica che il token corrisponda a quello salvato dal gestore
-   var saved=localStorage.getItem("filos_nfc_master_token")||"";
-   if(saved&&t===saved){setNfcToken(t);}
+  var t=params.get("t"),p=nfcCleanVenue(params.get("p"));
+  if(t&&p&&/^[A-Za-z0-9]{8,64}$/.test(t)){
+   NFC_STATE.venue=p;NFC_STATE.tok=t;
+   params.delete("t");params.delete("p");
+   var q=params.toString();
+   try{history.replaceState(null,"",window.location.pathname+(q?"?"+q:"")+window.location.hash);}catch(e){}
+   nfcVerify();
   }
  }catch(e){}
 })();
+// Pannello gestore: registra il locale e pubblica l'impronta del codice tag
+function nfcOwnerKey(){try{return localStorage.getItem("filos_nfc_owner_key")||"";}catch(e){return "";}}
+function nfcPublish(venue,cb){
+ venue=nfcCleanVenue(venue);
+ if(!venue){cb(false,"nopub");return;}
+ if(!fbDB||!fbSet||!fbRef){cb(false,"offline");return;}
+ var key=nfcOwnerKey();
+ if(!key){key=nfcRandom(24);try{localStorage.setItem("filos_nfc_owner_key",key);}catch(e){}}
+ var tok=nfcRandom(24);
+ nfcHash(venue,tok).then(function(h){
+  return fbSet(fbRef(fbDB,"nfc_owner/"+venue+"/"+key),true).catch(function(){/* già registrato: va bene se la chiave è giusta */}).then(function(){
+   return fbSet(fbRef(fbDB,"nfc_h/"+venue),{h:h,k:key,at:Date.now()});
+  });
+ }).then(function(){
+  try{localStorage.setItem("filos_nfc_master_token",tok);localStorage.setItem("filos_nfc_master_venue",venue);}catch(e){}
+  cb(true);
+ }).catch(function(){cb(false,"denied");});
+}
+function nfcTagUrl(){
+ var tok="",venue="";try{tok=localStorage.getItem("filos_nfc_master_token")||"";venue=localStorage.getItem("filos_nfc_master_venue")||"";}catch(e){}
+ if(!tok||!venue)return "";
+ return window.location.origin+window.location.pathname+"?p="+encodeURIComponent(venue)+"&t="+tok;
+}
 
 var S={screen: "onboarding",players:0,cat:null,game:null,stars:0,prevScreen:"home",rFilter:"tutti",revealed:{},pinOK:false,pinInput:"",pinErr:false,lastGame:"",menuTab:"drink",menuEdTab:"drink",quizGame:null,quizIdx:0,quizRevealed:false,quizScore:0,quizQuestions:[],quizLevel:null,starterGame:null,starterIdx:0,fromStarter:false,bFilter:"gruppo",mwWord:"",mwSimilar:"",mwWhiteIdx:-1,mwSeen:[],mwRevealing:-1,mwNumPlayers:0,intesaLevel:"facile",intesaWords:[],intesaIdx:0,intesaScore:0,intesaTimer:0,intesaRunning:false,intesaRound:1,intesaTeamScores:[],alfaLetter:"",alfaTimer:0,alfaRunning:false,alfaScores:{},alfaNumPlayers:0,alfaTarget:5,ncLetterN:"",ncLetterC:"",ncScores:{},ncNumPlayers:0,ncTarget:5,dadoValue:0,dadoPlayers:[],dadoScores:{},dadoCurrentIdx:0,dadoTarget:15,dadoRolled:false,dadoNumPlayers:0,dadoPlayerNames:[],codicePlayers:[],codiceCodes:{},codiceFound:{},codiceAsked:{},codiceCurrentIdx:0,codiceQuestion:null,codiceWaiting:false};
 
@@ -196,6 +259,10 @@ function renderNfcGate(){
  var nfcAnim=div("");nfcAnim.style.cssText="position:relative;width:80px;height:80px;margin:8px auto;";
  nfcAnim.innerHTML='<style>@keyframes nfc-ring{0%{transform:scale(0.4);opacity:0.8}100%{transform:scale(1.6);opacity:0}}.nfc-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #FF7A45;animation:nfc-ring 1.6s ease-out infinite;}.nfc-ring:nth-child(2){animation-delay:0.5s}.nfc-ring:nth-child(3){animation-delay:1s}</style><div class="nfc-ring"></div><div class="nfc-ring"></div><div class="nfc-ring"></div>';
  wrap.appendChild(nfcAnim);
+ if(NFC_STATE.status==="checking"){wrap.appendChild(div("",T("nfcChecking")));}
+ else if(NFC_STATE.status==="invalid"){var m=div("",T("nfcInvalid"));m.style.cssText="color:#ff3b30;font-weight:600;max-width:300px;";wrap.appendChild(m);}
+ else if(NFC_STATE.status==="offline"){var m2=div("",T("nfcOffline"));m2.style.cssText="color:#ff9f0a;font-weight:600;max-width:300px;";wrap.appendChild(m2);
+  var rb=document.createElement("button");rb.className="ebtn";rb.textContent=T("nfcRetry");rb.onclick=function(){nfcVerify();render();};wrap.appendChild(rb);}
  root.appendChild(wrap);
 }
 
@@ -5237,35 +5304,53 @@ function renderAnalytics(){
    section(T("settingsStato"),[row("","#34c759",T("settingsLocaleConf"),pubCode,"","")]);
   }
 
-  // ── SEZIONE TOKEN NFC ──
-  var nfcMaster="";try{nfcMaster=localStorage.getItem("filos_nfc_master_token")||"";}catch(e){}
-  var nfcActive=!!nfcMaster;
-  var nfcExpiry=getNfcExpiry();
-  var nfcTogRow=toggleRow("","#ff9f0a",T("nfcToggleLabel"),T("nfcToggleSub"),nfcActive,function(on){
-   if(on){
-    if(!nfcMaster){nfcMaster=Math.random().toString(36).slice(2,10);try{localStorage.setItem("filos_nfc_master_token",nfcMaster);}catch(e){}}
-   } else {
-    try{localStorage.removeItem("filos_nfc_master_token");localStorage.removeItem("filos_nfc_token");localStorage.removeItem("filos_nfc_expiry");}catch(e){}
-    nfcMaster="";
+  // ── SEZIONE TAG NFC (verifica online) ──
+  (function(){
+   var BTN="margin-top:4px;padding:8px 14px;border-radius:8px;background:transparent;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:fit-content;";
+   var box=div("");box.style.cssText="padding:12px 16px;display:flex;flex-direction:column;gap:8px;";
+   var info=div("",T("nfcInfo"));info.style.cssText="font-size:13px;color:#636366;line-height:1.5;";box.appendChild(info);
+   var msg=div("");msg.style.cssText="font-size:13px;font-weight:600;";
+   var cleanPub=nfcCleanVenue(pubCode);
+   function publish(){
+    msg.style.color="#636366";msg.textContent=T("nfcSaving");
+    nfcPublish(cleanPub,function(ok,why){
+     if(ok){renderAnalytics();return;}
+     msg.style.color="#ff3b30";msg.textContent=T(why==="offline"?"nfcOffline":why==="nopub"?"nfcNeedPub":"nfcDenied");
+    });
    }
-   renderAnalytics();
-  });
-  if(nfcActive){
-   var pubCodeForUrl=pubCode||"miopub";
-   var nfcUrl=window.location.origin+window.location.pathname+"?t="+nfcMaster;
-   var urlRow=div("");urlRow.style.cssText="padding:12px 16px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid rgba(0,0,0,0.07);";
-   var urlLbl=div("");urlLbl.style.cssText="font-size:11px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:0.6px;";urlLbl.textContent=T("nfcUrlLabel");
-   var urlVal=div("");urlVal.style.cssText="font-size:13px;color:#3478f6;word-break:break-all;font-family:monospace;";urlVal.textContent=nfcUrl;
-   var copyBtn=document.createElement("button");copyBtn.style.cssText="margin-top:4px;padding:8px 14px;border-radius:8px;border:1.5px solid #3478f6;background:transparent;color:#3478f6;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:fit-content;";copyBtn.textContent=T("nfcCopyBtn");
-   copyBtn.onclick=function(){try{navigator.clipboard.writeText(nfcUrl);copyBtn.textContent=T("nfcCopied");setTimeout(function(){copyBtn.textContent=T("nfcCopyBtn");},2000);}catch(e){}};
-   urlRow.appendChild(urlLbl);urlRow.appendChild(urlVal);urlRow.appendChild(copyBtn);
-   var regenBtn=document.createElement("button");regenBtn.style.cssText="margin-top:4px;padding:8px 14px;border-radius:8px;border:1.5px solid #ff3b30;background:transparent;color:#ff3b30;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;width:fit-content;";regenBtn.textContent=T("nfcRegenBtn");
-   regenBtn.onclick=function(){if(confirm(T("nfcRegenConfirm"))){nfcMaster=Math.random().toString(36).slice(2,10);try{localStorage.setItem("filos_nfc_master_token",nfcMaster);}catch(e){}renderAnalytics();}};
-   urlRow.appendChild(regenBtn);
-   section(T("nfcSection"),[nfcTogRow,urlRow]);
-  } else {
-   section(T("nfcSection"),[nfcTogRow]);
-  }
+   if(!cleanPub){
+    var np=div("",T("nfcNeedPub"));np.style.cssText="font-size:13px;color:#ff9f0a;font-weight:600;";box.appendChild(np);
+   } else {
+    var url="";var mv="";try{mv=localStorage.getItem("filos_nfc_master_venue")||"";}catch(e){}
+    if(mv===cleanPub)url=nfcTagUrl();
+    if(url){
+     var lbl=div("",T("nfcUrlLabel"));lbl.style.cssText="font-size:11px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:0.6px;";box.appendChild(lbl);
+     var uv=div("",url);uv.style.cssText="font-size:13px;color:#3478f6;word-break:break-all;font-family:monospace;";box.appendChild(uv);
+     var cb=document.createElement("button");cb.style.cssText=BTN+"border:1.5px solid #3478f6;color:#3478f6;";cb.textContent=T("nfcCopyBtn");
+     cb.onclick=function(){try{navigator.clipboard.writeText(url);cb.textContent=T("nfcCopied");setTimeout(function(){cb.textContent=T("nfcCopyBtn");},2000);}catch(e){}};
+     box.appendChild(cb);
+     var rb=document.createElement("button");rb.style.cssText=BTN+"border:1.5px solid #ff3b30;color:#ff3b30;";rb.textContent=T("nfcRegenBtn");
+     rb.onclick=function(){if(confirm(T("nfcRegenConfirm")))publish();};
+     box.appendChild(rb);
+    } else {
+     var gb=document.createElement("button");gb.style.cssText=BTN+"border:1.5px solid #34c759;color:#34c759;";gb.textContent=T("nfcGenerate");
+     gb.onclick=publish;box.appendChild(gb);
+    }
+    // Chiave del gestore: serve per gestire i tag da un altro telefono
+    var key=nfcOwnerKey();
+    var kl=div("",T("nfcKeyLabel"));kl.style.cssText="font-size:11px;font-weight:700;color:#8e8e93;text-transform:uppercase;letter-spacing:0.6px;margin-top:8px;";box.appendChild(kl);
+    if(key){var kv=div("",key);kv.style.cssText="font-size:13px;font-family:monospace;color:#111;word-break:break-all;";box.appendChild(kv);
+     var kh=div("",T("nfcKeyHint"));kh.style.cssText="font-size:12px;color:#8e8e93;";box.appendChild(kh);}
+    var ki=document.createElement("input");ki.placeholder=T("nfcKeyPlaceholder");ki.maxLength=64;
+    ki.style.cssText="padding:8px 10px;border:1.5px solid #d1d1d6;border-radius:8px;font-family:monospace;font-size:13px;";
+    var kb=document.createElement("button");kb.style.cssText=BTN+"border:1.5px solid #636366;color:#636366;";kb.textContent=T("nfcKeyUse");
+    kb.onclick=function(){var v=(ki.value||"").trim();if(!/^[A-Za-z0-9]{16,64}$/.test(v)){msg.style.color="#ff3b30";msg.textContent=T("nfcKeyBad");return;}
+     try{localStorage.setItem("filos_nfc_owner_key",v);}catch(e){}renderAnalytics();};
+    box.appendChild(ki);box.appendChild(kb);
+   }
+   box.appendChild(msg);
+   section(T("nfcSection"),[box]);
+  })();
 
  // ═══════════════════════════════════════════════
  // TAB ANALYTICS
