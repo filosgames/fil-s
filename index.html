@@ -903,11 +903,11 @@ try {
  <div id="root"></div>
 </div>
 <script src="data-ag.js?v=3"></script>
-<script src="data-qv.js?v=2"></script>
+<script src="data-qv.js?v=3"></script>
 <script src="data-sp.js?v=3"></script>
 <script src="data-cats.js?v=3"></script>
 <script src="data-quizdata.js?v=2"></script>
-<script src="data-quiz.js?v=18"></script>
+<script src="data-quiz.js?v=19"></script>
 <script>
 
 
@@ -1100,6 +1100,8 @@ function setLang(l){
    S.quizQuestions=remap(S.quizQuestions,[QUIZ_DATA[g].questions,QUIZ_DATA_EN[g]&&QUIZ_DATA_EN[g].questions,QUIZ_DATA_ES[g]&&QUIZ_DATA_ES[g].questions],quizDataFor(g).questions);}
   if(S.agQuestions&&typeof ANNO_GIUSTO_DATA!=="undefined")
    S.agQuestions=remap(S.agQuestions,[ANNO_GIUSTO_DATA,window.ANNO_GIUSTO_DATA_EN,window.ANNO_GIUSTO_DATA_ES],agData());
+  if(S.qvQuestions&&typeof QUANTO_VALE_DATA!=="undefined"&&typeof qvData==="function")
+   S.qvQuestions=remap(S.qvQuestions,[QUANTO_VALE_DATA,window.QUANTO_VALE_DATA_EN,window.QUANTO_VALE_DATA_ES],qvData());
  }catch(e){}
  if(prev){
   var key=prev._it||prev.name,list=gameTable()[S.cat]||[],ni=-1;

@@ -1655,7 +1655,7 @@ function startQuantoVale(players){
  S.qvRound=0;
  S.qvTotalRounds=10;
  // Shuffle questions
- var _qvData=(LANG==="en"&&typeof QUANTO_VALE_DATA_EN!=="undefined")?QUANTO_VALE_DATA_EN:(LANG==="es"&&typeof QUANTO_VALE_DATA_ES!=="undefined")?QUANTO_VALE_DATA_ES:QUANTO_VALE_DATA;
+ var _qvData=qvData();
  S.qvQuestions=_qvData.slice();
  for(var i=S.qvQuestions.length-1;i>0;i--){
  var j=Math.floor(Math.random()*(i+1));
@@ -1672,7 +1672,7 @@ function startQuantoVale(players){
 
 function startQuantoValeDistanza(playerNames){
  // Shuffle and select questions
- var qs=QUANTO_VALE_DATA.slice();
+ var qs=qvData().slice();
  for(var i=qs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=qs[i];qs[i]=qs[j];qs[j]=t;}
  qs=qs.slice(0,10);
  var scores={};
