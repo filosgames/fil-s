@@ -392,6 +392,13 @@ function renderHome(){
  })(CATS[i],i);
  }
  wrap.appendChild(grid1);wrap.appendChild(grid2);wrap.appendChild(gridM);
+ // Chi paga il conto? — scheda in home (non copre più i giochi)
+ var pay=document.createElement("button");pay.className="home-pay";pay.type="button";
+ pay.innerHTML='<span class="home-pay-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></span><span class="home-pay-tx"><span class="home-pay-t"></span><span class="home-pay-s"></span></span><span class="home-pay-chev"></span>';
+ pay.querySelector(".home-pay-t").textContent=T("ui_chi_paga_il_conto");
+ pay.querySelector(".home-pay-s").textContent=T("ui_chi_paga_sub");
+ pay.onclick=function(){if(typeof openChiPaga==="function")openChiPaga();};
+ wrap.appendChild(pay);
  var lf=div("legal-foot");lf.appendChild(div("",T("legalFooter")));
  lf.appendChild(btn("",T("legalLink"),function(){S.prevScreen="home";S.screen="terms";render();window.scrollTo(0,0);}));
  wrap.appendChild(lf);
@@ -4819,6 +4826,7 @@ function renderEnd(){
  ms.appendChild(div("menu-note",T("menuNote")));;
  var eb=div("endbtns");screen.appendChild(eb);
  eb.appendChild(btn("ebtn out",T("otherGames"),function(){S.screen="games";render();}));
+ eb.appendChild(btn("ebtn out",T("ui_chi_paga_il_conto"),function(){if(typeof openChiPaga==="function")openChiPaga();}));
  eb.appendChild(btn("ebtn",T("exitBtn"),goHome));
  document.getElementById("root").appendChild(panel);
 }

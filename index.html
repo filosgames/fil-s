@@ -688,6 +688,16 @@ button:disabled{opacity:0.35!important;transform:none;}
 .dbadges{display:flex;flex-wrap:wrap;gap:6px;}
 .dbadges .dbadge{margin:0;}
 .tip + .rlabel{margin-top:24px;}
+#chipaga-close{top:calc(env(safe-area-inset-top,0px) + 16px)!important;font-size:0!important;background:rgba(120,120,128,0.16)!important;}
+#chipaga-close::before,#chipaga-close::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:2.5px;border-radius:2px;background:#111;}
+#chipaga-close::before{transform:translate(-50%,-50%) rotate(45deg);}
+#chipaga-close::after{transform:translate(-50%,-50%) rotate(-45deg);}
+.home-pay{display:flex;align-items:center;gap:14px;width:calc(100% - 32px);max-width:560px;margin:18px auto 4px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);border-radius:18px;text-align:left;cursor:pointer;}
+.home-pay-ic{width:40px;height:40px;border-radius:12px;background:#FF7A45;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.home-pay-tx{flex:1;display:flex;flex-direction:column;gap:2px;}
+.home-pay-t{font-size:17px;font-weight:600;color:var(--dark);}
+.home-pay-s{font-size:13px;color:var(--muted);font-weight:400;}
+.home-pay-chev{width:9px;height:9px;border-right:2px solid #c7c7cc;border-top:2px solid #c7c7cc;transform:rotate(45deg);margin-right:4px;}
 </style>
 
 <!-- Firebase SDK (bundled) -->
@@ -1025,7 +1035,7 @@ try {
 <script src="data-cats.js?v=9"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=33"></script>
+<script src="data-quiz.js?v=34"></script>
 <script>
 
 
@@ -2284,12 +2294,12 @@ var LEGAL_TERMS={"it": [["Proprietà", "Filòs, il suo nome, il logo, la grafica
 Object.assign(STRINGS.it,{"invNow": "ora", "invChallenges": " ti sfida", "invGame": "Gioco: ", "invPlay": "Gioca", "invQv": "Quanto vale?"});
 Object.assign(STRINGS.en,{"invNow": "now", "invChallenges": " challenges you", "invGame": "Game: ", "invPlay": "Play", "invQv": "How much is it?"});
 Object.assign(STRINGS.es,{"invNow": "ahora", "invChallenges": " te desafía", "invGame": "Juego: ", "invPlay": "Jugar", "invQv": "¿Cuánto vale?"});
-Object.assign(STRINGS.it,{ui_scarto:"scarto",ui_attesa_host_domanda:"In attesa della prossima domanda…",ui_precedente:"Precedente",ui_bc:"a.C.",ui_indietro:"Indietro",ui_trend:"TREND",ui_nuovo_prodotto:"Nuovo prodotto"});
-Object.assign(STRINGS.en,{ui_scarto:"off by",ui_attesa_host_domanda:"Waiting for the next question…",ui_precedente:"Previous",ui_bc:"BC",ui_indietro:"Back",ui_trend:"TRENDING",ui_nuovo_prodotto:"New product"});
-Object.assign(STRINGS.es,{ui_scarto:"diferencia",ui_attesa_host_domanda:"Esperando la siguiente pregunta…",ui_precedente:"Anterior",ui_bc:"a. C.",ui_indietro:"Atrás",ui_trend:"TENDENCIA",ui_nuovo_prodotto:"Nuevo producto"});
+Object.assign(STRINGS.it,{ui_chi_paga_sub:"Un dito a testa sullo schermo: uno viene scelto",ui_scarto:"scarto",ui_attesa_host_domanda:"In attesa della prossima domanda…",ui_precedente:"Precedente",ui_bc:"a.C.",ui_indietro:"Indietro",ui_trend:"TREND",ui_nuovo_prodotto:"Nuovo prodotto"});
+Object.assign(STRINGS.en,{ui_chi_paga_sub:"Everyone puts a finger on the screen: one gets picked",ui_scarto:"off by",ui_attesa_host_domanda:"Waiting for the next question…",ui_precedente:"Previous",ui_bc:"BC",ui_indietro:"Back",ui_trend:"TRENDING",ui_nuovo_prodotto:"New product"});
+Object.assign(STRINGS.es,{ui_chi_paga_sub:"Un dedo cada uno en la pantalla: se elige a uno",ui_scarto:"diferencia",ui_attesa_host_domanda:"Esperando la siguiente pregunta…",ui_precedente:"Anterior",ui_bc:"a. C.",ui_indietro:"Atrás",ui_trend:"TENDENCIA",ui_nuovo_prodotto:"Nuevo producto"});
 // Etichette dei pulsanti in stile iOS: maiuscola solo la prima lettera (sigle e nomi propri restano)
 (function(){
- var KEYS="back ui_chi_paga_il_conto adultiOther adultiOtherIdea backBtn backToGame backToGames changeLevel codiceIAm codicePassTurn codiceSave codiceTry endBtn endGame exitBtn intesaGuessed intesaStart legalBack ncNobody ncSaidFirst otherGames quizReveal qvConfirm qvFinalScore qvNextQuestion qvPlayAgain qvRevealAnswers qvStart revealAnswer splashBtn startMrWhite starterDone starterEnd starterNext starterStart chiPagaRestart createRoom enterRoom obBtn quizzoneNextQ quizzoneStart qzFinalLeader qzShowAnswer quizzoneShowAnswer quizzoneFinalScore analyticsClose ui_conferma ui_conferma_risposta ui_era_falsa ui_era_vera ui_falsa ui_gioca_ancora ui_gioca_ancora_2 ui_ha_detto_si_no_non ui_ha_detto_si_no_non_2 ui_ha_trovato ui_ho_visto ui_indietro ui_inizia ui_inizia_2 ui_inizia_3 ui_inizia_a_giocare ui_inizia_il_mimo ui_inizia_il_round ui_inizia_il_timer ui_inizia_il_turno ui_inizia_la_conversazione ui_inizia_lo_spot ui_inizia_memorizzazione ui_inizia_il_gioco ui_leggi_l_affermazione ui_lo_sapevo_1 ui_non_sapevo ui_modifica ui_modifica_2 ui_nascondi ui_nuova_coppia ui_nuova_domanda ui_nuovo_giro ui_nuovo_giro_2 ui_nuovo_turno ui_nuovo_viaggio ui_passa ui_passa_al_giocatore_2 ui_pausa ui_prossima_confessione ui_prossima_domanda ui_prossimo_giocatore ui_prossimo_giocatore_2 ui_prossimo_mimo ui_prossimo_scultore ui_ricomincia ui_riprendi ui_risultati_finali ui_risultati_finali_2 ui_sono_il_giocatore_2 ui_vedi_il_vostro_viaggio ui_vedi_le_regole ui_vera ui_via ui_vedi_le_regole ui_home ui_esci_dalla_stanza ui_annulla_sfida ui_aggiungi_prodotto ui_elimina_prodotto ui_ripristina_menu_default ui_genera_e_scarica_pdf ui_modifica_menu".split(" ");
+ var KEYS="back ui_chi_paga_il_conto ui_paga_lui adultiOther adultiOtherIdea backBtn backToGame backToGames changeLevel codiceIAm codicePassTurn codiceSave codiceTry endBtn endGame exitBtn intesaGuessed intesaStart legalBack ncNobody ncSaidFirst otherGames quizReveal qvConfirm qvFinalScore qvNextQuestion qvPlayAgain qvRevealAnswers qvStart revealAnswer splashBtn startMrWhite starterDone starterEnd starterNext starterStart chiPagaRestart createRoom enterRoom obBtn quizzoneNextQ quizzoneStart qzFinalLeader qzShowAnswer quizzoneShowAnswer quizzoneFinalScore analyticsClose ui_conferma ui_conferma_risposta ui_era_falsa ui_era_vera ui_falsa ui_gioca_ancora ui_gioca_ancora_2 ui_ha_detto_si_no_non ui_ha_detto_si_no_non_2 ui_ha_trovato ui_ho_visto ui_indietro ui_inizia ui_inizia_2 ui_inizia_3 ui_inizia_a_giocare ui_inizia_il_mimo ui_inizia_il_round ui_inizia_il_timer ui_inizia_il_turno ui_inizia_la_conversazione ui_inizia_lo_spot ui_inizia_memorizzazione ui_inizia_il_gioco ui_leggi_l_affermazione ui_lo_sapevo_1 ui_non_sapevo ui_modifica ui_modifica_2 ui_nascondi ui_nuova_coppia ui_nuova_domanda ui_nuovo_giro ui_nuovo_giro_2 ui_nuovo_turno ui_nuovo_viaggio ui_passa ui_passa_al_giocatore_2 ui_pausa ui_prossima_confessione ui_prossima_domanda ui_prossimo_giocatore ui_prossimo_giocatore_2 ui_prossimo_mimo ui_prossimo_scultore ui_ricomincia ui_riprendi ui_risultati_finali ui_risultati_finali_2 ui_sono_il_giocatore_2 ui_vedi_il_vostro_viaggio ui_vedi_le_regole ui_vera ui_via ui_vedi_le_regole ui_home ui_esci_dalla_stanza ui_annulla_sfida ui_aggiungi_prodotto ui_elimina_prodotto ui_ripristina_menu_default ui_genera_e_scarica_pdf ui_modifica_menu".split(" ");
  var KEEP={"MR.":"Mr.","WHITE":"White","PDF":"PDF","QR":"QR","NFC":"NFC","TV":"TV","OK":"OK","SÌ/NO/NON":"sì/no/non","YES/NO/NOT":"yes/no/not","SÍ/NO/TAMPOCO":"sí/no/tampoco"};
  function sc(v){
   if(typeof v!=="string"||v.indexOf("<")>=0)return v;
@@ -3661,7 +3671,7 @@ function renderCnsEnd(){
 function render(){
  updateHdr();resetIdle();
  renderLangPill();
- var _cp=document.getElementById("chipaga-btn");if(_cp)_cp.textContent=T("ui_chi_paga_il_conto");
+ var _ch=document.getElementById("chipaga-hint");var _ov=document.getElementById("chipaga-overlay");if(_ch&&_ov&&!_ov.classList.contains("active"))_ch.textContent=T("ui_appoggiate_tutti_un_dito");
  // Senza tag NFC valido si vede la schermata di blocco (tranne il pannello del gestore; una partita già iniziata si chiude normalmente)
  if(S.screen!=="analytics"&&typeof nfcGateNeeded==="function"&&nfcGateNeeded()&&(NFC_STATE.status==="checking"||["onboarding","splash","home","games"].indexOf(S.screen)>=0)){renderNfcGate();return;}
  if(S.screen==="onboarding"){
@@ -3756,17 +3766,13 @@ document.getElementById("logoEl").addEventListener("click",function(){
 (function(){
  var COLORS = ['#FF6B6B','#4ECDC4','#FFE66D','#A78BFA','#F97316','#06B6D4','#EC4899','#10B981'];
 
- var btn = document.createElement('button');
- btn.id = 'chipaga-btn';
- btn.textContent = T("ui_chi_paga_il_conto");
- document.body.appendChild(btn);
 
  var ov = document.createElement('div');
  ov.id = 'chipaga-overlay';
 
  var closeBtn = document.createElement('button');
  closeBtn.id = 'chipaga-close';
- closeBtn.textContent = '';
+ closeBtn.setAttribute('aria-label','Chiudi');
  ov.appendChild(closeBtn);
 
  var hint = document.createElement('div');
@@ -3800,8 +3806,10 @@ document.getElementById("logoEl").addEventListener("click",function(){
  var elimTimer = null;
  var rafId = null;
 
- btn.addEventListener('click', openOverlay);
- closeBtn.addEventListener('click', closeOverlay);
+ window.openChiPaga = openOverlay;
+ closeBtn.addEventListener('click', function(e){ e.stopPropagation(); closeOverlay(); });
+ closeBtn.addEventListener('touchend', function(e){ e.preventDefault(); e.stopPropagation(); closeOverlay(); });
+ var countIv = null;
 
  function openOverlay(){
  phase = 'waiting';
@@ -3813,6 +3821,7 @@ document.getElementById("logoEl").addEventListener("click",function(){
  }
 
  function closeOverlay(){
+ clearInterval(countIv); countIv = null;
  clearTimeout(countdownTimer);
  clearTimeout(elimTimer);
  cancelAnimationFrame(rafId);
@@ -3897,12 +3906,13 @@ document.getElementById("logoEl").addEventListener("click",function(){
  phase = 'countdown';
  var secs = 3;
  hint.textContent = T("ui_non_alzate_il_dito") + secs;
- var iv = setInterval(function(){
+ clearInterval(countIv);
+ countIv = setInterval(function(){
  secs--;
  if(secs > 0){
  hint.textContent = T("ui_non_alzate_il_dito") + secs;
  } else {
- clearInterval(iv);
+ clearInterval(countIv); countIv = null;
  startElimination();
  }
  }, 900);
@@ -3944,8 +3954,10 @@ document.getElementById("logoEl").addEventListener("click",function(){
  }
 
  ov.addEventListener('touchstart', function(e){
+ if(e.target === closeBtn || closeBtn.contains(e.target)) return;
  e.preventDefault();
- if(phase === 'done' || phase === 'eliminating') return;
+ if(phase === 'done'){ closeOverlay(); return; }
+ if(phase === 'eliminating') return;
  clearTimeout(countdownTimer);
  if(phase === 'countdown') phase = 'waiting';
 
@@ -3984,6 +3996,8 @@ document.getElementById("logoEl").addEventListener("click",function(){
  hint.textContent = count === 0 ? T("ui_appoggiate_tutti_un_dito") : count < 2 ? T("ui_appoggiate_anche_gli_altri") : count + T("ui_dita_pronti");
  }, {passive:false});
 
+ // Con il mouse (o se il tocco non arriva) a fine partita un clic chiude
+ ov.addEventListener('click', function(e){ if(phase === 'done' && e.target !== closeBtn) closeOverlay(); });
  ov.addEventListener('touchcancel', function(e){
  e.preventDefault();
  }, {passive:false});
