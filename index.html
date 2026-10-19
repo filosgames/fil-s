@@ -679,6 +679,15 @@ button:disabled{opacity:0.35!important;transform:none;}
 .card-nav-btn:hover{background:rgba(255,255,255,0.28);}
 .star{line-height:0;display:inline-flex;}
 .star svg{width:38px;height:38px;}
+.qcard{margin-top:12px;background:var(--surface2);border-radius:20px;padding:22px 20px 16px;min-height:190px;display:flex;flex-direction:column;}
+.qcard-round{align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:0.3px;color:var(--muted);background:rgba(120,120,128,0.12);border-radius:999px;padding:4px 10px;margin-bottom:16px;}
+.qcard-text{font-size:21px;line-height:1.4;font-weight:600;color:var(--dark);flex:1;}
+.qcard-count{margin-top:16px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;}
+.qcard-nav{display:flex;gap:10px;margin-top:14px;}
+.qcard-nav .ebtn{flex:1;padding:14px 10px;}
+.dbadges{display:flex;flex-wrap:wrap;gap:6px;}
+.dbadges .dbadge{margin:0;}
+.tip + .rlabel{margin-top:24px;}
 </style>
 
 <!-- Firebase SDK (bundled) -->
@@ -1013,10 +1022,10 @@ try {
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
 <script src="data-sp.js?v=5"></script>
-<script src="data-cats.js?v=7"></script>
+<script src="data-cats.js?v=9"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=31"></script>
+<script src="data-quiz.js?v=32"></script>
 <script>
 
 
@@ -2273,9 +2282,9 @@ var LEGAL_TERMS={"it": [["Proprietà", "Filòs, il suo nome, il logo, la grafica
 Object.assign(STRINGS.it,{"invNow": "ora", "invChallenges": " ti sfida", "invGame": "Gioco: ", "invPlay": "Gioca", "invQv": "Quanto vale?"});
 Object.assign(STRINGS.en,{"invNow": "now", "invChallenges": " challenges you", "invGame": "Game: ", "invPlay": "Play", "invQv": "How much is it?"});
 Object.assign(STRINGS.es,{"invNow": "ahora", "invChallenges": " te desafía", "invGame": "Juego: ", "invPlay": "Jugar", "invQv": "¿Cuánto vale?"});
-Object.assign(STRINGS.it,{ui_bc:"a.C.",ui_indietro:"Indietro",ui_trend:"TREND",ui_nuovo_prodotto:"Nuovo prodotto"});
-Object.assign(STRINGS.en,{ui_bc:"BC",ui_indietro:"Back",ui_trend:"TRENDING",ui_nuovo_prodotto:"New product"});
-Object.assign(STRINGS.es,{ui_bc:"a. C.",ui_indietro:"Atrás",ui_trend:"TENDENCIA",ui_nuovo_prodotto:"Nuevo producto"});
+Object.assign(STRINGS.it,{ui_precedente:"Precedente",ui_bc:"a.C.",ui_indietro:"Indietro",ui_trend:"TREND",ui_nuovo_prodotto:"Nuovo prodotto"});
+Object.assign(STRINGS.en,{ui_precedente:"Previous",ui_bc:"BC",ui_indietro:"Back",ui_trend:"TRENDING",ui_nuovo_prodotto:"New product"});
+Object.assign(STRINGS.es,{ui_precedente:"Anterior",ui_bc:"a. C.",ui_indietro:"Atrás",ui_trend:"TENDENCIA",ui_nuovo_prodotto:"Nuevo producto"});
 // Etichette dei pulsanti in stile iOS: maiuscola solo la prima lettera (sigle e nomi propri restano)
 (function(){
  var KEYS="back ui_chi_paga_il_conto adultiOther adultiOtherIdea backBtn backToGame backToGames changeLevel codiceIAm codicePassTurn codiceSave codiceTry endBtn endGame exitBtn intesaGuessed intesaStart legalBack ncNobody ncSaidFirst otherGames quizReveal qvConfirm qvFinalScore qvNextQuestion qvPlayAgain qvRevealAnswers qvStart revealAnswer splashBtn startMrWhite starterDone starterEnd starterNext starterStart chiPagaRestart createRoom enterRoom obBtn quizzoneNextQ quizzoneStart qzFinalLeader qzShowAnswer quizzoneShowAnswer quizzoneFinalScore analyticsClose ui_conferma ui_conferma_risposta ui_era_falsa ui_era_vera ui_falsa ui_gioca_ancora ui_gioca_ancora_2 ui_ha_detto_si_no_non ui_ha_detto_si_no_non_2 ui_ha_trovato ui_ho_visto ui_indietro ui_inizia ui_inizia_2 ui_inizia_3 ui_inizia_a_giocare ui_inizia_il_mimo ui_inizia_il_round ui_inizia_il_timer ui_inizia_il_turno ui_inizia_la_conversazione ui_inizia_lo_spot ui_inizia_memorizzazione ui_inizia_il_gioco ui_leggi_l_affermazione ui_lo_sapevo_1 ui_non_sapevo ui_modifica ui_modifica_2 ui_nascondi ui_nuova_coppia ui_nuova_domanda ui_nuovo_giro ui_nuovo_giro_2 ui_nuovo_turno ui_nuovo_viaggio ui_passa ui_passa_al_giocatore_2 ui_pausa ui_prossima_confessione ui_prossima_domanda ui_prossimo_giocatore ui_prossimo_giocatore_2 ui_prossimo_mimo ui_prossimo_scultore ui_ricomincia ui_riprendi ui_risultati_finali ui_risultati_finali_2 ui_sono_il_giocatore_2 ui_vedi_il_vostro_viaggio ui_vedi_le_regole ui_vera ui_via ui_vedi_le_regole ui_home ui_esci_dalla_stanza ui_annulla_sfida ui_aggiungi_prodotto ui_elimina_prodotto ui_ripristina_menu_default ui_genera_e_scarica_pdf ui_modifica_menu".split(" ");
@@ -2431,8 +2440,8 @@ var GAMES={
  ]}
  ]},
  {name:"IL GIOCO DELLA VULNERABILITÀ",players:"2",time:"30 min",isnew:true,
- rules:"Ispirato alla ricerca di Brené Brown, professore all'Università di Houston che ha studiato per vent'anni il coraggio e la vulnerabilità. La sua scoperta principale: la vulnerabilità non è debolezza. È il punto di partenza di ogni connessione autentica. Il gioco ha tre livelli. Si risponde a turno. Non si minimizza mai la risposta dell'altro.",
- tip:"Brown dice: 'La vulnerabilità è l'unica via che porta alla vera intimità.' Non serve che le risposte siano grandi — serve che siano oneste.",
+ rules:"Ispirato al lavoro di Brené Brown, la ricercatrice dell'Università di Houston che ha studiato per vent'anni il coraggio e la vulnerabilità. La sua scoperta principale: la vulnerabilità non è debolezza. È il punto di partenza di ogni connessione autentica. Il gioco ha tre livelli. Si risponde a turno. Non si minimizza mai la risposta dell'altro.",
+ tip:"Non serve che le risposte siano grandi: serve che siano oneste.",
  questions:[
  {label:"LIVELLO 1 — PICCOLE AMMISSIONI",items:[
  "Qual è una cosa di te che di solito cerchi di nascondere alle persone nuove?",
@@ -2477,8 +2486,8 @@ var GAMES={
  ]}
  ]},
  {name:"IL METODO DELL'APPREZZAMENTO",players:"2",time:"25 min",isnew:true,
- rules:"Ispirato al 'Fondamento dell'Amicizia' di John Gottman — uno dei pilastri del suo metodo. Le coppie che durano non sono quelle che non litigano: sono quelle che si apprezzano attivamente. Ogni round ha domande diverse. La regola unica: ogni risposta deve contenere qualcosa di positivo sull'altro — qualcosa che hai notato, che ammiri, che ti ha sorpreso.",
- tip:"Gottman chiama questo 'nutrire la mappa dell'amore'. Non sono complimenti vuoti — sono osservazioni specifiche e vere. Le più potenti sono quelle che l'altro non sa che hai notato.",
+ rules:"Ispirato al lavoro di John Gottman su stima e affetto, uno dei pilastri del suo metodo. Le coppie che durano non sono quelle che non litigano: sono quelle che si apprezzano attivamente. Ogni round ha domande diverse. La regola unica: ogni risposta deve contenere qualcosa di positivo sull'altro — qualcosa che hai notato, che ammiri, che ti ha sorpreso.",
+ tip:"Non sono complimenti vuoti — sono osservazioni specifiche e vere. Le più potenti sono quelle che l'altro non sa che hai notato.",
  questions:[
  {label:"PARTE I — QUELLO CHE HO NOTATO",items:[
  "Qual è una cosa che fai abitualmente e che mi ha colpito/a — anche se non te l'ho mai detto/a?",
@@ -4237,6 +4246,19 @@ try{if(typeof applyAdulti==="function")applyAdulti();}catch(e){}
   }
  });
  for(var c in GAMES){(GAMES[c]||[]).forEach(function(x){if(!x._it)x._it=x.name;});}
+ // Domande dei giochi di coppia nella lingua giusta (36 domande e altri giochi a round)
+ try{
+  var Q36={it:window.Q36R,en:window.Q36R_EN,es:window.Q36R_ES};
+  [["it",GAMES],["en",typeof GAMES_EN!=="undefined"?GAMES_EN:null],["es",typeof GAMES_ES!=="undefined"?GAMES_ES:null]].forEach(function(p){
+   var L=p[0],T2=p[1];if(!T2||!T2.coppia)return;
+   T2.coppia.forEach(function(g){
+    var k=g._it||g.name;
+    if(k==="36 DOMANDE"&&Q36[L])g.questions=Q36[L];
+    else if(L!=="it"&&typeof COPPIA_Q!=="undefined"&&COPPIA_Q[k]&&COPPIA_Q[k][L])g.questions=COPPIA_Q[k][L];
+    if(L!=="it"&&typeof COPPIA_R!=="undefined"&&COPPIA_R[k]){var rr=COPPIA_R[k];if(rr[L]){g.rules=rr[L].rules;g.tip=rr[L].tip;}if(rr.time)g.time=rr.time;}
+   });
+  });
+ }catch(e){}
  // Stessi giochi in tutte le lingue: nasconde i doppioni e i giochi tradotti senza originale italiano
  [GAMES,typeof GAMES_EN!=="undefined"?GAMES_EN:null,typeof GAMES_ES!=="undefined"?GAMES_ES:null].forEach(function(T2,ti){
   if(!T2)return;

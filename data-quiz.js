@@ -4713,22 +4713,31 @@ function renderGame(){
  dhdrTop.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  dhdrTop.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
  hdr.appendChild(div("dtitle",g.name));
- hdr.appendChild(el("span","dbadge",g.players+" "+T("players")));
- hdr.appendChild(el("span","dbadge",g.time));
- hdr.appendChild(el("span","dbadge",getCatName(cat.id)));
+ var bdg=div("dbadges");hdr.appendChild(bdg);
+ bdg.appendChild(el("span","dbadge",g.players+" "+T("players")));
+ bdg.appendChild(el("span","dbadge",g.time));
+ bdg.appendChild(el("span","dbadge",getCatName(cat.id)));
  var body=div("dbody");card.appendChild(body);
  
  body.appendChild(div("rlabel",T("howToPlay")));body.appendChild(div("rtext",g.rules));
  if(g.tip){var tip=div("tip");tip.innerHTML="<strong>"+T("tipLabel")+"</strong> \u2014 "+g.tip;body.appendChild(tip);}
  if(g.questions){
+ // Domande una alla volta, a schede
+ var flat=[];g.questions.forEach(function(rd){(rd.items||[]).forEach(function(it){flat.push({label:rd.label,text:it});});});
+ var qKey=(g._it||g.name);
+ if(S.qCardKey!==qKey){S.qCardKey=qKey;S.qCardIdx=0;}
+ if(S.qCardIdx>=flat.length)S.qCardIdx=flat.length-1;if(S.qCardIdx<0)S.qCardIdx=0;
+ var cur=flat[S.qCardIdx];
  body.appendChild(div("rlabel",T("theQuestions")));
- var ql=div("qlist");body.appendChild(ql);
- for(var r=0;r<g.questions.length;r++){
- ql.appendChild(div("qround",g.questions[r].label));
- for(var q=0;q<g.questions[r].items.length;q++){
- var qi=div("qitem");qi.appendChild(el("span","qnum",String(q+1)+"."));qi.appendChild(el("span","",g.questions[r].items[q]));ql.appendChild(qi);
- }
- }
+ var qc=div("qcard");body.appendChild(qc);
+ qc.appendChild(div("qcard-round",cur.label));
+ qc.appendChild(div("qcard-text",cur.text));
+ qc.appendChild(div("qcard-count",(S.qCardIdx+1)+" / "+flat.length));
+ var qn=div("qcard-nav");body.appendChild(qn);
+ var prev=btn("ebtn out",T("ui_precedente"),function(){S.qCardIdx--;renderGame();});
+ if(S.qCardIdx===0)prev.disabled=true;
+ qn.appendChild(prev);
+ if(S.qCardIdx<flat.length-1)qn.appendChild(btn("ebtn",T("qvNextQuestion"),function(){S.qCardIdx++;renderGame();}));
  }
  var ew=div("");ew.style.cssText="text-align:center;margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;";
  if(S.fromStarter){
