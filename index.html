@@ -305,7 +305,9 @@ h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-title,
 }
 
 .intesa-wrap{max-width:800px;margin:0 auto;padding:28px 44px;}
-.trad-num-btn{background:var(--dark);border:none;border-radius:50%;color:#fff;font-size:26px;font-weight:700;width:52px;height:52px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.trad-num-btn{position:relative;background:var(--dark);border:none;border-radius:50%;color:#fff;font-size:0!important;width:52px;height:52px;cursor:pointer;padding:0;}
+.trad-num-btn::before,.trad-num-btn.plus::after{content:"";position:absolute;left:50%;top:50%;width:20px;height:3px;border-radius:2px;background:currentColor;transform:translate(-50%,-50%);}
+.trad-num-btn.plus::after{width:3px;height:20px;}
 .trad-num-disp{font-size:42px;font-weight:900;min-width:60px;text-align:center;color:var(--dark);}
 .intesa-title{font-size:22px;font-weight:900;color:#fff;letter-spacing:.06em;text-align:center;padding:10px 16px 4px;}
 .intesa-desc{font-size:14px;color:rgba(255,255,255,.85);text-align:center;padding:0 20px 14px;line-height:1.5;white-space:pre-line;}
@@ -1014,7 +1016,7 @@ try {
 <script src="data-cats.js?v=7"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=30"></script>
+<script src="data-quiz.js?v=31"></script>
 <script>
 
 

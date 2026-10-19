@@ -607,7 +607,7 @@ function makeStepperWidget(initVal, minVal, maxVal, onConfirm){
 
  var btnMinus = document.createElement('button');
  btnMinus.textContent = '−';
- btnMinus.className = 'trad-num-btn';
+ btnMinus.className = 'trad-num-btn minus';
  btnMinus.style.fontSize = '32px';
 
  var display = document.createElement('div');
@@ -616,7 +616,7 @@ function makeStepperWidget(initVal, minVal, maxVal, onConfirm){
 
  var btnPlus = document.createElement('button');
  btnPlus.textContent = '+';
- btnPlus.className = 'trad-num-btn';
+ btnPlus.className = 'trad-num-btn plus';
  btnPlus.style.fontSize = '32px';
 
  function refresh(){
@@ -2810,7 +2810,7 @@ function renderTradSetup(){
  var numWrap=div("");numWrap.style.cssText="display:flex;align-items:center;gap:20px;";
  var minus=btn("trad-num-btn","−",function(){if((S.tradN||6)>6){S.tradN=(S.tradN||6)-1;renderTradSetup();}});
  var numDisp=div("trad-num-disp");numDisp.textContent=(S.tradN||6)+"";
- var plus=btn("trad-num-btn","+",function(){S.tradN=(S.tradN||6)+1;renderTradSetup();});
+ var plus=btn("trad-num-btn plus","+",function(){S.tradN=(S.tradN||6)+1;renderTradSetup();});
  numWrap.appendChild(minus);numWrap.appendChild(numDisp);numWrap.appendChild(plus);
  body.appendChild(numWrap);
 
