@@ -3953,7 +3953,7 @@ function renderQuantoVale(){
 
  if(alreadyAnswered<players.length){
  // Show whose turn it is
- var turnDiv=div("dado-turn");turnDiv.textContent=T("qvPassTablet")+currentPlayer;wrap.appendChild(turnDiv);
+ var turnDiv=div("dado-turn");turnDiv.textContent=(S.qvDistanza&&!fbIsHost)?T("qvYourAnswer")+S.qvMyName+"):":T("qvPassTablet")+currentPlayer;wrap.appendChild(turnDiv);
  // Timer automatico 40 secondi
  var timerDiv=div("");timerDiv.id="qv-timer";timerDiv.style.cssText="text-align:center;font-size:13px;color:#aaa;margin-bottom:8px;";
  timerDiv.textContent=T("ui_risposta_automatica_tra_40s");wrap.appendChild(timerDiv);
@@ -3971,6 +3971,8 @@ function renderQuantoVale(){
   clearInterval(window._qvCountdownInterval);
   window._qvCountdownInterval=null;
   window._qvAutoTimer=null;
+  // A distanza: invia la risposta del cursore come se avessi confermato
+  if(S.qvDistanza&&!fbIsHost){var cb=document.getElementById("qv-confirm");if(cb)cb.click();return;}
   // Registra risposta del giocatore corrente con il valore attuale dello slider
   var sliderEl=document.querySelector(".qv-slider");
   var autoVal=sliderEl?parseInt(sliderEl.value):Math.round((q.min+q.max)/2);
@@ -4010,7 +4012,9 @@ function renderQuantoVale(){
  sliderWrap.appendChild(labels);
  wrap.appendChild(sliderWrap);
 
- wrap.appendChild(btn("ebtn",T("qvConfirm"),function(){
+ var _qvConfirmBtn=btn("ebtn",T("qvConfirm"),function(){
+ if(window._qvAutoTimer){clearTimeout(window._qvAutoTimer);window._qvAutoTimer=null;}
+ if(window._qvCountdownInterval){clearInterval(window._qvCountdownInterval);window._qvCountdownInterval=null;}
  var ansVal=parseInt(slider.value);
  if(S.qvDistanza && !fbIsHost){
  // Client: invia risposta via Firebase
@@ -4047,7 +4051,9 @@ function renderQuantoVale(){
  }
  }
  render();
- }));
+ });
+ _qvConfirmBtn.id="qv-confirm";
+ wrap.appendChild(_qvConfirmBtn);
  }
 
  // Show confirmed players
@@ -4084,12 +4090,21 @@ function renderQuantoVale(){
  var isW=roundWinners.indexOf(p)>=0;var row=div("qv-player-answer"+(isW?" winner":""));
  var nameEl=div("qv-answer-name");nameEl.textContent=p+(isW?" +1":"");row.appendChild(nameEl);
  var valEl=div("qv-answer-val");
- valEl.textContent=S.qvAnswers[p].toLocaleString(LANG==="en"?"en-US":LANG==="es"?"es-ES":"it-IT")+" (diff: "+diff.toLocaleString(LANG==="en"?"en-US":LANG==="es"?"es-ES":"it-IT")+")";
+ valEl.textContent=S.qvAnswers[p].toLocaleString(LANG==="en"?"en-US":LANG==="es"?"es-ES":"it-IT")+" ("+T("ui_scarto")+" "+diff.toLocaleString(LANG==="en"?"en-US":LANG==="es"?"es-ES":"it-IT")+")";
  row.appendChild(valEl);
  answersDiv.appendChild(row);
  });
  wrap.appendChild(answersDiv);
 
+ // A distanza solo chi ha creato la stanza fa avanzare il gioco: gli altri aspettano la domanda successiva
+ if(S.qvDistanza&&!fbIsHost){
+  if(window._qvNextTimer){clearTimeout(window._qvNextTimer);window._qvNextTimer=null;}
+  if(window._qvNextInterval){clearInterval(window._qvNextInterval);window._qvNextInterval=null;}
+  var _wt=div("");_wt.style.cssText="text-align:center;font-size:14px;color:var(--muted);margin:10px 0;";
+  _wt.textContent=T("ui_attesa_host_domanda");wrap.appendChild(_wt);
+  document.getElementById("root").appendChild(wrap);
+  return;
+ }
  // Next round or end
  var isLast=(S.qvRound>=S.qvTotalRounds-1);
  // Timer automatico 40s
