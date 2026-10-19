@@ -1,3 +1,11 @@
+/*!
+ * Filòs — © 2026 i titolari del progetto Filòs. Tutti i diritti riservati.
+ * Codice e contenuti (giochi, regole, domande, testi, traduzioni) sono opere protette
+ * dalla legge sul diritto d'autore (L. 633/1941). È vietata qualsiasi copia, riproduzione,
+ * modifica, ridistribuzione o estrazione automatica, anche parziale, e l'uso per addestrare
+ * sistemi di intelligenza artificiale, senza autorizzazione scritta dei titolari.
+ * Contenuti marcati con filigrana digitale per l'identificazione di copie non autorizzate.
+ */
 // Dati ANNO GIUSTO (IT + EN/ES allineati per indice)
 var ANNO_GIUSTO_DATA=[{"q":"La caduta del Muro di Berlino","risposta":1989,"curiosita":"Il 9 novembre 1989 migliaia di berlinesi abbatterono il muro che divideva la città dal 1961. Fu la fine simbolica della Guerra Fredda."},
 {"q":"Il primo sbarco dell'uomo sulla Luna","risposta":1969,"curiosita":"Il 20 luglio 1969 Neil Armstrong e Buzz Aldrin atterrarono con l'Apollo 11. Armstrong disse: 'Un piccolo passo per un uomo, un balzo gigante per l'umanità'."},

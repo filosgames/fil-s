@@ -1,3 +1,12 @@
+/*!
+ * Filòs — © 2026 i titolari del progetto Filòs. Tutti i diritti riservati.
+ * Codice e contenuti (giochi, regole, domande, testi, traduzioni) sono opere protette
+ * dalla legge sul diritto d'autore (L. 633/1941). È vietata qualsiasi copia, riproduzione,
+ * modifica, ridistribuzione o estrazione automatica, anche parziale, e l'uso per addestrare
+ * sistemi di intelligenza artificiale, senza autorizzazione scritta dei titolari.
+ * Contenuti marcati con filigrana digitale per l'identificazione di copie non autorizzate.
+ */
+try{console.log("%cFilòs — © 2026 Tutti i diritti riservati.%c\nCodice e contenuti protetti dal diritto d'autore. Copia e riuso vietati senza autorizzazione scritta. Contenuti protetti da filigrana digitale.","font-weight:700;font-size:14px","font-size:12px");}catch(e){}
 var ANALYTICS={plays:[],ratings:{},menuClicks:{}};
 try{var _d=localStorage.getItem("filos13");if(_d){var _p=JSON.parse(_d);ANALYTICS.plays=_p.plays||[];ANALYTICS.ratings=_p.ratings||{};ANALYTICS.menuClicks=_p.menuClicks||{};}}catch(e){}
 function getPubCode(){try{return localStorage.getItem("filos_pub_code")||"";}catch(e){return "";}}
@@ -381,8 +390,22 @@ function renderHome(){
  })(CATS[i],i);
  }
  wrap.appendChild(grid1);wrap.appendChild(grid2);wrap.appendChild(gridM);
+ var lf=div("legal-foot");lf.appendChild(div("",T("legalFooter")));
+ lf.appendChild(btn("",T("legalLink"),function(){S.prevScreen="home";S.screen="terms";render();window.scrollTo(0,0);}));
+ wrap.appendChild(lf);
 
  document.getElementById("root").appendChild(wrap);
+}
+function renderTerms(){
+ clr();
+ addBackArrow(goHome);
+ var w=div("terms-wrap");
+ w.appendChild(el("h1","",T("legalTitle")));
+ var secs=(typeof LEGAL_TERMS!=="undefined"&&(LEGAL_TERMS[LANG]||LEGAL_TERMS.it))||[];
+ secs.forEach(function(x){var c=div("terms-sec");c.appendChild(el("h2","",x[0]));c.appendChild(el("p","",x[1]));w.appendChild(c);});
+ w.appendChild(div("legal-foot",T("legalFooter")));
+ var b=btn("codice-cta",T("legalBack"),goHome);b.style.marginTop="18px";w.appendChild(b);
+ document.getElementById("root").appendChild(w);
 }
 
 function renderGames(){

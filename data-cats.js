@@ -1,3 +1,11 @@
+/*!
+ * Filòs — © 2026 i titolari del progetto Filòs. Tutti i diritti riservati.
+ * Codice e contenuti (giochi, regole, domande, testi, traduzioni) sono opere protette
+ * dalla legge sul diritto d'autore (L. 633/1941). È vietata qualsiasi copia, riproduzione,
+ * modifica, ridistribuzione o estrazione automatica, anche parziale, e l'uso per addestrare
+ * sistemi di intelligenza artificiale, senza autorizzazione scritta dei titolari.
+ * Contenuti marcati con filigrana digitale per l'identificazione di copie non autorizzate.
+ */
 // Dati CATS
 var CATS=[
  {id:"amici", icon:"\u25c8", name:"TRA AMICI", sub:"per gruppi e compagnie", min:3, cls:"c-amici", bg:"linear-gradient(135deg,#F97316,#EA580C)"},
