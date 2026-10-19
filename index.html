@@ -470,6 +470,18 @@ h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-title,
 .terms-sec{background:#fff;border-radius:14px;padding:16px 18px;margin-bottom:12px;}
 .terms-sec h2{font-size:16px;font-weight:700;color:#1c1c1e;margin:0 0 6px;}
 .terms-sec p{font-size:15px;line-height:1.55;color:#3a3a3c;margin:0;}
+.inv-card{position:fixed;top:10px;left:50%;z-index:9999;width:calc(100% - 20px);max-width:400px;transform:translate(-50%,-140%);transition:transform .45s cubic-bezier(.22,1,.36,1);background:rgba(255,255,255,0.86);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-radius:22px;padding:12px 14px 14px;box-shadow:0 10px 40px rgba(0,0,0,0.18),0 0 0 0.5px rgba(0,0,0,0.06);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",system-ui,sans-serif;color:#1c1c1e;}
+.inv-card.in{transform:translate(-50%,0);}
+.inv-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.inv-icon{width:22px;height:22px;border-radius:6px;background:#FF7A45;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.inv-app{font-size:13px;font-weight:600;color:#3c3c43;text-transform:uppercase;letter-spacing:0.3px;flex:1;}
+.inv-when{font-size:13px;color:#8e8e93;}
+.inv-title{font-size:16px;font-weight:600;line-height:1.3;}
+.inv-body{font-size:15px;color:#3c3c43;line-height:1.35;margin-top:2px;}
+.inv-btns{display:flex;gap:8px;margin-top:12px;}
+.inv-btn{flex:1;height:40px;border:0;border-radius:12px;background:rgba(118,118,128,0.14);color:#1c1c1e;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.inv-btn.primary{background:#007aff;color:#fff;}
+.inv-btn:active{opacity:.8;}
 .codice-turn-info{background:var(--dark);border-radius:10px;padding:12px 16px;color:#fff;font-weight:600;font-size:14px;margin-bottom:16px;text-align:center;}
 .codice-answer-btns{display:flex;gap:10px;justify-content:center;margin-top:12px;}
 /* ── Indovina il codice: stile iOS ── */
@@ -2240,6 +2252,9 @@ Object.assign(STRINGS.it,{"legalFooter": "© 2026 Filòs · Tutti i diritti rise
 Object.assign(STRINGS.en,{"legalFooter": "© 2026 Filòs · All rights reserved", "legalLink": "Terms of use", "legalTitle": "Terms of use", "legalBack": "Back to home"});
 Object.assign(STRINGS.es,{"legalFooter": "© 2026 Filòs · Todos los derechos reservados", "legalLink": "Términos de uso", "legalTitle": "Términos de uso", "legalBack": "Volver al inicio"});
 var LEGAL_TERMS={"it": [["Proprietà", "Filòs, il suo nome, il logo, la grafica, il codice e tutti i contenuti (giochi, regole, domande, testi, curiosità e traduzioni) sono opere protette dalla legge sul diritto d'autore (L. 633/1941) e appartengono ai titolari del progetto Filòs. Tutti i diritti sono riservati."], ["Cosa non è consentito", "Non è consentito copiare, scaricare, riprodurre, tradurre, modificare, ripubblicare, vendere o distribuire in qualsiasi forma l'app o i suoi contenuti, in tutto o in parte, né usarli per creare prodotti simili, senza un'autorizzazione scritta dei titolari. Non è consentito estrarre i contenuti in modo automatico (scraping) né usarli per addestrare sistemi di intelligenza artificiale."], ["Uso consentito", "L'app può essere usata solo per giocare, a titolo personale, nei locali che la offrono o nei modi previsti dai titolari."], ["Alcol e sezione 18+", "La sezione 18+ è riservata ai maggiorenni. Filòs non incoraggia il consumo di alcol: ogni volta che una regola dice di bere, si può sempre sostituire con una penitenza o con una bevanda analcolica. Bevete in modo responsabile e non mettetevi mai alla guida dopo aver bevuto. Partecipare a ogni gioco e rispondere a ogni domanda è sempre facoltativo."], ["Dati", "L'app non richiede registrazione. Il nome che inserisci e le preferenze restano salvati sul tuo telefono. Per le partite a distanza i dati della stanza di gioco (nomi e risposte) passano temporaneamente su un servizio di Google (Firebase)."], ["Contatti", "Per richieste di autorizzazione, collaborazioni o segnalazioni di copie non autorizzate, contattate i titolari del progetto Filòs."]], "en": [["Ownership", "Filòs, its name, logo, design, code and all its content (games, rules, questions, texts, trivia and translations) are works protected by copyright law and belong to the owners of the Filòs project. All rights reserved."], ["What is not allowed", "You may not copy, download, reproduce, translate, modify, republish, sell or distribute the app or its content, in whole or in part, in any form, or use them to create similar products, without written permission from the owners. Automated extraction of content (scraping) and its use to train artificial intelligence systems are not allowed."], ["Permitted use", "The app may only be used to play, for personal purposes, in the venues that offer it or in the ways intended by the owners."], ["Alcohol and the 18+ section", "The 18+ section is for adults only. Filòs does not encourage drinking: whenever a rule says to drink, you can always swap it for a forfeit or a non-alcoholic drink. Drink responsibly and never drive after drinking. Taking part in any game and answering any question is always optional."], ["Data", "The app requires no sign-up. The name you enter and your preferences are stored on your phone. For remote games, game-room data (names and answers) passes temporarily through a Google service (Firebase)."], ["Contact", "For permission requests, partnerships or to report unauthorised copies, contact the owners of the Filòs project."]], "es": [["Propiedad", "Filòs, su nombre, el logotipo, el diseño, el código y todos sus contenidos (juegos, reglas, preguntas, textos, curiosidades y traducciones) son obras protegidas por la ley de derechos de autor y pertenecen a los titulares del proyecto Filòs. Todos los derechos reservados."], ["Qué no está permitido", "No está permitido copiar, descargar, reproducir, traducir, modificar, volver a publicar, vender o distribuir la app o sus contenidos, total o parcialmente, de ninguna forma, ni usarlos para crear productos similares, sin autorización por escrito de los titulares. No está permitida la extracción automática de contenidos (scraping) ni su uso para entrenar sistemas de inteligencia artificial."], ["Uso permitido", "La app solo puede usarse para jugar, a título personal, en los locales que la ofrecen o de la forma prevista por los titulares."], ["Alcohol y sección 18+", "La sección 18+ está reservada a mayores de edad. Filòs no fomenta el consumo de alcohol: cada vez que una regla diga que hay que beber, siempre se puede sustituir por una prenda o una bebida sin alcohol. Bebe con responsabilidad y no conduzcas nunca después de beber. Participar en cada juego y responder a cada pregunta es siempre opcional."], ["Datos", "La app no requiere registro. El nombre que introduces y tus preferencias se guardan en tu móvil. En las partidas a distancia, los datos de la sala de juego (nombres y respuestas) pasan temporalmente por un servicio de Google (Firebase)."], ["Contacto", "Para solicitudes de autorización, colaboraciones o para denunciar copias no autorizadas, contacta con los titulares del proyecto Filòs."]]};
+Object.assign(STRINGS.it,{"invNow": "ora", "invChallenges": " ti sfida", "invGame": "Gioco: ", "invPlay": "Gioca", "invQv": "Quanto vale?"});
+Object.assign(STRINGS.en,{"invNow": "now", "invChallenges": " challenges you", "invGame": "Game: ", "invPlay": "Play", "invQv": "How much is it?"});
+Object.assign(STRINGS.es,{"invNow": "ahora", "invChallenges": " te desafía", "invGame": "Juego: ", "invPlay": "Jugar", "invQv": "¿Cuánto vale?"});
 function T(k){return(STRINGS[LANG]||STRINGS.it)[k]||(STRINGS.it[k])||k;}
 // ──────────────────────────────────────────────────────────
 
@@ -3961,48 +3976,28 @@ function startInviteListener(){
  });
 }
 
-// Mostra il banner notifica stile iOS
+// Notifica di sfida: semplice, chiara, in stile iOS
 function showInviteBanner(inv, key){
- // Rimuovi eventuale banner precedente
  var old = document.getElementById("invite-banner");
  if(old) old.remove();
-
  var banner = document.createElement("div");
  banner.id = "invite-banner";
- banner.style.cssText = [
-  "position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-120%);",
-  "z-index:9999;width:calc(100% - 32px);max-width:390px;",
-  "background:#1C1C1E;color:#fff;border-radius:16px;",
-  "padding:14px 16px;box-shadow:0 8px 32px rgba(0,0,0,0.35);",
-  "display:flex;align-items:center;gap:12px;",
-  "transition:transform 0.4s cubic-bezier(.22,1,.36,1);",
-  "font-family:'DM Sans',sans-serif;"
- ].join("");
+ banner.className = "inv-card";
+ var top = document.createElement("div");top.className="inv-top";
+ var ic = document.createElement("div");ic.className="inv-icon";ic.textContent="F";
+ var app = document.createElement("div");app.className="inv-app";app.textContent="Filòs";
+ var when = document.createElement("div");when.className="inv-when";when.textContent=T("invNow");
+ top.appendChild(ic);top.appendChild(app);top.appendChild(when);
+ var who = document.createElement("div");who.className="inv-title";
+ who.textContent=(inv.from||T("ui_qualcuno"))+T("invChallenges");
+ var gameLbl = (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
+ gameLbl=String(gameLbl);if(gameLbl===gameLbl.toUpperCase())gameLbl=gameLbl.charAt(0)+gameLbl.slice(1).toLowerCase();
+ var what = document.createElement("div");what.className="inv-body";what.textContent=T("invGame")+gameLbl;
+ var btns = document.createElement("div");btns.className="inv-btns";
+ function close(){banner.classList.remove("in");setTimeout(function(){if(banner.parentNode)banner.remove();},350);}
+ var ref = document.createElement("button");ref.className="inv-btn";ref.textContent=T("ui_rifiuta");
+ var acc = document.createElement("button");acc.className="inv-btn primary";acc.textContent=T("invPlay");
 
- // Icona
- var ic = document.createElement("div");
- ic.style.cssText="width:40px;height:40px;border-radius:10px;background:#FF7A45;display:flex;align-items:center;justify-content:center;flex-shrink:0;";
- ic.innerHTML='<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2a9 9 0 1 1 0 18A9 9 0 0 1 11 2z" stroke="#fff" stroke-width="1.8"/><path d="M7.5 11l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-
- // Testo
- var txt = document.createElement("div");
- txt.style.cssText="flex:1;min-width:0;";
- var t1 = document.createElement("div");
- t1.style.cssText="font-size:13px;font-weight:600;color:#FF7A45;margin-bottom:2px;font-family:'Space Grotesk',sans-serif;letter-spacing:0.3px;text-transform:uppercase;";
- t1.textContent=T("ui_sfida_ricevuta");
- var t2 = document.createElement("div");
- t2.style.cssText="font-size:15px;font-weight:500;color:#fff;line-height:1.3;";
- t2.textContent = (inv.from||T("ui_qualcuno")) + T("ui_vuole_giocare_a") + (inv.game||T("ui_un_gioco"));
-
- txt.appendChild(t1);txt.appendChild(t2);
-
- // Bottoni
- var btns = document.createElement("div");
- btns.style.cssText="display:flex;flex-direction:column;gap:6px;flex-shrink:0;";
-
- var acc = document.createElement("button");
- acc.textContent=T("ui_accetta");
- acc.style.cssText="background:#FF7A45;color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;";
  acc.onclick=function(){
   banner.remove();
   // Rimuovi l'invito da Firebase
@@ -4034,33 +4029,17 @@ function showInviteBanner(inv, key){
   render();
  };
 
- var ref = document.createElement("button");
- ref.textContent=T("ui_rifiuta");
- ref.style.cssText="background:rgba(255,255,255,0.12);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;";
  ref.onclick=function(){
-  banner.style.transform="translateX(-50%) translateY(-120%)";
-  setTimeout(function(){banner.remove();},400);
+  close();
   try{fbRemove(fbRef(fbDB,"filos_invites/"+key));}catch(e){}
  };
 
- btns.appendChild(acc);btns.appendChild(ref);
- banner.appendChild(ic);banner.appendChild(txt);banner.appendChild(btns);
+ btns.appendChild(ref);btns.appendChild(acc);
+ banner.appendChild(top);banner.appendChild(who);banner.appendChild(what);banner.appendChild(btns);
  document.body.appendChild(banner);
-
- // Entra con animazione
- requestAnimationFrame(function(){
-  requestAnimationFrame(function(){
-   banner.style.transform="translateX(-50%) translateY(0)";
-  });
- });
-
- // Auto-dismiss dopo 20 sec
- setTimeout(function(){
-  if(document.getElementById("invite-banner")===banner){
-   banner.style.transform="translateX(-50%) translateY(-120%)";
-   setTimeout(function(){if(banner.parentNode)banner.remove();},400);
-  }
- }, 20000);
+ requestAnimationFrame(function(){requestAnimationFrame(function(){banner.classList.add("in");});});
+ // Si chiude da sola dopo 20 secondi
+ setTimeout(function(){if(document.getElementById("invite-banner")===banner)close();},20000);
 }
 
 // Manda un invito a tutti gli altri dispositivi
@@ -4118,7 +4097,7 @@ function renderChallengeBtn(container){
  var b = document.createElement("button");
  b.className="home-btn";
  b.style.cssText="background:#FF7A45;border:none;color:#fff;border-radius:999px;padding:11px 24px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Space Grotesk',sans-serif;display:inline-flex;align-items:center;gap:8px;box-shadow:0 2px 10px rgba(255,122,69,0.25);";
- b.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1v16M1 9h16" stroke="#FF7A45" stroke-width="2" stroke-linecap="round"/></svg> Sfida un altro tavolo';
+ b.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1v16M1 9h16" stroke="#FF7A45" stroke-width="2" stroke-linecap="round"/></svg> '+T("ui_sfida_un_altro_tavolo");
  b.onclick = function(){
   showChallengeModal();
  };
