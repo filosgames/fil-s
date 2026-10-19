@@ -575,7 +575,8 @@ h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-title,
 .connect-divider::before,.connect-divider::after{content:"";flex:1;height:1px;background:#ddd;}
 .connect-divider span{color:#aaa;font-size:13px;}
 .client-indicator{position:fixed;bottom:16px;right:16px;background:var(--orange);color:#fff;padding:8px 14px;border-radius:20px;font-weight:700;font-size:12px;letter-spacing:1px;z-index:1000;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.back-arrow{background:var(--dark);color:#fff;border:none;border-radius:20px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:12px;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+.back-arrow::before{content:"";display:inline-block;width:7px;height:7px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:0 4px 0 2px;}
+.back-arrow{background:rgba(120,120,128,0.12);color:var(--dark);border:none;border-radius:999px;padding:7px 14px 7px 12px;font-weight:600;font-size:15px;cursor:pointer;display:flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent;box-shadow:none;}
 .dhdr{color:#fff;}
 .dhdr .card-nav-btn{color:#fff;border-color:rgba(255,255,255,0.4);}
 
@@ -661,6 +662,21 @@ h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-title,
  transition:opacity 0.4s;
 }
 
+/* ── Pulsanti in stile iOS: semplici, puliti, coerenti ── */
+button{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","DM Sans",Arial,sans-serif;-webkit-tap-highlight-color:transparent;letter-spacing:-0.1px!important;text-transform:none!important;-webkit-user-select:none;user-select:none;touch-action:manipulation;}
+button:active{opacity:0.82;}
+.ebtn:active,.card-nav-btn:active,.back-arrow:active,.inv-btn:active,.codice-key:active{transform:scale(0.97);}
+button:disabled{opacity:0.35!important;transform:none;}
+.ebtn{background:var(--dark);color:#fff;border:none;border-radius:14px;font-size:17px;font-weight:600!important;padding:15px 26px;min-height:50px;line-height:1.2;box-shadow:none;}
+.ebtn:hover{opacity:1;transform:none;}
+.ebtn:active{transform:scale(0.97);opacity:0.82;}
+.ebtn.out{background:rgba(120,120,128,0.12);border:none!important;color:var(--dark);}
+.ebtn.out:hover{background:rgba(120,120,128,0.16);color:var(--dark);}
+.card-nav-btn{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;font-weight:600;font-size:15px;border-radius:999px;padding:7px 14px;}
+.card-nav-btn.back::before{content:"";display:inline-block;width:8px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-right:6px;vertical-align:1px;}
+.card-nav-btn:hover{background:rgba(255,255,255,0.28);}
+.star{line-height:0;display:inline-flex;}
+.star svg{width:38px;height:38px;}
 </style>
 
 <!-- Firebase SDK (bundled) -->
@@ -994,11 +1010,11 @@ try {
 </div>
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
-<script src="data-sp.js?v=4"></script>
-<script src="data-cats.js?v=5"></script>
-<script src="data-quizdata.js?v=3"></script>
+<script src="data-sp.js?v=5"></script>
+<script src="data-cats.js?v=7"></script>
+<script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=27"></script>
+<script src="data-quiz.js?v=29"></script>
 <script>
 
 
@@ -1203,7 +1219,7 @@ function setLang(l){
  render();
 }
 var STRINGS={
- it:{tagline:"GIOCHI SOCIALI",splashDesc:"Niente carte, niente dadi — solo voi, una buona compagnia e la voglia di stare insieme.",splashBtn:"INIZIA A GIOCARE",splashFoot:"PUB · LOCALI · SERATE TRA AMICI",homeTitle:"A COSA VOGLIAMO GIOCARE?",catAmici:"TRA AMICI",catCoppia:"LA COPPIA",catBambini:"ROMPIGHIACCIO",catIndovinelli:"INDOVINELLI",catAzione:"AZIONE",catCreativi:"CREATIVI",catCultura:"CULTURA",catAdulti:"18+",catRelax:"A DISTANZA",catSolitario:"SOLO",back:"INDIETRO",connect:"COLLEGA",backBtn:"Indietro",exitBtn:"Esci",filterAll:"TUTTI",filterEasy:"FACILE",filterMed:"MEDIA",filterHard:"DIFFICILE",players:"giocatori",backToGames:"← TORNA AI GIOCHI",endMsg4:"OTTIMA SERATA!",endMsg3:"CARINO, SI PUÒ FARE MEGLIO!",endMsgElse:"PROVIAMO QUALCOS'ALTRO?",mrWhiteHowMany:"Quanti giocatori siete?",mrWhitePass:"Passa il tablet a turno. Ognuno tocca il proprio pulsante per vedere la parola.",dadoInsert:"Inserite il numero e i vostri nomi. Primo a 5 punti vince!",waitingPlayers:"In attesa di giocatori...",qvQuestion:"DOMANDA",qvOf:"DI",qvYourAnswer:"La tua risposta (sei ",qvConfirm:"CONFERMO →",qvAnswerSent:"Risposta inviata!",qvWaitingOthers:"In attesa degli altri giocatori...",qvWaitingOthers2:"In attesa degli altri...",qvPassTablet:"Passa il tablet a: ",qvAnswerSentShort:"Risposta inviata",qvCorrectAnswer:"LA RISPOSTA CORRETTA È",qvNextQuestion:"PROSSIMA DOMANDA →",qvFinalScore:"VEDI CLASSIFICA FINALE →",qvRevealAnswers:"RIVELA RISPOSTE →",qvWon:"HA VINTO!",qvPoints:"Con",qvPointsOf:"punti su",qvPlayAgain:"GIOCA ANCORA",howToPlay:"COME SI GIOCA",tipLabel:"Consiglio",theQuestions:"LE DOMANDE",backToGame:"← TORNA AL GIOCO",startMrWhite:"INIZIA MR. WHITE →",qvShareCode:"Condividi questo codice con gli amici",qvDisconnect:"Disconnetti",codeError4:"Inserisci il codice (4 cifre)",qvPlayer1:"giocatore",qvPlayerN:"giocatori",qvTitle:"QUANTO VALE?",endGame:"FINE GIOCO →",chiPagaTitle:"CHI PAGA?",chiPagaInstr:"Appoggiate un dito\nsullo schermo",chiPagaWait:"Aspetta gli altri…",chiPagaLoser:"Tocca a",chiPagaSub:"paga il conto! ",chiPagaRestart:"Ricomincia",chiPagaBack:"← GIOCHI",starterContinue:"Avete rotto il ghiaccio — continuate con le vostre domande, seguendo le regole del gioco.",qzShowAnswer:"MOSTRA RISPOSTA",mrWhiteStart:"Tutti hanno visto la parola. Iniziate a dare indizi!",intesaWord:"Parola ",intesaLevel:"LIVELLO: ",intesaGuessedN:"Avete indovinato ",intesaLevelOf:"— Livello: ",changeLevel:"CAMBIA LIVELLO",alfabetoHint:"Trova qualcosa che inizia con questa lettera!",codiceAllDigits:"Tutti i giocatori devono inserire 4 cifre!",codiceWonBy:"Ha indovinato il codice di ",roomNotFound2:"Stanza non trovata",otherGames:"ALTRI GIOCHI",starterInstruct:"Giocate questa frase, poi passate alla successiva.",analyticsEmpty:"Nessun dato ancora. Iniziate a giocare!",mostPlayed:"GIOCHI PIÙ GIOCATI",topCategory:"categoria più giocata",connectedRoom:"Connesso alla stanza",creatingRoom:"Creazione stanza e condivisione codice",createRoom:"CREA STANZA",qzChooseName:"Scegli il tuo nome da giocatore",qzLeaderboard:"CLASSIFICA ",qzLeaderTitle:"CLASSIFICA",qzFinalLeader:"CLASSIFICA FINALE",connErr:"Errore di connessione",joinBtn:"Entra",oppure:"OPPURE",enterBtn:"Entra",codeRoomPH2:"Codice stanza",codeRoomShare:"Codice stanza — fallo inserire ai giocatori",codeRoomLabel:"Codice stanza",waitingHost2:" In attesa che l'host avvii il gioco...",waitingPlayers3:"In attesa dei giocatori...",codiceWaiting:"In attesa della risposta di ",quizzoneCorrect:"Risposta corretta! In attesa degli altri...",quizzoneWrong:"Risposta sbagliata. In attesa degli altri...",roomCode:"Codice stanza",inRoom:"Sei nella stanza",waitingHost:" In attesa che l'host avvii il gioco...",leaveRoom:"Esci dalla stanza",playersInRoom:"Giocatori nella stanza:",startGame:" AVVIA IL GIOCO",codeRoomPH:"Es. ABC123",yourName:"Il tuo nome:",yourNamePH:"Come ti chiami?",roomNotFound:"Stanza non trovata — controlla il codice",waitPlayer:"Attendi almeno un giocatore!",closeRoom:"Chiudi stanza",joinRoom:"Unisciti a una stanza",joinRoomPH:"Codice stanza",waitingPlayers2:"In attesa di altri giocatori...",copyCode:"Copia codice",disconnectBtn:"Disconnetti",firebaseErr:"Firebase non disponibile",timeoutErr:"Timeout — controlla la connessione internet",howMany:"QUANTI SIETE?",modeLocal:"Locale",modeDist:"A distanza",playerNamePH:"Nome giocatore ",pinAccess:"Inserisci il PIN per accedere.",productName:"Nome prodotto",riddleLabel:"INDOVINELLO",revealAnswer:"SCOPRI LA RISPOSTA ",endBtn:"FINE →",mrWhiteYourWord:"La parola segreta è:",mrWhiteBluff:"Questa è la TUA parola — simile a quella degli altri.\nBluffa! Cerca di capire la loro parola dai loro indizi.",mrWhitePlayer:"Giocatore ",mrWhiteLookWord:" GUARDA LA PAROLA",intesaTitle:"LA PAROLA GIUSTA",intesaDifficulty:"SCEGLI LA DIFFICOLTÀ",intesaDesc:"Si gioca a squadre di almeno 2. A turno un giocatore descrive le parole alla propria squadra senza dirle, senza sinonimi diretti e senza gesti. È vietato usare parole che contengono la parola da indovinare — se la parola è MARE non puoi dire MARITTIMO o MAREMOTO. La squadra ha 60 secondi per indovinare quante più parole possibile.",intesaHard:"Parole più impegnative",intesaStart:" INIZIA",intesaGuessed:"INDOVINATA",intesaResult:"PAROLE INDOVINATE",nomeCognomeDesc:"Il primo che dice un nome e cognome con queste lettere vince il punto!",codiceTitle:"INDOVINA IL CODICE",codiceDesc:"Ognuno sceglie il suo codice segreto di 4 cifre. Non mostratelo agli altri!",codiceTurn:"Turno di ",codiceAsk:"— scegli chi interrogare e quale numero chiedere",codiceYes:"SÌ, ce l'",qvMultiDevice:"GIOCA SU PIÙ DISPOSITIVI",qvMultiDesc:"Ogni giocatore usa il proprio dispositivo. Chi crea la stanza gioca anche lui!",qvEnterName:"Inserisci il tuo nome",qvCreateRoom:"Crea stanza",qvLocalDesc:"Ogni giocatore sposta il cursore per indovinare il valore. Chi è più vicino alla risposta esatta vince il punto!",qvStart:"INIZIA →",qvPlayer:"Giocatore ",quizChooseLevel:"Scegli il livello di difficoltà",quizQuestion:"DOMANDA ",quizReveal:"RIVELA LA RISPOSTA",starterStart:"INIZIA IL GIOCO →",starterEnd:"FINE GIOCO",starterNext:"PROSSIMA FRASE →",starterDone:"FINE — ORA TOCCA A VOI!",quizzoneStart:" INIZIA IL GIOCO",quizzoneChooseName:"Scegli il tuo nome da giocatore",quizzoneLeaderboard:"CLASSIFICA ",quizzoneShowAnswer:"MOSTRA RISPOSTA",quizzoneFinalScore:"CLASSIFICA FINALE",quizzoneNextQ:"PROSSIMA DOMANDA ",quizzoneEnd:"PARTITA FINITA!",otherDevicesCode:"Gli altri dispositivi aprono Filòs e inseriscono questo codice",quizzoneTitle:"QUIZZONE",dadoInsert15:"Inserite il numero e i vostri nomi. Chi arriva a 15 per primo vince!",dadoRoll:"Tocca il dado per lanciarlo!",dadoGot:"Hai ottenuto: ",dadoWhat:"Cosa vuoi fare?",dadoBust:"SBALLATO! Torna a 0",dadoAddMe:"a me →",dadoBustMe:"SBALLI! Torni a 0",dadoWinMe:"ESATTAMENTE 15! VINCI!",dadoSubTo:"a ",dadoArrow:"→",dadoFirst15:"Primo ad arrivare a 15!",menuNote:"Chiamate il cameriere per ordinare · approfittate della pausa!",syncedHost:"Sincronizzato · segui lo schermo dell'host",iAmHost:"Sono l'host",iJoin:"Mi unisco",enterHostCode:"Inserisco il codice dell'host",othersInsertCode:"Gli altri inseriscono questo codice",menuFood:"CIBO",menuDrink:"DRINK",enterRoom:"ENTRA",nfcGateTitle:"Sei al locale?",nfcGateSub:"Avvicina il telefono al sottobicchiere sul tuo tavolo per accedere a Filòs.",pinTitle:"Area riservata",pinSub:"Inserisci il PIN per continuare",pinError:"PIN errato, riprova",obTitle:"Benvenuto in Filòs",obSub:"Configura il tuo locale in pochi passi per attivare le analytics e le funzioni gestore.",obFieldName:"Nome del locale",obFieldNamePH:"Es. Osteria Da Mario",obFieldCode:"Codice pub",obFieldCodePH:"Es. osteria.mario",obHint:"Il codice pub identifica il tuo locale. Usalo nei tag NFC dei sottobicchieri.",obBtn:"Attiva il mio locale",obBtnDone:"Fatto!",obErrName:"Inserisci il nome del locale",obErrCode:"Il codice deve avere almeno 3 caratteri",settingsTitle:"Impostazioni",tabProfilo:"Profilo",tabAnalytics:"Analytics",tabReport:"Report",tabSerate:"Serate",tabAdmin:"Admin",settingsSave:"Salva modifiche",settingsSaved:" Salvato",settingsIlTuoLocale:"Il tuo locale",settingsStato:"Stato",settingsLocaleConf:"Locale configurato",nfcSection:"Token NFC",nfcToggleLabel:"Blocco NFC attivo",nfcToggleSub:"Solo chi scansiona il tag accede all’app",nfcUrlLabel:"URL per i tag NFC",nfcCopyBtn:"Copia URL",nfcCopied:"Copiato!",nfcRegenBtn:"Rigenera token (invalida i vecchi tag)",nfcRegenConfirm:"Rigenerare il token? Tutti i tag NFC esistenti smetteranno di funzionare.",adminSave:"Salva su Firebase",adminSaved:" Salvato su Firebase",
+ it:{tagline:"GIOCHI SOCIALI",splashDesc:"Niente carte, niente dadi — solo voi, una buona compagnia e la voglia di stare insieme.",splashBtn:"INIZIA A GIOCARE",splashFoot:"PUB · LOCALI · SERATE TRA AMICI",homeTitle:"A COSA VOGLIAMO GIOCARE?",catAmici:"TRA AMICI",catCoppia:"LA COPPIA",catBambini:"ROMPIGHIACCIO",catIndovinelli:"INDOVINELLI",catAzione:"AZIONE",catCreativi:"CREATIVI",catCultura:"CULTURA",catAdulti:"18+",catRelax:"A DISTANZA",catSolitario:"SOLO",back:"INDIETRO",connect:"COLLEGA",backBtn:"Indietro",exitBtn:"Esci",filterAll:"TUTTI",filterEasy:"FACILE",filterMed:"MEDIA",filterHard:"DIFFICILE",players:"giocatori",backToGames:"TORNA AI GIOCHI",endMsg4:"OTTIMA SERATA!",endMsg3:"CARINO, SI PUÒ FARE MEGLIO!",endMsgElse:"PROVIAMO QUALCOS'ALTRO?",mrWhiteHowMany:"Quanti giocatori siete?",mrWhitePass:"Passa il tablet a turno. Ognuno tocca il proprio pulsante per vedere la parola.",dadoInsert:"Inserite il numero e i vostri nomi. Primo a 5 punti vince!",waitingPlayers:"In attesa di giocatori...",qvQuestion:"DOMANDA",qvOf:"DI",qvYourAnswer:"La tua risposta (sei ",qvConfirm:"CONFERMO",qvAnswerSent:"Risposta inviata!",qvWaitingOthers:"In attesa degli altri giocatori...",qvWaitingOthers2:"In attesa degli altri...",qvPassTablet:"Passa il tablet a: ",qvAnswerSentShort:"Risposta inviata",qvCorrectAnswer:"LA RISPOSTA CORRETTA È",qvNextQuestion:"PROSSIMA DOMANDA",qvFinalScore:"VEDI CLASSIFICA FINALE",qvRevealAnswers:"RIVELA RISPOSTE",qvWon:"HA VINTO!",qvPoints:"Con",qvPointsOf:"punti su",qvPlayAgain:"GIOCA ANCORA",howToPlay:"COME SI GIOCA",tipLabel:"Consiglio",theQuestions:"LE DOMANDE",backToGame:"TORNA AL GIOCO",startMrWhite:"INIZIA MR. WHITE",qvShareCode:"Condividi questo codice con gli amici",qvDisconnect:"Disconnetti",codeError4:"Inserisci il codice (4 cifre)",qvPlayer1:"giocatore",qvPlayerN:"giocatori",qvTitle:"QUANTO VALE?",endGame:"FINE GIOCO",chiPagaTitle:"CHI PAGA?",chiPagaInstr:"Appoggiate un dito\nsullo schermo",chiPagaWait:"Aspetta gli altri…",chiPagaLoser:"Tocca a",chiPagaSub:"paga il conto! ",chiPagaRestart:"Ricomincia",chiPagaBack:"GIOCHI",starterContinue:"Avete rotto il ghiaccio — continuate con le vostre domande, seguendo le regole del gioco.",qzShowAnswer:"MOSTRA RISPOSTA",mrWhiteStart:"Tutti hanno visto la parola. Iniziate a dare indizi!",intesaWord:"Parola ",intesaLevel:"LIVELLO: ",intesaGuessedN:"Avete indovinato ",intesaLevelOf:"— Livello: ",changeLevel:"CAMBIA LIVELLO",alfabetoHint:"Trova qualcosa che inizia con questa lettera!",codiceAllDigits:"Tutti i giocatori devono inserire 4 cifre!",codiceWonBy:"Ha indovinato il codice di ",roomNotFound2:"Stanza non trovata",otherGames:"ALTRI GIOCHI",starterInstruct:"Giocate questa frase, poi passate alla successiva.",analyticsEmpty:"Nessun dato ancora. Iniziate a giocare!",mostPlayed:"GIOCHI PIÙ GIOCATI",topCategory:"categoria più giocata",connectedRoom:"Connesso alla stanza",creatingRoom:"Creazione stanza e condivisione codice",createRoom:"CREA STANZA",qzChooseName:"Scegli il tuo nome da giocatore",qzLeaderboard:"CLASSIFICA ",qzLeaderTitle:"CLASSIFICA",qzFinalLeader:"CLASSIFICA FINALE",connErr:"Errore di connessione",joinBtn:"Entra",oppure:"OPPURE",enterBtn:"Entra",codeRoomPH2:"Codice stanza",codeRoomShare:"Codice stanza — fallo inserire ai giocatori",codeRoomLabel:"Codice stanza",waitingHost2:" In attesa che l'host avvii il gioco...",waitingPlayers3:"In attesa dei giocatori...",codiceWaiting:"In attesa della risposta di ",quizzoneCorrect:"Risposta corretta! In attesa degli altri...",quizzoneWrong:"Risposta sbagliata. In attesa degli altri...",roomCode:"Codice stanza",inRoom:"Sei nella stanza",waitingHost:" In attesa che l'host avvii il gioco...",leaveRoom:"Esci dalla stanza",playersInRoom:"Giocatori nella stanza:",startGame:" AVVIA IL GIOCO",codeRoomPH:"Es. ABC123",yourName:"Il tuo nome:",yourNamePH:"Come ti chiami?",roomNotFound:"Stanza non trovata — controlla il codice",waitPlayer:"Attendi almeno un giocatore!",closeRoom:"Chiudi stanza",joinRoom:"Unisciti a una stanza",joinRoomPH:"Codice stanza",waitingPlayers2:"In attesa di altri giocatori...",copyCode:"Copia codice",disconnectBtn:"Disconnetti",firebaseErr:"Firebase non disponibile",timeoutErr:"Timeout — controlla la connessione internet",howMany:"QUANTI SIETE?",modeLocal:"Locale",modeDist:"A distanza",playerNamePH:"Nome giocatore ",pinAccess:"Inserisci il PIN per accedere.",productName:"Nome prodotto",riddleLabel:"INDOVINELLO",revealAnswer:"SCOPRI LA RISPOSTA ",endBtn:"FINE",mrWhiteYourWord:"La parola segreta è:",mrWhiteBluff:"Questa è la TUA parola — simile a quella degli altri.\nBluffa! Cerca di capire la loro parola dai loro indizi.",mrWhitePlayer:"Giocatore ",mrWhiteLookWord:" GUARDA LA PAROLA",intesaTitle:"LA PAROLA GIUSTA",intesaDifficulty:"SCEGLI LA DIFFICOLTÀ",intesaDesc:"Si gioca a squadre di almeno 2. A turno un giocatore descrive le parole alla propria squadra senza dirle, senza sinonimi diretti e senza gesti. È vietato usare parole che contengono la parola da indovinare — se la parola è MARE non puoi dire MARITTIMO o MAREMOTO. La squadra ha 60 secondi per indovinare quante più parole possibile.",intesaHard:"Parole più impegnative",intesaStart:" INIZIA",intesaGuessed:"INDOVINATA",intesaResult:"PAROLE INDOVINATE",nomeCognomeDesc:"Il primo che dice un nome e cognome con queste lettere vince il punto!",codiceTitle:"INDOVINA IL CODICE",codiceDesc:"Ognuno sceglie il suo codice segreto di 4 cifre. Non mostratelo agli altri!",codiceTurn:"Turno di ",codiceAsk:"— scegli chi interrogare e quale numero chiedere",codiceYes:"SÌ, ce l'",qvMultiDevice:"GIOCA SU PIÙ DISPOSITIVI",qvMultiDesc:"Ogni giocatore usa il proprio dispositivo. Chi crea la stanza gioca anche lui!",qvEnterName:"Inserisci il tuo nome",qvCreateRoom:"Crea stanza",qvLocalDesc:"Ogni giocatore sposta il cursore per indovinare il valore. Chi è più vicino alla risposta esatta vince il punto!",qvStart:"INIZIA",qvPlayer:"Giocatore ",quizChooseLevel:"Scegli il livello di difficoltà",quizQuestion:"DOMANDA ",quizReveal:"RIVELA LA RISPOSTA",starterStart:"INIZIA IL GIOCO",starterEnd:"FINE GIOCO",starterNext:"PROSSIMA FRASE",starterDone:"FINE — ORA TOCCA A VOI!",quizzoneStart:" INIZIA IL GIOCO",quizzoneChooseName:"Scegli il tuo nome da giocatore",quizzoneLeaderboard:"CLASSIFICA ",quizzoneShowAnswer:"MOSTRA RISPOSTA",quizzoneFinalScore:"CLASSIFICA FINALE",quizzoneNextQ:"PROSSIMA DOMANDA ",quizzoneEnd:"PARTITA FINITA!",otherDevicesCode:"Gli altri dispositivi aprono Filòs e inseriscono questo codice",quizzoneTitle:"QUIZZONE",dadoInsert15:"Inserite il numero e i vostri nomi. Chi arriva a 15 per primo vince!",dadoRoll:"Tocca il dado per lanciarlo!",dadoGot:"Hai ottenuto: ",dadoWhat:"Cosa vuoi fare?",dadoBust:"SBALLATO! Torna a 0",dadoAddMe:"a me",dadoBustMe:"SBALLI! Torni a 0",dadoWinMe:"ESATTAMENTE 15! VINCI!",dadoSubTo:"a ",dadoArrow:"",dadoFirst15:"Primo ad arrivare a 15!",menuNote:"Chiamate il cameriere per ordinare · approfittate della pausa!",syncedHost:"Sincronizzato · segui lo schermo dell'host",iAmHost:"Sono l'host",iJoin:"Mi unisco",enterHostCode:"Inserisco il codice dell'host",othersInsertCode:"Gli altri inseriscono questo codice",menuFood:"CIBO",menuDrink:"DRINK",enterRoom:"ENTRA",nfcGateTitle:"Sei al locale?",nfcGateSub:"Avvicina il telefono al sottobicchiere sul tuo tavolo per accedere a Filòs.",pinTitle:"Area riservata",pinSub:"Inserisci il PIN per continuare",pinError:"PIN errato, riprova",obTitle:"Benvenuto in Filòs",obSub:"Configura il tuo locale in pochi passi per attivare le analytics e le funzioni gestore.",obFieldName:"Nome del locale",obFieldNamePH:"Es. Osteria Da Mario",obFieldCode:"Codice pub",obFieldCodePH:"Es. osteria.mario",obHint:"Il codice pub identifica il tuo locale. Usalo nei tag NFC dei sottobicchieri.",obBtn:"Attiva il mio locale",obBtnDone:"Fatto!",obErrName:"Inserisci il nome del locale",obErrCode:"Il codice deve avere almeno 3 caratteri",settingsTitle:"Impostazioni",tabProfilo:"Profilo",tabAnalytics:"Analytics",tabReport:"Report",tabSerate:"Serate",tabAdmin:"Admin",settingsSave:"Salva modifiche",settingsSaved:" Salvato",settingsIlTuoLocale:"Il tuo locale",settingsStato:"Stato",settingsLocaleConf:"Locale configurato",nfcSection:"Token NFC",nfcToggleLabel:"Blocco NFC attivo",nfcToggleSub:"Solo chi scansiona il tag accede all’app",nfcUrlLabel:"URL per i tag NFC",nfcCopyBtn:"Copia URL",nfcCopied:"Copiato!",nfcRegenBtn:"Rigenera token (invalida i vecchi tag)",nfcRegenConfirm:"Rigenerare il token? Tutti i tag NFC esistenti smetteranno di funzionare.",adminSave:"Salva su Firebase",adminSaved:" Salvato su Firebase",
 firstTo:"Primo a ",
 pointsHunter:"punti. Grande cacciatore!",
 pointsWin:"punti!",
@@ -1226,8 +1242,8 @@ analyticsAvgRating:"voto medio",
 analyticsGames:"partite",
 analyticsRecent:"ULTIME PARTITE",
 menuCallWaiter:"CHIAMATE IL CAMERIERE!"},
- en:{tagline:"SOCIAL GAMES",splashDesc:"No cards, no dice — just you, good company, and the desire to be together.",splashBtn:"START PLAYING",splashFoot:"PUBS · BARS · FRIEND NIGHTS",homeTitle:"WHAT DO WE WANT TO PLAY?",catAmici:"WITH FRIENDS",catCoppia:"AS A COUPLE",catBambini:"ICEBREAKER",catIndovinelli:"RIDDLES",catAzione:"ACTION",catCreativi:"CREATIVE",catCultura:"TRIVIA",catAdulti:"18+",catRelax:"REMOTE",catSolitario:"SOLO",back:"BACK",connect:"CONNECT",backBtn:"Back",exitBtn:"Exit",filterAll:"ALL",filterEasy:"EASY",filterMed:"MEDIUM",filterHard:"HARD",players:"players",backToGames:"← BACK TO GAMES",endMsg4:"WHAT A GREAT NIGHT!",endMsg3:"NICE, BUT CAN DO BETTER!",endMsgElse:"LET'S TRY SOMETHING ELSE?",mrWhiteHowMany:"How many players are you?",mrWhitePass:"Pass the tablet around. Each player taps their button to see the word.",dadoInsert:"Enter the number and your names. First to 5 points wins!",waitingPlayers:"Waiting for players...",qvQuestion:"QUESTION",qvOf:"OF",qvYourAnswer:"Your answer (you are ",qvConfirm:"CONFIRM →",qvAnswerSent:"Answer sent!",qvWaitingOthers:"Waiting for the other players...",qvWaitingOthers2:"Waiting for the others...",qvPassTablet:"Pass the tablet to: ",qvAnswerSentShort:"Answer sent",qvCorrectAnswer:"THE CORRECT ANSWER IS",qvNextQuestion:"NEXT QUESTION →",qvFinalScore:"SEE FINAL SCOREBOARD →",qvRevealAnswers:"REVEAL ANSWERS →",qvWon:"WON!",qvPoints:"With",qvPointsOf:"points out of",qvPlayAgain:"PLAY AGAIN",howToPlay:"HOW TO PLAY",tipLabel:"Tip",theQuestions:"THE QUESTIONS",backToGame:"← BACK TO GAME",startMrWhite:"START MR. WHITE →",qvShareCode:"Share this code with your friends",qvDisconnect:"Disconnect",codeError4:"Enter the code (4 digits)",qvPlayer1:"player",qvPlayerN:"players",qvTitle:"HOW MUCH?",endGame:"END GAME →",chiPagaTitle:"WHO PAYS?",chiPagaInstr:"Put a finger\non the screen",chiPagaWait:"Waiting for others…",chiPagaLoser:"It's on",chiPagaSub:"pays the bill! ",chiPagaRestart:"Play again",chiPagaBack:"← GAMES",starterContinue:"You've broken the ice — keep going with your own questions, following the game rules.",qzShowAnswer:"SHOW ANSWER",mrWhiteStart:"Everyone has seen the word. Start giving clues!",intesaWord:"Word ",intesaLevel:"LEVEL: ",intesaGuessedN:"You guessed ",intesaLevelOf:"— Level: ",changeLevel:"CHANGE LEVEL",alfabetoHint:"Find something that starts with this letter!",codiceAllDigits:"All players must enter 4 digits!",codiceWonBy:"Guessed the code of ",roomNotFound2:"Room not found",otherGames:"OTHER GAMES",starterInstruct:"Play this phrase, then move on to the next.",analyticsEmpty:"No data yet. Start playing!",mostPlayed:"MOST PLAYED GAMES",topCategory:"most played category",connectedRoom:"Connected to room",creatingRoom:"Creating room and sharing the code",createRoom:"CREATE ROOM",qzChooseName:"Choose your player name",qzLeaderboard:"LEADERBOARD ",qzLeaderTitle:"LEADERBOARD",qzFinalLeader:"FINAL LEADERBOARD",connErr:"Connection error",joinBtn:"Join",oppure:"OR",enterBtn:"Join",codeRoomPH2:"Room code",codeRoomShare:"Room code — share it with the players",codeRoomLabel:"Room code",waitingHost2:" Waiting for the host to start the game...",waitingPlayers3:"Waiting for players...",codiceWaiting:"Waiting for the answer from ",quizzoneCorrect:"Correct answer! Waiting for the others...",quizzoneWrong:"Wrong answer. Waiting for the others...",roomCode:"Room code",inRoom:"You're in the room",waitingHost:" Waiting for the host to start the game...",leaveRoom:"Leave room",playersInRoom:"Players in room:",startGame:" START THE GAME",enterCode:"Enter the room code:",codeRoomPH:"E.g. ABC123",yourName:"Your name:",yourNamePH:"What's your name?",roomNotFound:"Room not found — check the code",waitPlayer:"Wait for at least one player!",closeRoom:"Close room",joinRoom:"Join a room",joinRoomPH:"Room code",waitingPlayers2:"Waiting for more players...",copyCode:"Copy code",disconnectBtn:"Disconnect",firebaseErr:"Firebase not available",timeoutErr:"Timeout — check your internet connection",howMany:"HOW MANY?",modeLocal:"Local",modeDist:"Remote",playerNamePH:"Player name ",pinAccess:"Enter PIN to access.",productName:"Product name",riddleLabel:"RIDDLE",revealAnswer:"REVEAL ANSWER ",endBtn:"END →",mrWhiteYourWord:"The secret word is:",mrWhiteBluff:"This is YOUR word — similar to the others'.\nBluff! Try to figure out their word from their clues.",mrWhitePlayer:"Player ",mrWhiteLookWord:" SEE THE WORD",intesaTitle:"THE RIGHT WORD",intesaDifficulty:"CHOOSE DIFFICULTY",intesaDesc:"One player describes, the team guesses. 60 seconds. How many words can you get?",intesaHard:"More challenging words",intesaStart:" START",intesaGuessed:"CORRECT",intesaResult:"WORDS GUESSED",nomeCognomeDesc:"The first to say a full name with these letters wins the point!",codiceTitle:"CRACK THE CODE",codiceDesc:"Each player picks a secret 4-digit code. Don't show it to the others!",codiceTurn:"Turn of ",codiceAsk:"— choose who to ask and which digit to guess",codiceYes:"YES, it has a ",qvMultiDevice:"PLAY ON MULTIPLE DEVICES",qvMultiDesc:"Each player uses their own device. The room creator plays too!",qvEnterName:"Enter your name",qvCreateRoom:"Create room",qvLocalDesc:"Each player moves the slider to guess the value. Whoever is closest to the correct answer wins the point!",qvStart:"START →",qvPlayer:"Player ",quizChooseLevel:"Choose difficulty level",quizQuestion:"QUESTION ",quizReveal:"REVEAL ANSWER",starterStart:"START GAME →",starterEnd:"END GAME",starterNext:"NEXT PHRASE →",starterDone:"DONE — NOW IT'S YOUR TURN!",quizzoneStart:" START GAME",quizzoneChooseName:"Choose your player name",quizzoneLeaderboard:"LEADERBOARD ",quizzoneShowAnswer:"SHOW ANSWER",quizzoneFinalScore:"FINAL LEADERBOARD",quizzoneNextQ:"NEXT QUESTION ",quizzoneEnd:"GAME OVER!",nome:"Name",stanza:"Room",è:"is",otherDevicesCode:"Other devices open Filòs and enter this code",quizzoneTitle:"QUIZZONE",dadoInsert15:"Enter the number and your names. First to reach 15 wins!",dadoRoll:"Tap the die to roll it!",dadoGot:"You rolled: ",dadoWhat:"What do you want to do?",dadoBust:"BUST! Back to 0",dadoAddMe:"to me →",dadoBustMe:"BUST! Back to 0",dadoWinMe:"EXACTLY 15! YOU WIN!",dadoSubTo:"to ",dadoArrow:"→",dadoFirst15:"First to reach 15!",menuNote:"Call the waiter to order · make the most of the break!",syncedHost:"Synced · follow the host's screen",iAmHost:"I'm the host",iJoin:"I'm joining",enterHostCode:"Enter the host's code",othersInsertCode:"Others enter this code",menuFood:"FOOD",menuDrink:"DRINKS",enterRoom:"JOIN",nfcGateTitle:"Are you at the venue?",nfcGateSub:"Hold your phone near the coaster on your table to access Filòs.",pinTitle:"Restricted area",pinSub:"Enter your PIN to continue",pinError:"Wrong PIN, try again",obTitle:"Welcome to Filòs",obSub:"Set up your venue in a few steps to activate analytics and manager features.",obFieldName:"Venue name",obFieldNamePH:"E.g. The Crown Pub",obFieldCode:"Pub code",obFieldCodePH:"E.g. crown.pub",obHint:"The pub code identifies your venue. Use it in the NFC tags on your coasters.",obBtn:"Activate my venue",obBtnDone:"Done!",obErrName:"Enter the venue name",obErrCode:"The code must be at least 3 characters",settingsTitle:"Settings",tabProfilo:"Profile",tabAnalytics:"Analytics",tabReport:"Report",tabSerate:"Events",tabAdmin:"Admin",settingsSave:"Save changes",settingsSaved:" Saved",settingsIlTuoLocale:"Your venue",settingsStato:"Status",settingsLocaleConf:"Venue configured",nfcSection:"NFC Token",nfcToggleLabel:"NFC lock active",nfcToggleSub:"Only those who scan the tag can access the app",nfcUrlLabel:"URL for NFC tags",nfcCopyBtn:"Copy URL",nfcCopied:"Copied!",nfcRegenBtn:"Regenerate token (invalidates old tags)",nfcRegenConfirm:"Regenerate the token? All existing NFC tags will stop working.",adminSave:"Save to Firebase",adminSaved:" Saved to Firebase",firstTo:"First to ",pointsHunter:"points. Great hunter!",pointsWin:"points!",ncTitle:"FIRST & LAST NAME",ncLabelName:"FIRST NAME",ncLabelSurname:"LAST NAME",ncSaidFirst:"SAID IT FIRST!",ncNobody:"NOBODY — NEW LETTERS",gameOver:"GAME OVER",rateStars:"Tap the stars to rate",rateGame:"Rate: ",starterNowYou:"NOW IT'S YOUR TURN!",analyticsReset:"RESET",analyticsSure:"Sure?",analyticsClose:"CLOSE",analyticsPinHint:"tap the logo 5 times to open",analyticsTotalGames:"total games",analyticsToday:"today",analyticsAvgRating:"avg rating",analyticsGames:"games",analyticsRecent:"RECENT GAMES",menuCallWaiter:"CALL THE WAITER!"},
-  es:{tagline:"JUEGOS SOCIALES",splashDesc:"Sin cartas, sin dados — solo vosotros, buena compañía y ganas de estar juntos.",splashBtn:"EMPEZAR A JUGAR",splashFoot:"BARES · LOCALES · NOCHES CON AMIGOS",homeTitle:"¿A QUÉ QUEREMOS JUGAR?",catAmici:"CON AMIGOS",catCoppia:"EN PAREJA",catBambini:"ROMPE-HIELO",catIndovinelli:"ACERTIJOS",catAzione:"ACCIÓN",catCreativi:"CREATIVOS",catCultura:"CULTURA",catAdulti:"18+",catRelax:"A DISTANCIA",catSolitario:"SOLO",back:"VOLVER",connect:"CONECTAR",backBtn:"Volver",exitBtn:"Salir",filterAll:"TODOS",filterEasy:"FÁCIL",filterMed:"MEDIO",filterHard:"DIFÍCIL",players:"jugadores",endMsg4:"¡QUÉ NOCHE TAN GENIAL!",endMsg3:"¡BIEN, PERO SE PUEDE MEJORAR!",endMsgElse:"¿PROBAMOS OTRA COSA?",mrWhiteHowMany:"¿Cuántos jugadores sois?",mrWhitePass:"Pasa la tablet en turnos. Cada jugador toca su botón para ver la palabra.",dadoInsert:"Introduce el número y vuestros nombres. ¡El primero en llegar a 5 puntos gana!",waitingPlayers:"Esperando jugadores...",qvQuestion:"PREGUNTA",qvOf:"DE",qvYourAnswer:"Tu respuesta (eres ",qvConfirm:"CONFIRMAR →",qvAnswerSent:"¡Respuesta enviada!",qvWaitingOthers:"Esperando a los demás jugadores...",qvWaitingOthers2:"Esperando a los demás...",qvPassTablet:"Pasa la tablet a: ",qvAnswerSentShort:"Respuesta enviada",qvCorrectAnswer:"LA RESPUESTA CORRECTA ES",qvNextQuestion:"SIGUIENTE PREGUNTA →",qvFinalScore:"VER CLASIFICACIÓN FINAL →",qvRevealAnswers:"REVELAR RESPUESTAS →",qvWon:"¡HA GANADO!",qvPoints:"Con",qvPointsOf:"puntos de",qvPlayAgain:"JUGAR DE NUEVO",howToPlay:"CÓMO SE JUEGA",tipLabel:"Consejo",theQuestions:"LAS PREGUNTAS",backToGame:"← VOLVER AL JUEGO",startMrWhite:"INICIAR MR. WHITE →",qvShareCode:"Comparte este código con tus amigos",qvDisconnect:"Desconectar",codeError4:"Ingresa el código (4 dígitos)",qvPlayer1:"jugador",qvPlayerN:"jugadores",qvTitle:"¿CUÁNTO VALE?",endGame:"FIN DEL JUEGO →",chiPagaTitle:"¿QUIÉN PAGA?",chiPagaInstr:"Pon un dedo\nen la pantalla",chiPagaWait:"Espera a los demás…",chiPagaLoser:"Le toca a",chiPagaSub:"¡paga la cuenta! ",chiPagaRestart:"Repetir",chiPagaBack:"← JUEGOS",starterContinue:"Habéis roto el hielo — continuad con vuestras preguntas, siguiendo las reglas del juego.",qzShowAnswer:"MOSTRAR RESPUESTA",mrWhiteStart:"¡Todos han visto la palabra. ¡Empezad a dar pistas!",intesaWord:"Palabra ",intesaLevel:"NIVEL: ",intesaGuessedN:"Habéis adivinado ",intesaLevelOf:"— Nivel: ",changeLevel:"CAMBIAR NIVEL",alfabetoHint:"¡Encuentra algo que empiece por esta letra!",codiceAllDigits:"¡Todos los jugadores deben introducir 4 dígitos!",codiceWonBy:"Ha adivinado el código de ",roomNotFound2:"Sala no encontrada",otherGames:"OTROS JUEGOS",starterInstruct:"Jugad esta frase, luego pasad a la siguiente.",analyticsEmpty:"Sin datos aún. ¡Empezad a jugar!",mostPlayed:"JUEGOS MÁS JUGADOS",topCategory:"categoría más jugada",connectedRoom:"Conectado a la sala",creatingRoom:"Creando sala y compartiendo el código",createRoom:"CREAR SALA",qzChooseName:"Elige tu nombre de jugador",qzLeaderboard:"CLASIFICACIÓN ",qzLeaderTitle:"CLASIFICACIÓN",qzFinalLeader:"CLASIFICACIÓN FINAL",connErr:"Error de conexión",joinBtn:"Entrar",oppure:"O BIEN",enterBtn:"Entrar",codeRoomPH2:"Código de sala",codeRoomShare:"Código de sala — compártelo con los jugadores",codeRoomLabel:"Código de sala",waitingHost2:" Esperando que el host inicie el juego...",waitingPlayers3:"Esperando jugadores...",codiceWaiting:"Esperando la respuesta de ",quizzoneCorrect:"¡Respuesta correcta! Esperando a los demás...",quizzoneWrong:"Respuesta incorrecta. Esperando a los demás...",roomCode:"Código de sala",inRoom:"Estás en la sala",waitingHost:" Esperando que el host inicie el juego...",leaveRoom:"Salir de la sala",playersInRoom:"Jugadores en la sala:",startGame:" INICIAR EL JUEGO",codeRoomPH:"Ej. ABC123",yourName:"Tu nombre:",yourNamePH:"¿Cómo te llamas?",roomNotFound:"Sala no encontrada — comprueba el código",waitPlayer:"¡Espera al menos un jugador!",closeRoom:"Cerrar sala",joinRoom:"Unirse a una sala",joinRoomPH:"Código de sala",waitingPlayers2:"Esperando a más jugadores...",copyCode:"Copiar código",disconnectBtn:"Desconectar",firebaseErr:"Firebase no disponible",timeoutErr:"Tiempo agotado — comprueba tu conexión",howMany:"¿CUÁNTOS SOIS?",modeLocal:"Local",modeDist:"A distancia",playerNamePH:"Nombre del jugador ",pinAccess:"Introduce el PIN para acceder.",productName:"Nombre del producto",riddleLabel:"ACERTIJO",revealAnswer:"REVELAR RESPUESTA ",endBtn:"FIN →",mrWhiteBluff:"Esta es TU palabra — similar a la de los demás.\n¡Farolea! Intenta adivinar su palabra por sus pistas.",mrWhitePlayer:"Jugador ",mrWhiteLookWord:" VER LA PALABRA",intesaTitle:"LA PALABRA CORRECTA",intesaDifficulty:"ELIGE LA DIFICULTAD",intesaDesc:"Un jugador describe, el equipo adivina. 60 segundos. ¿Cuántas palabras podéis?",intesaHard:"Palabras más difíciles",intesaStart:" EMPEZAR",intesaGuessed:"CORRECTA",intesaResult:"PALABRAS ADIVINADAS",nomeCognomeDesc:"¡El primero que diga un nombre y apellido con estas letras gana el punto!",codiceTitle:"ADIVINA EL CÓDIGO",codiceDesc:"Cada jugador elige su código secreto de 4 dígitos. ¡No lo muestres a los demás!",codiceTurn:"Turno de ",codiceAsk:"— elige a quién preguntar y qué número pedir",codiceYes:"SÍ, tiene un ",qvMultiDevice:"JUGAR EN VARIOS DISPOSITIVOS",qvMultiDesc:"¡Cada jugador usa su propio dispositivo. El que crea la sala también juega!",qvEnterName:"Introduce tu nombre",qvCreateRoom:"Crear sala",qvLocalDesc:"Cada jugador mueve el cursor para adivinar el valor. ¡Quien más se acerque a la respuesta correcta gana el punto!",qvStart:"EMPEZAR →",qvPlayer:"Jugador ",quizChooseLevel:"Elige el nivel de dificultad",quizQuestion:"PREGUNTA ",quizReveal:"REVELAR RESPUESTA",starterStart:"INICIAR JUEGO →",starterEnd:"FIN DEL JUEGO",starterNext:"SIGUIENTE FRASE →",starterDone:"¡FIN — AHORA OS TOCA A VOSOTROS!",quizzoneStart:" INICIAR JUEGO",quizzoneChooseName:"Elige tu nombre de jugador",quizzoneLeaderboard:"CLASIFICACIÓN ",quizzoneShowAnswer:"MOSTRAR RESPUESTA",quizzoneFinalScore:"CLASIFICACIÓN FINAL",quizzoneNextQ:"SIGUIENTE PREGUNTA ",quizzoneEnd:"¡PARTIDA TERMINADA!",otherDevicesCode:"Los demás dispositivos abren Filòs e introducen este código",quizzoneTitle:"QUIZZONE",nfcGateTitle:"¿Estás en el local?",nfcGateSub:"Acerca el teléfono al posavasos de tu mesa para acceder a Filòs.",pinTitle:"Área reservada",pinSub:"Introduce el PIN para continuar",pinError:"PIN incorrecto, inténtalo de nuevo",obTitle:"Bienvenido a Filòs",obSub:"Configura tu local en pocos pasos para activar las analíticas y las funciones de gestor.",obFieldName:"Nombre del local",obFieldNamePH:"Ej. Bar El Rincón",obFieldCode:"Código del local",obFieldCodePH:"Ej. bar.rincon",obHint:"El código identifica tu local. Úsalo en las etiquetas NFC de los posavasos.",obBtn:"Activar mi local",obBtnDone:"¡Listo!",obErrName:"Introduce el nombre del local",obErrCode:"El código debe tener al menos 3 caracteres",settingsTitle:"Ajustes",tabProfilo:"Perfil",tabAnalytics:"Análisis",tabReport:"Informe",tabSerate:"Eventos",tabAdmin:"Admin",settingsSave:"Guardar cambios",settingsSaved:" Guardado",settingsIlTuoLocale:"Tu local",settingsStato:"Estado",settingsLocaleConf:"Local configurado",nfcSection:"Token NFC",nfcToggleLabel:"Bloqueo NFC activo",nfcToggleSub:"Solo quien escanea la etiqueta accede a la app",nfcUrlLabel:"URL para etiquetas NFC",nfcCopyBtn:"Copiar URL",nfcCopied:"¡Copiado!",nfcRegenBtn:"Regenerar token (invalida las etiquetas antiguas)",nfcRegenConfirm:"¿Regenerar el código? Todas las etiquetas NFC existentes dejarán de funcionar.",adminSave:"Guardar en Firebase",adminSaved:" Guardado en Firebase",firstTo:"Primero en llegar a ",pointsHunter:"puntos. ¡Gran cazador!",pointsWin:"puntos!",ncTitle:"NOMBRE Y APELLIDO",ncLabelName:"NOMBRE",ncLabelSurname:"APELLIDO",ncSaidFirst:"¡LO DIJO PRIMERO!",ncNobody:"NADIE — NUEVAS LETRAS",gameOver:"JUEGO TERMINADO",rateStars:"Toca las estrellas para valorar",rateGame:"Valora: ",starterNowYou:"¡AHORA OS TOCA A VOSOTROS!",analyticsReset:"RESET",analyticsSure:"¿Seguro?",analyticsClose:"CERRAR",analyticsPinHint:"toca el logo 5 veces para abrir",analyticsTotalGames:"partidas totales",analyticsToday:"hoy",analyticsAvgRating:"nota media",analyticsGames:"partidas",analyticsRecent:"ÚLTIMAS PARTIDAS",menuCallWaiter:"¡LLAMAD AL CAMARERO!",backToGames:"← VOLVER A LOS JUEGOS",mrWhiteYourWord:"La palabra secreta es:",dadoInsert15:"Introduce el número y vuestros nombres. ¡El primero en llegar a 15 gana!",dadoRoll:"¡Toca el dado para lanzarlo!",dadoGot:"Has sacado: ",dadoWhat:"¿Qué quieres hacer?",dadoBust:"¡TE PASASTE! Vuelve a 0",dadoAddMe:"para mí →",dadoBustMe:"¡TE PASASTE! Vuelves a 0",dadoWinMe:"¡15 EXACTOS! ¡GANAS!",dadoSubTo:"a ",dadoArrow:"→",dadoFirst15:"¡El primero en llegar a 15!",menuNote:"Llamad al camarero para pedir · ¡aprovechad la pausa!",syncedHost:"Sincronizado · sigue la pantalla del anfitrión",iAmHost:"Soy el anfitrión",iJoin:"Me uno",enterHostCode:"Introduce el código del anfitrión",othersInsertCode:"Los demás introducen este código",menuFood:"COMIDA",menuDrink:"BEBIDAS",enterRoom:"ENTRAR"}
+ en:{tagline:"SOCIAL GAMES",splashDesc:"No cards, no dice — just you, good company, and the desire to be together.",splashBtn:"START PLAYING",splashFoot:"PUBS · BARS · FRIEND NIGHTS",homeTitle:"WHAT DO WE WANT TO PLAY?",catAmici:"WITH FRIENDS",catCoppia:"AS A COUPLE",catBambini:"ICEBREAKER",catIndovinelli:"RIDDLES",catAzione:"ACTION",catCreativi:"CREATIVE",catCultura:"TRIVIA",catAdulti:"18+",catRelax:"REMOTE",catSolitario:"SOLO",back:"BACK",connect:"CONNECT",backBtn:"Back",exitBtn:"Exit",filterAll:"ALL",filterEasy:"EASY",filterMed:"MEDIUM",filterHard:"HARD",players:"players",backToGames:"BACK TO GAMES",endMsg4:"WHAT A GREAT NIGHT!",endMsg3:"NICE, BUT CAN DO BETTER!",endMsgElse:"LET'S TRY SOMETHING ELSE?",mrWhiteHowMany:"How many players are you?",mrWhitePass:"Pass the tablet around. Each player taps their button to see the word.",dadoInsert:"Enter the number and your names. First to 5 points wins!",waitingPlayers:"Waiting for players...",qvQuestion:"QUESTION",qvOf:"OF",qvYourAnswer:"Your answer (you are ",qvConfirm:"CONFIRM",qvAnswerSent:"Answer sent!",qvWaitingOthers:"Waiting for the other players...",qvWaitingOthers2:"Waiting for the others...",qvPassTablet:"Pass the tablet to: ",qvAnswerSentShort:"Answer sent",qvCorrectAnswer:"THE CORRECT ANSWER IS",qvNextQuestion:"NEXT QUESTION",qvFinalScore:"SEE FINAL SCOREBOARD",qvRevealAnswers:"REVEAL ANSWERS",qvWon:"WON!",qvPoints:"With",qvPointsOf:"points out of",qvPlayAgain:"PLAY AGAIN",howToPlay:"HOW TO PLAY",tipLabel:"Tip",theQuestions:"THE QUESTIONS",backToGame:"BACK TO GAME",startMrWhite:"START MR. WHITE",qvShareCode:"Share this code with your friends",qvDisconnect:"Disconnect",codeError4:"Enter the code (4 digits)",qvPlayer1:"player",qvPlayerN:"players",qvTitle:"HOW MUCH?",endGame:"END GAME",chiPagaTitle:"WHO PAYS?",chiPagaInstr:"Put a finger\non the screen",chiPagaWait:"Waiting for others…",chiPagaLoser:"It's on",chiPagaSub:"pays the bill! ",chiPagaRestart:"Play again",chiPagaBack:"GAMES",starterContinue:"You've broken the ice — keep going with your own questions, following the game rules.",qzShowAnswer:"SHOW ANSWER",mrWhiteStart:"Everyone has seen the word. Start giving clues!",intesaWord:"Word ",intesaLevel:"LEVEL: ",intesaGuessedN:"You guessed ",intesaLevelOf:"— Level: ",changeLevel:"CHANGE LEVEL",alfabetoHint:"Find something that starts with this letter!",codiceAllDigits:"All players must enter 4 digits!",codiceWonBy:"Guessed the code of ",roomNotFound2:"Room not found",otherGames:"OTHER GAMES",starterInstruct:"Play this phrase, then move on to the next.",analyticsEmpty:"No data yet. Start playing!",mostPlayed:"MOST PLAYED GAMES",topCategory:"most played category",connectedRoom:"Connected to room",creatingRoom:"Creating room and sharing the code",createRoom:"CREATE ROOM",qzChooseName:"Choose your player name",qzLeaderboard:"LEADERBOARD ",qzLeaderTitle:"LEADERBOARD",qzFinalLeader:"FINAL LEADERBOARD",connErr:"Connection error",joinBtn:"Join",oppure:"OR",enterBtn:"Join",codeRoomPH2:"Room code",codeRoomShare:"Room code — share it with the players",codeRoomLabel:"Room code",waitingHost2:" Waiting for the host to start the game...",waitingPlayers3:"Waiting for players...",codiceWaiting:"Waiting for the answer from ",quizzoneCorrect:"Correct answer! Waiting for the others...",quizzoneWrong:"Wrong answer. Waiting for the others...",roomCode:"Room code",inRoom:"You're in the room",waitingHost:" Waiting for the host to start the game...",leaveRoom:"Leave room",playersInRoom:"Players in room:",startGame:" START THE GAME",enterCode:"Enter the room code:",codeRoomPH:"E.g. ABC123",yourName:"Your name:",yourNamePH:"What's your name?",roomNotFound:"Room not found — check the code",waitPlayer:"Wait for at least one player!",closeRoom:"Close room",joinRoom:"Join a room",joinRoomPH:"Room code",waitingPlayers2:"Waiting for more players...",copyCode:"Copy code",disconnectBtn:"Disconnect",firebaseErr:"Firebase not available",timeoutErr:"Timeout — check your internet connection",howMany:"HOW MANY?",modeLocal:"Local",modeDist:"Remote",playerNamePH:"Player name ",pinAccess:"Enter PIN to access.",productName:"Product name",riddleLabel:"RIDDLE",revealAnswer:"REVEAL ANSWER ",endBtn:"END",mrWhiteYourWord:"The secret word is:",mrWhiteBluff:"This is YOUR word — similar to the others'.\nBluff! Try to figure out their word from their clues.",mrWhitePlayer:"Player ",mrWhiteLookWord:" SEE THE WORD",intesaTitle:"THE RIGHT WORD",intesaDifficulty:"CHOOSE DIFFICULTY",intesaDesc:"One player describes, the team guesses. 60 seconds. How many words can you get?",intesaHard:"More challenging words",intesaStart:" START",intesaGuessed:"CORRECT",intesaResult:"WORDS GUESSED",nomeCognomeDesc:"The first to say a full name with these letters wins the point!",codiceTitle:"CRACK THE CODE",codiceDesc:"Each player picks a secret 4-digit code. Don't show it to the others!",codiceTurn:"Turn of ",codiceAsk:"— choose who to ask and which digit to guess",codiceYes:"YES, it has a ",qvMultiDevice:"PLAY ON MULTIPLE DEVICES",qvMultiDesc:"Each player uses their own device. The room creator plays too!",qvEnterName:"Enter your name",qvCreateRoom:"Create room",qvLocalDesc:"Each player moves the slider to guess the value. Whoever is closest to the correct answer wins the point!",qvStart:"START",qvPlayer:"Player ",quizChooseLevel:"Choose difficulty level",quizQuestion:"QUESTION ",quizReveal:"REVEAL ANSWER",starterStart:"START GAME",starterEnd:"END GAME",starterNext:"NEXT PHRASE",starterDone:"DONE — NOW IT'S YOUR TURN!",quizzoneStart:" START GAME",quizzoneChooseName:"Choose your player name",quizzoneLeaderboard:"LEADERBOARD ",quizzoneShowAnswer:"SHOW ANSWER",quizzoneFinalScore:"FINAL LEADERBOARD",quizzoneNextQ:"NEXT QUESTION ",quizzoneEnd:"GAME OVER!",nome:"Name",stanza:"Room",è:"is",otherDevicesCode:"Other devices open Filòs and enter this code",quizzoneTitle:"QUIZZONE",dadoInsert15:"Enter the number and your names. First to reach 15 wins!",dadoRoll:"Tap the die to roll it!",dadoGot:"You rolled: ",dadoWhat:"What do you want to do?",dadoBust:"BUST! Back to 0",dadoAddMe:"to me",dadoBustMe:"BUST! Back to 0",dadoWinMe:"EXACTLY 15! YOU WIN!",dadoSubTo:"to ",dadoArrow:"",dadoFirst15:"First to reach 15!",menuNote:"Call the waiter to order · make the most of the break!",syncedHost:"Synced · follow the host's screen",iAmHost:"I'm the host",iJoin:"I'm joining",enterHostCode:"Enter the host's code",othersInsertCode:"Others enter this code",menuFood:"FOOD",menuDrink:"DRINKS",enterRoom:"JOIN",nfcGateTitle:"Are you at the venue?",nfcGateSub:"Hold your phone near the coaster on your table to access Filòs.",pinTitle:"Restricted area",pinSub:"Enter your PIN to continue",pinError:"Wrong PIN, try again",obTitle:"Welcome to Filòs",obSub:"Set up your venue in a few steps to activate analytics and manager features.",obFieldName:"Venue name",obFieldNamePH:"E.g. The Crown Pub",obFieldCode:"Pub code",obFieldCodePH:"E.g. crown.pub",obHint:"The pub code identifies your venue. Use it in the NFC tags on your coasters.",obBtn:"Activate my venue",obBtnDone:"Done!",obErrName:"Enter the venue name",obErrCode:"The code must be at least 3 characters",settingsTitle:"Settings",tabProfilo:"Profile",tabAnalytics:"Analytics",tabReport:"Report",tabSerate:"Events",tabAdmin:"Admin",settingsSave:"Save changes",settingsSaved:" Saved",settingsIlTuoLocale:"Your venue",settingsStato:"Status",settingsLocaleConf:"Venue configured",nfcSection:"NFC Token",nfcToggleLabel:"NFC lock active",nfcToggleSub:"Only those who scan the tag can access the app",nfcUrlLabel:"URL for NFC tags",nfcCopyBtn:"Copy URL",nfcCopied:"Copied!",nfcRegenBtn:"Regenerate token (invalidates old tags)",nfcRegenConfirm:"Regenerate the token? All existing NFC tags will stop working.",adminSave:"Save to Firebase",adminSaved:" Saved to Firebase",firstTo:"First to ",pointsHunter:"points. Great hunter!",pointsWin:"points!",ncTitle:"FIRST & LAST NAME",ncLabelName:"FIRST NAME",ncLabelSurname:"LAST NAME",ncSaidFirst:"SAID IT FIRST!",ncNobody:"NOBODY — NEW LETTERS",gameOver:"GAME OVER",rateStars:"Tap the stars to rate",rateGame:"Rate: ",starterNowYou:"NOW IT'S YOUR TURN!",analyticsReset:"RESET",analyticsSure:"Sure?",analyticsClose:"CLOSE",analyticsPinHint:"tap the logo 5 times to open",analyticsTotalGames:"total games",analyticsToday:"today",analyticsAvgRating:"avg rating",analyticsGames:"games",analyticsRecent:"RECENT GAMES",menuCallWaiter:"CALL THE WAITER!"},
+  es:{tagline:"JUEGOS SOCIALES",splashDesc:"Sin cartas, sin dados — solo vosotros, buena compañía y ganas de estar juntos.",splashBtn:"EMPEZAR A JUGAR",splashFoot:"BARES · LOCALES · NOCHES CON AMIGOS",homeTitle:"¿A QUÉ QUEREMOS JUGAR?",catAmici:"CON AMIGOS",catCoppia:"EN PAREJA",catBambini:"ROMPE-HIELO",catIndovinelli:"ACERTIJOS",catAzione:"ACCIÓN",catCreativi:"CREATIVOS",catCultura:"CULTURA",catAdulti:"18+",catRelax:"A DISTANCIA",catSolitario:"SOLO",back:"VOLVER",connect:"CONECTAR",backBtn:"Volver",exitBtn:"Salir",filterAll:"TODOS",filterEasy:"FÁCIL",filterMed:"MEDIO",filterHard:"DIFÍCIL",players:"jugadores",endMsg4:"¡QUÉ NOCHE TAN GENIAL!",endMsg3:"¡BIEN, PERO SE PUEDE MEJORAR!",endMsgElse:"¿PROBAMOS OTRA COSA?",mrWhiteHowMany:"¿Cuántos jugadores sois?",mrWhitePass:"Pasa la tablet en turnos. Cada jugador toca su botón para ver la palabra.",dadoInsert:"Introduce el número y vuestros nombres. ¡El primero en llegar a 5 puntos gana!",waitingPlayers:"Esperando jugadores...",qvQuestion:"PREGUNTA",qvOf:"DE",qvYourAnswer:"Tu respuesta (eres ",qvConfirm:"CONFIRMAR",qvAnswerSent:"¡Respuesta enviada!",qvWaitingOthers:"Esperando a los demás jugadores...",qvWaitingOthers2:"Esperando a los demás...",qvPassTablet:"Pasa la tablet a: ",qvAnswerSentShort:"Respuesta enviada",qvCorrectAnswer:"LA RESPUESTA CORRECTA ES",qvNextQuestion:"SIGUIENTE PREGUNTA",qvFinalScore:"VER CLASIFICACIÓN FINAL",qvRevealAnswers:"REVELAR RESPUESTAS",qvWon:"¡HA GANADO!",qvPoints:"Con",qvPointsOf:"puntos de",qvPlayAgain:"JUGAR DE NUEVO",howToPlay:"CÓMO SE JUEGA",tipLabel:"Consejo",theQuestions:"LAS PREGUNTAS",backToGame:"VOLVER AL JUEGO",startMrWhite:"INICIAR MR. WHITE",qvShareCode:"Comparte este código con tus amigos",qvDisconnect:"Desconectar",codeError4:"Ingresa el código (4 dígitos)",qvPlayer1:"jugador",qvPlayerN:"jugadores",qvTitle:"¿CUÁNTO VALE?",endGame:"FIN DEL JUEGO",chiPagaTitle:"¿QUIÉN PAGA?",chiPagaInstr:"Pon un dedo\nen la pantalla",chiPagaWait:"Espera a los demás…",chiPagaLoser:"Le toca a",chiPagaSub:"¡paga la cuenta! ",chiPagaRestart:"Repetir",chiPagaBack:"JUEGOS",starterContinue:"Habéis roto el hielo — continuad con vuestras preguntas, siguiendo las reglas del juego.",qzShowAnswer:"MOSTRAR RESPUESTA",mrWhiteStart:"¡Todos han visto la palabra. ¡Empezad a dar pistas!",intesaWord:"Palabra ",intesaLevel:"NIVEL: ",intesaGuessedN:"Habéis adivinado ",intesaLevelOf:"— Nivel: ",changeLevel:"CAMBIAR NIVEL",alfabetoHint:"¡Encuentra algo que empiece por esta letra!",codiceAllDigits:"¡Todos los jugadores deben introducir 4 dígitos!",codiceWonBy:"Ha adivinado el código de ",roomNotFound2:"Sala no encontrada",otherGames:"OTROS JUEGOS",starterInstruct:"Jugad esta frase, luego pasad a la siguiente.",analyticsEmpty:"Sin datos aún. ¡Empezad a jugar!",mostPlayed:"JUEGOS MÁS JUGADOS",topCategory:"categoría más jugada",connectedRoom:"Conectado a la sala",creatingRoom:"Creando sala y compartiendo el código",createRoom:"CREAR SALA",qzChooseName:"Elige tu nombre de jugador",qzLeaderboard:"CLASIFICACIÓN ",qzLeaderTitle:"CLASIFICACIÓN",qzFinalLeader:"CLASIFICACIÓN FINAL",connErr:"Error de conexión",joinBtn:"Entrar",oppure:"O BIEN",enterBtn:"Entrar",codeRoomPH2:"Código de sala",codeRoomShare:"Código de sala — compártelo con los jugadores",codeRoomLabel:"Código de sala",waitingHost2:" Esperando que el host inicie el juego...",waitingPlayers3:"Esperando jugadores...",codiceWaiting:"Esperando la respuesta de ",quizzoneCorrect:"¡Respuesta correcta! Esperando a los demás...",quizzoneWrong:"Respuesta incorrecta. Esperando a los demás...",roomCode:"Código de sala",inRoom:"Estás en la sala",waitingHost:" Esperando que el host inicie el juego...",leaveRoom:"Salir de la sala",playersInRoom:"Jugadores en la sala:",startGame:" INICIAR EL JUEGO",codeRoomPH:"Ej. ABC123",yourName:"Tu nombre:",yourNamePH:"¿Cómo te llamas?",roomNotFound:"Sala no encontrada — comprueba el código",waitPlayer:"¡Espera al menos un jugador!",closeRoom:"Cerrar sala",joinRoom:"Unirse a una sala",joinRoomPH:"Código de sala",waitingPlayers2:"Esperando a más jugadores...",copyCode:"Copiar código",disconnectBtn:"Desconectar",firebaseErr:"Firebase no disponible",timeoutErr:"Tiempo agotado — comprueba tu conexión",howMany:"¿CUÁNTOS SOIS?",modeLocal:"Local",modeDist:"A distancia",playerNamePH:"Nombre del jugador ",pinAccess:"Introduce el PIN para acceder.",productName:"Nombre del producto",riddleLabel:"ACERTIJO",revealAnswer:"REVELAR RESPUESTA ",endBtn:"FIN",mrWhiteBluff:"Esta es TU palabra — similar a la de los demás.\n¡Farolea! Intenta adivinar su palabra por sus pistas.",mrWhitePlayer:"Jugador ",mrWhiteLookWord:" VER LA PALABRA",intesaTitle:"LA PALABRA CORRECTA",intesaDifficulty:"ELIGE LA DIFICULTAD",intesaDesc:"Un jugador describe, el equipo adivina. 60 segundos. ¿Cuántas palabras podéis?",intesaHard:"Palabras más difíciles",intesaStart:" EMPEZAR",intesaGuessed:"CORRECTA",intesaResult:"PALABRAS ADIVINADAS",nomeCognomeDesc:"¡El primero que diga un nombre y apellido con estas letras gana el punto!",codiceTitle:"ADIVINA EL CÓDIGO",codiceDesc:"Cada jugador elige su código secreto de 4 dígitos. ¡No lo muestres a los demás!",codiceTurn:"Turno de ",codiceAsk:"— elige a quién preguntar y qué número pedir",codiceYes:"SÍ, tiene un ",qvMultiDevice:"JUGAR EN VARIOS DISPOSITIVOS",qvMultiDesc:"¡Cada jugador usa su propio dispositivo. El que crea la sala también juega!",qvEnterName:"Introduce tu nombre",qvCreateRoom:"Crear sala",qvLocalDesc:"Cada jugador mueve el cursor para adivinar el valor. ¡Quien más se acerque a la respuesta correcta gana el punto!",qvStart:"EMPEZAR",qvPlayer:"Jugador ",quizChooseLevel:"Elige el nivel de dificultad",quizQuestion:"PREGUNTA ",quizReveal:"REVELAR RESPUESTA",starterStart:"INICIAR JUEGO",starterEnd:"FIN DEL JUEGO",starterNext:"SIGUIENTE FRASE",starterDone:"¡FIN — AHORA OS TOCA A VOSOTROS!",quizzoneStart:" INICIAR JUEGO",quizzoneChooseName:"Elige tu nombre de jugador",quizzoneLeaderboard:"CLASIFICACIÓN ",quizzoneShowAnswer:"MOSTRAR RESPUESTA",quizzoneFinalScore:"CLASIFICACIÓN FINAL",quizzoneNextQ:"SIGUIENTE PREGUNTA ",quizzoneEnd:"¡PARTIDA TERMINADA!",otherDevicesCode:"Los demás dispositivos abren Filòs e introducen este código",quizzoneTitle:"QUIZZONE",nfcGateTitle:"¿Estás en el local?",nfcGateSub:"Acerca el teléfono al posavasos de tu mesa para acceder a Filòs.",pinTitle:"Área reservada",pinSub:"Introduce el PIN para continuar",pinError:"PIN incorrecto, inténtalo de nuevo",obTitle:"Bienvenido a Filòs",obSub:"Configura tu local en pocos pasos para activar las analíticas y las funciones de gestor.",obFieldName:"Nombre del local",obFieldNamePH:"Ej. Bar El Rincón",obFieldCode:"Código del local",obFieldCodePH:"Ej. bar.rincon",obHint:"El código identifica tu local. Úsalo en las etiquetas NFC de los posavasos.",obBtn:"Activar mi local",obBtnDone:"¡Listo!",obErrName:"Introduce el nombre del local",obErrCode:"El código debe tener al menos 3 caracteres",settingsTitle:"Ajustes",tabProfilo:"Perfil",tabAnalytics:"Análisis",tabReport:"Informe",tabSerate:"Eventos",tabAdmin:"Admin",settingsSave:"Guardar cambios",settingsSaved:" Guardado",settingsIlTuoLocale:"Tu local",settingsStato:"Estado",settingsLocaleConf:"Local configurado",nfcSection:"Token NFC",nfcToggleLabel:"Bloqueo NFC activo",nfcToggleSub:"Solo quien escanea la etiqueta accede a la app",nfcUrlLabel:"URL para etiquetas NFC",nfcCopyBtn:"Copiar URL",nfcCopied:"¡Copiado!",nfcRegenBtn:"Regenerar token (invalida las etiquetas antiguas)",nfcRegenConfirm:"¿Regenerar el código? Todas las etiquetas NFC existentes dejarán de funcionar.",adminSave:"Guardar en Firebase",adminSaved:" Guardado en Firebase",firstTo:"Primero en llegar a ",pointsHunter:"puntos. ¡Gran cazador!",pointsWin:"puntos!",ncTitle:"NOMBRE Y APELLIDO",ncLabelName:"NOMBRE",ncLabelSurname:"APELLIDO",ncSaidFirst:"¡LO DIJO PRIMERO!",ncNobody:"NADIE — NUEVAS LETRAS",gameOver:"JUEGO TERMINADO",rateStars:"Toca las estrellas para valorar",rateGame:"Valora: ",starterNowYou:"¡AHORA OS TOCA A VOSOTROS!",analyticsReset:"RESET",analyticsSure:"¿Seguro?",analyticsClose:"CERRAR",analyticsPinHint:"toca el logo 5 veces para abrir",analyticsTotalGames:"partidas totales",analyticsToday:"hoy",analyticsAvgRating:"nota media",analyticsGames:"partidas",analyticsRecent:"ÚLTIMAS PARTIDAS",menuCallWaiter:"¡LLAMAD AL CAMARERO!",backToGames:"VOLVER A LOS JUEGOS",mrWhiteYourWord:"La palabra secreta es:",dadoInsert15:"Introduce el número y vuestros nombres. ¡El primero en llegar a 15 gana!",dadoRoll:"¡Toca el dado para lanzarlo!",dadoGot:"Has sacado: ",dadoWhat:"¿Qué quieres hacer?",dadoBust:"¡TE PASASTE! Vuelve a 0",dadoAddMe:"para mí",dadoBustMe:"¡TE PASASTE! Vuelves a 0",dadoWinMe:"¡15 EXACTOS! ¡GANAS!",dadoSubTo:"a ",dadoArrow:"",dadoFirst15:"¡El primero en llegar a 15!",menuNote:"Llamad al camarero para pedir · ¡aprovechad la pausa!",syncedHost:"Sincronizado · sigue la pantalla del anfitrión",iAmHost:"Soy el anfitrión",iJoin:"Me uno",enterHostCode:"Introduce el código del anfitrión",othersInsertCode:"Los demás introducen este código",menuFood:"COMIDA",menuDrink:"BEBIDAS",enterRoom:"ENTRAR"}
 };
 // ── Testi dell'interfaccia (generati dai testi fissi) ─────────
 Object.assign(STRINGS.it,{
@@ -1240,8 +1256,8 @@ Object.assign(STRINGS.it,{
  ui_rompighiaccio:"ROMPIGHIACCIO",
  ui_primo_appuntamento:"PRIMO APPUNTAMENTO",
  ui_indovinello:"indovinello ",
- ui_nuovo:"★ NUOVO",
- ui_nascondi:"NASCONDI ▲",
+ ui_nuovo:"NUOVO",
+ ui_nascondi:"NASCONDI",
  ui_minimo:"minimo ",
  ui_massimo:" · massimo ",
  ui_conferma:"CONFERMA ",
@@ -1262,27 +1278,27 @@ Object.assign(STRINGS.it,{
  ui_caccia_all_oggetto:"CACCIA ALL'OGGETTO",
  ui_via:" VIA!",
  ui_ha_trovato:" HA TROVATO!",
- ui_fifteen:"FIFTEEN",
+ ui_fifteen:"QUINDICI",
  ui_s_codice:"'s codice",
  ui_chiede_a:"</strong> chiede a <strong>",
  ui_hai_il:"</strong>: hai il <strong>",
  ui_nel_tuo_codice:"</strong> nel tuo codice?",
  ui_si_ce_l_ho:" SÌ, ce l'ho",
  ui_no_non_ce_l_ho:" NO, non ce l'ho",
- ui_pubblicita_assurda:"PUBBLICITA ASSURDA",
+ ui_pubblicita_assurda:"PUBBLICITÀ ASSURDA",
  ui_2_minuti_per_convincere_tutti:"2 minuti per convincere tutti ",
  ui_presenta_il_tuo_prodotto_assurdo:"Presenta il tuo prodotto assurdo come uno spot vero: nome, slogan e perché comprarlo!",
  ui_votate_lo_spot_migliore:" Votate lo spot migliore!",
- ui_prossimo_giocatore:"↺ PROSSIMO GIOCATORE",
+ ui_prossimo_giocatore:"PROSSIMO GIOCATORE",
  ui_inizia_lo_spot:" INIZIA LO SPOT",
  ui_riprendi:" RIPRENDI",
- ui_ricomincia:"↺ RICOMINCIA",
+ ui_ricomincia:"RICOMINCIA",
  ui_pausa:" PAUSA",
  ui_il_robot:"IL ROBOT",
  ui_2_minuti_per_completare_la:"2 minuti per completare la missione ",
  ui_il_programmatore_da_comandi_precisi:"Il programmatore dà comandi precisi, il robot esegue alla lettera. Allo scadere si scambiano i ruoli!",
  ui_cambiate_ruolo:" Cambiate ruolo!",
- ui_nuovo_turno:"↺ NUOVO TURNO",
+ ui_nuovo_turno:"NUOVO TURNO",
  ui_inizia_il_turno:" INIZIA IL TURNO",
  ui_specchio:"SPECCHIO",
  ui_2_minuti_come_riflesso_poi:"2 minuti come riflesso, poi si scambiano ",
@@ -1304,7 +1320,7 @@ Object.assign(STRINGS.it,{
  ui_5_minuti_di_conversazione_libera:"5 minuti di conversazione libera ",
  ui_chiacchierate_liberamente_allo_scadere_del:"Chiacchierate liberamente. Allo scadere del timer, ognuno assegna un soprannome alla persona alla sua destra e si rivelano tutti insieme!",
  ui_tempo_rivelate_i_soprannomi:" Tempo! Rivelate i soprannomi!",
- ui_nuovo_giro:"↺ NUOVO GIRO",
+ ui_nuovo_giro:"NUOVO GIRO",
  ui_inizia_la_conversazione:" INIZIA LA CONVERSAZIONE",
  ui_cosa_hai_in_comune:"COSA HAI IN COMUNE?",
  ui_4_minuti_per_scoprirlo:"4 minuti per scoprirlo! ",
@@ -1325,7 +1341,7 @@ Object.assign(STRINGS.it,{
  ui_prossimo_giocatore_2:" PROSSIMO GIOCATORE",
  ui_appello:"APPELLO",
  ui_memorizza_tutti_i_nomi_in:"Memorizza tutti i nomi in 60 secondi!",
- ui_il_moderatore_punta_il_dito:"Il moderatore punta il dito su qualcuno → un altro giocatore ha 3 secondi per dire il suo nome. Chi sbaglia è eliminato.",
+ ui_il_moderatore_punta_il_dito:"Il moderatore punta il dito su qualcuno: un altro giocatore ha 3 secondi per dire il suo nome. Chi sbaglia è eliminato.",
  ui_via_iniziate_a_giocare:" Via! Iniziate a giocare!",
  ui_nuovo_giro_2:" NUOVO GIRO",
  ui_inizia_memorizzazione:" INIZIA MEMORIZZAZIONE",
@@ -1365,7 +1381,7 @@ Object.assign(STRINGS.it,{
  ui_ha_vinto:" ha vinto! ",
  ui_con:"Con ",
  ui_punti_su:" punti su ",
- ui_gioca_ancora:"↺ GIOCA ANCORA",
+ ui_gioca_ancora:"GIOCA ANCORA",
  ui_l_ex:"L'EX",
  ui_2_minuti_per_raccontare_la:"2 minuti per raccontare la storia ",
  ui_racconta_la_storia_piu_assurda:"Racconta la storia più assurda, imbarazzante o surreale legata a un ex. Nessun nome vero!",
@@ -1374,18 +1390,18 @@ Object.assign(STRINGS.it,{
  ui_scrivi_una_confessione_anonima_qualcosa:"Scrivi una confessione anonima. Qualcosa di vero, imbarazzante o inaspettato. Nessuno vedrà il tuo nome.",
  ui_la_mia_confessione:"La mia confessione...",
  ui_tieni_il_telefono_verso_di:"Tieni il telefono verso di te mentre scrivi ",
- ui_passa_al_prossimo:"Passa al prossimo →",
+ ui_passa_al_prossimo:"Passa al prossimo",
  ui_mescola_e_inizia:"Mescola e inizia ",
  ui_confessione:"CONFESSIONE ",
  ui_di_2:" DI ",
  ui_il_gruppo_vota_di_chi:"Il gruppo vota: di chi è questa confessione?",
- ui_prossima_confessione:"Prossima confessione →",
+ ui_prossima_confessione:"Prossima confessione",
  ui_risultati_finali_2:"Risultati finali ",
  ui_fine_del_gioco:"Fine del gioco! ",
  ui_tutte_le:"Tutte le ",
  ui_confessioni_sono_state_svelate:" confessioni sono state svelate",
  ui_domande_accessibili_per_tutti:"Domande accessibili per tutti",
- ui_qualche_sfida_in_piu:"Qualche sfida in piu",
+ ui_qualche_sfida_in_piu:"Qualche sfida in più",
  ui_solo_per_esperti:"Solo per esperti",
  ui_quiz_terminato:"QUIZ TERMINATO!",
  ui_domande_corrette_su:"domande corrette su ",
@@ -1398,7 +1414,7 @@ Object.assign(STRINGS.it,{
  ui_lo_sapevo_1:"LO SAPEVO! +1",
  ui_frase:"FRASE ",
  ui_vedi_le_regole:"VEDI LE REGOLE",
- ui_modifica_menu:"MODIFICA MENU",
+ ui_modifica_menu:"MODIFICA MENÙ",
  ui_rimuovi_foto:" Rimuovi foto",
  ui_tocca_per_aggiungere_foto:"Tocca per aggiungere foto",
  ui_nome_prodotto:"Nome prodotto",
@@ -1410,22 +1426,22 @@ Object.assign(STRINGS.it,{
  ui_allergeni:"Allergeni",
  ui_aggiungi_prodotto:"+ Aggiungi prodotto",
  ui_massimo_10_prodotti_per_categoria:"Massimo 10 prodotti per categoria.",
- ui_ripristina_menu_default:"Ripristina menu default",
- ui_ripristinare_il_menu:"Ripristinare il menu ",
+ ui_ripristina_menu_default:"Ripristina menù default",
+ ui_ripristinare_il_menu:"Ripristinare il menù ",
  ui_predefinito:" predefinito?",
  ui_il_codice_pub_identifica_il:"Il codice pub identifica il tuo locale. Usalo nei tag NFC dei sottobicchieri.",
  ui_impostazioni:"Impostazioni",
- ui_menu:" Menu",
+ ui_menu:" Menù",
  ui_es_osteria_mario:"Es. Osteria Mario",
  ui_partite_totali:"Partite totali",
  ui_oggi:"Oggi",
  ui_tempo_totale:"Tempo totale",
  ui_valutazione:"Valutazione ",
  ui_giochi_piu_giocati:"Giochi più giocati",
- ui_menu_piu_richiesti:" Menu più richiesti (",
+ ui_menu_piu_richiesti:" Menù più richiesti (",
  ui_click_totali:" click totali)",
- ui_nessun_click_menu_ancora:"Nessun click menu ancora",
- ui_i_click_verranno_tracciati_quando:"I click verranno tracciati quando i clienti sfogliano il menu",
+ ui_nessun_click_menu_ancora:"Nessun click menù ancora",
+ ui_i_click_verranno_tracciati_quando:"I click verranno tracciati quando i clienti sfogliano il menù",
  ui_recenti:"Recenti",
  ui_reset_tutti_i_dati:"Reset tutti i dati",
  ui_cancellare_tutti_i_dati_analytics:"Cancellare tutti i dati analytics locali?\nI dati su Firebase non vengono eliminati.",
@@ -1442,7 +1458,7 @@ Object.assign(STRINGS.it,{
  ui_conteggio_per_periodo:"Conteggio per periodo",
  ui_giochi_piu_popolari:"Giochi più popolari",
  ui_top_10_con_barra_di:"Top 10 con barra di utilizzo",
- ui_menu_piu_richiesti_2:"Menu più richiesti",
+ ui_menu_piu_richiesti_2:"Menù più richiesti",
  ui_click_su_drink_e_food:"Click su drink e food",
  ui_valutazioni_medie:"Valutazioni medie",
  ui_per_gioco:"Per gioco",
@@ -1471,13 +1487,13 @@ Object.assign(STRINGS.it,{
  ui_giorni_attivi:"</div><div class=\"stat-label\">Giorni attivi</div></div>",
  ui_tempo_totale_2:"</div><div class=\"stat-label\">Tempo totale</div></div>",
  ui_valutazione_2:"</div><div class=\"stat-label\">Valutazione </div></div>",
- ui_click_menu:"</div><div class=\"stat-label\">Click menu</div></div>",
+ ui_click_menu:"</div><div class=\"stat-label\">Click menù</div></div>",
  ui_ora_di_punta:"</div><div class=\"stat-label\">Ora di punta</div></div>",
  ui_giochi_piu_giocati_2:"<h2> Giochi più giocati</h2>",
  ui_pt:"&nbsp;pt</span></div>",
- ui_menu_piu_richiesti_3:"<h2> Menu più richiesti</h2>",
+ ui_menu_piu_richiesti_3:"<h2> Menù più richiesti</h2>",
  ui_x:"x</span></div>",
- ui_valutazioni_per_gioco:"<h2>⭐ Valutazioni per gioco</h2>",
+ ui_valutazioni_per_gioco:"<h2>Valutazioni per gioco</h2>",
  ui_fil_s_report_analitico_i:"<div class=\"footer\">Fil&apos;s — Report analitico • I dati non contengono informazioni personali identificabili</div>",
  ui_il_popup_e_stato_bloccato:"Il popup è stato bloccato. Abilita i popup per questo sito per scaricare il PDF.",
  ui_codice:"CODICE",
@@ -1504,7 +1520,7 @@ Object.assign(STRINGS.it,{
  ui_il_viaggio_dei_sogni:"IL VIAGGIO DEI SOGNI",
  ui_rispondete_insieme_a_ogni_domanda:"Rispondete insieme a ogni domanda e costruite il vostro viaggio perfetto. Nessun limite!",
  ui_vedi_il_vostro_viaggio:"VEDI IL VOSTRO VIAGGIO ",
- ui_modifica:"← Modifica",
+ ui_modifica:"Modifica",
  ui_il_vostro_viaggio:"IL VOSTRO VIAGGIO",
  ui_il_vostro_viaggio_dei_sogni:"IL VOSTRO VIAGGIO DEI SOGNI",
  ui_modifica_2:" MODIFICA",
@@ -1514,11 +1530,11 @@ Object.assign(STRINGS.it,{
  ui_scrivi_5_cose_che_l:" — scrivi 5 cose che l'altro non sa di te",
  ui_possono_essere_vere_o_false:"Possono essere vere o false — l'altro dovrà indovinare!",
  ui_scrivi_qualcosa:"Scrivi qualcosa…",
- ui_passa_al_giocatore_2:"PASSA AL GIOCATORE 2 →",
- ui_inizia_il_gioco:"INIZIA IL GIOCO →",
+ ui_passa_al_giocatore_2:"PASSA AL GIOCATORE 2",
+ ui_inizia_il_gioco:"INIZIA IL GIOCO",
  ui_giocatore_1_ha_finito:" Giocatore 1 ha finito!",
  ui_ora_passa_il_telefono_al:"Ora passa il telefono al Giocatore 2.",
- ui_sono_il_giocatore_2:"SONO IL GIOCATORE 2 →",
+ ui_sono_il_giocatore_2:"SONO IL GIOCATORE 2",
  ui_ora_tocca_al_giocatore_2:"Ora tocca al Giocatore 2!",
  ui_passa_il_telefono_al_giocatore:"Passa il telefono al Giocatore 2 — indovinerà le affermazioni del Giocatore 1.",
  ui_nessuna_affermazione:"(nessuna affermazione)",
@@ -1526,7 +1542,7 @@ Object.assign(STRINGS.it,{
  ui_giocatore_3:" Giocatore ",
  ui_affermazione_nascosta:" Affermazione nascosta",
  ui_leggi_l_affermazione_all_altro:": leggi l'affermazione all'altro ad alta voce.",
- ui_leggi_l_affermazione:"LEGGI L'AFFERMAZIONE →",
+ ui_leggi_l_affermazione:"LEGGI L'AFFERMAZIONE",
  ui_e_vera_o_falsa:": è vera o falsa?",
  ui_vera:" VERA",
  ui_falsa:" FALSA",
@@ -1542,7 +1558,7 @@ Object.assign(STRINGS.it,{
  ui_vince_il_giocatore_2:"Vince il Giocatore 2! ",
  ui_pareggio_vi_conoscete_benissimo:"Pareggio — vi conoscete benissimo! ",
  ui_gioca_ancora_2:"GIOCA ANCORA",
- ui_chi_paga_il_conto:"CHI PAGA IL CONTO",
+ ui_chi_paga_il_conto:"CHI PAGA IL CONTO?",
  ui_appoggiate_tutti_un_dito:"Appoggiate tutti un dito ",
  ui_non_alzate_il_dito:"Non alzate il dito... ",
  ui_paga_lui:"PAGA LUI!",
@@ -1575,8 +1591,8 @@ Object.assign(STRINGS.en,{
  ui_rompighiaccio:"ICEBREAKER",
  ui_primo_appuntamento:"FIRST DATE",
  ui_indovinello:"riddle ",
- ui_nuovo:"★ NEW",
- ui_nascondi:"HIDE ▲",
+ ui_nuovo:"NEW",
+ ui_nascondi:"HIDE",
  ui_minimo:"minimum ",
  ui_massimo:" · maximum ",
  ui_conferma:"CONFIRM ",
@@ -1608,16 +1624,16 @@ Object.assign(STRINGS.en,{
  ui_2_minuti_per_convincere_tutti:"2 minutes to convince everyone ",
  ui_presenta_il_tuo_prodotto_assurdo:"Pitch your absurd product like a real commercial: name, slogan and why to buy it!",
  ui_votate_lo_spot_migliore:" Vote for the best ad!",
- ui_prossimo_giocatore:"↺ NEXT PLAYER",
+ ui_prossimo_giocatore:"NEXT PLAYER",
  ui_inizia_lo_spot:" START THE AD",
  ui_riprendi:" RESUME",
- ui_ricomincia:"↺ RESTART",
+ ui_ricomincia:"RESTART",
  ui_pausa:" PAUSE",
  ui_il_robot:"THE ROBOT",
  ui_2_minuti_per_completare_la:"2 minutes to complete the mission ",
  ui_il_programmatore_da_comandi_precisi:"The programmer gives precise commands, the robot follows them to the letter. When time's up, swap roles!",
  ui_cambiate_ruolo:" Swap roles!",
- ui_nuovo_turno:"↺ NEW TURN",
+ ui_nuovo_turno:"NEW TURN",
  ui_inizia_il_turno:" START THE TURN",
  ui_specchio:"MIRROR",
  ui_2_minuti_come_riflesso_poi:"2 minutes as the reflection, then swap ",
@@ -1639,7 +1655,7 @@ Object.assign(STRINGS.en,{
  ui_5_minuti_di_conversazione_libera:"5 minutes of free conversation ",
  ui_chiacchierate_liberamente_allo_scadere_del:"Chat freely. When the timer ends, everyone gives a nickname to the person on their right and you reveal them all together!",
  ui_tempo_rivelate_i_soprannomi:" Time's up! Reveal the nicknames!",
- ui_nuovo_giro:"↺ NEW ROUND",
+ ui_nuovo_giro:"NEW ROUND",
  ui_inizia_la_conversazione:" START TALKING",
  ui_cosa_hai_in_comune:"WHAT DO YOU HAVE IN COMMON?",
  ui_4_minuti_per_scoprirlo:"4 minutes to find out! ",
@@ -1660,7 +1676,7 @@ Object.assign(STRINGS.en,{
  ui_prossimo_giocatore_2:" NEXT PLAYER",
  ui_appello:"ROLL CALL",
  ui_memorizza_tutti_i_nomi_in:"Memorise everyone's name in 60 seconds!",
- ui_il_moderatore_punta_il_dito:"The host points at someone → another player has 3 seconds to say their name. Get it wrong and you're out.",
+ ui_il_moderatore_punta_il_dito:"The host points at someone: another player has 3 seconds to say their name. Get it wrong and you're out.",
  ui_via_iniziate_a_giocare:" Go! Start playing!",
  ui_nuovo_giro_2:" NEW ROUND",
  ui_inizia_memorizzazione:" START MEMORISING",
@@ -1700,7 +1716,7 @@ Object.assign(STRINGS.en,{
  ui_ha_vinto:" wins! ",
  ui_con:"With ",
  ui_punti_su:" points out of ",
- ui_gioca_ancora:"↺ PLAY AGAIN",
+ ui_gioca_ancora:"PLAY AGAIN",
  ui_l_ex:"THE EX",
  ui_2_minuti_per_raccontare_la:"2 minutes to tell the story ",
  ui_racconta_la_storia_piu_assurda:"Tell the most absurd, embarrassing or surreal story about an ex. No real names!",
@@ -1709,12 +1725,12 @@ Object.assign(STRINGS.en,{
  ui_scrivi_una_confessione_anonima_qualcosa:"Write an anonymous confession. Something true, embarrassing or unexpected. Nobody will see your name.",
  ui_la_mia_confessione:"My confession...",
  ui_tieni_il_telefono_verso_di:"Keep the phone turned towards you while you write ",
- ui_passa_al_prossimo:"Pass to the next →",
+ ui_passa_al_prossimo:"Pass to the next",
  ui_mescola_e_inizia:"Shuffle and start ",
  ui_confessione:"CONFESSION ",
  ui_di_2:" OF ",
  ui_il_gruppo_vota_di_chi:"The group votes: whose confession is this?",
- ui_prossima_confessione:"Next confession →",
+ ui_prossima_confessione:"Next confession",
  ui_risultati_finali_2:"Final results ",
  ui_fine_del_gioco:"Game over! ",
  ui_tutte_le:"All ",
@@ -1812,7 +1828,7 @@ Object.assign(STRINGS.en,{
  ui_pt:"&nbsp;plays</span></div>",
  ui_menu_piu_richiesti_3:"<h2> Most requested menu items</h2>",
  ui_x:"x</span></div>",
- ui_valutazioni_per_gioco:"<h2>⭐ Ratings by game</h2>",
+ ui_valutazioni_per_gioco:"<h2>Ratings by game</h2>",
  ui_fil_s_report_analitico_i:"<div class=\"footer\">Fil&apos;s — Analytics report • The data contains no personally identifiable information</div>",
  ui_il_popup_e_stato_bloccato:"The pop-up was blocked. Allow pop-ups for this site to download the PDF.",
  ui_codice:"CODE",
@@ -1839,7 +1855,7 @@ Object.assign(STRINGS.en,{
  ui_il_viaggio_dei_sogni:"DREAM TRIP",
  ui_rispondete_insieme_a_ogni_domanda:"Answer each question together and build your perfect trip. No limits!",
  ui_vedi_il_vostro_viaggio:"SEE YOUR TRIP ",
- ui_modifica:"← Edit",
+ ui_modifica:"Edit",
  ui_il_vostro_viaggio:"YOUR TRIP",
  ui_il_vostro_viaggio_dei_sogni:"YOUR DREAM TRIP",
  ui_modifica_2:" EDIT",
@@ -1849,11 +1865,11 @@ Object.assign(STRINGS.en,{
  ui_scrivi_5_cose_che_l:" — write 5 things the other doesn't know about you",
  ui_possono_essere_vere_o_false:"They can be true or false — the other has to guess!",
  ui_scrivi_qualcosa:"Write something…",
- ui_passa_al_giocatore_2:"PASS TO PLAYER 2 →",
- ui_inizia_il_gioco:"START THE GAME →",
+ ui_passa_al_giocatore_2:"PASS TO PLAYER 2",
+ ui_inizia_il_gioco:"START THE GAME",
  ui_giocatore_1_ha_finito:" Player 1 is done!",
  ui_ora_passa_il_telefono_al:"Now pass the phone to Player 2.",
- ui_sono_il_giocatore_2:"I'M PLAYER 2 →",
+ ui_sono_il_giocatore_2:"I'M PLAYER 2",
  ui_ora_tocca_al_giocatore_2:"Now it's Player 2's turn!",
  ui_passa_il_telefono_al_giocatore:"Pass the phone to Player 2 — they'll guess Player 1's statements.",
  ui_nessuna_affermazione:"(no statement)",
@@ -1861,7 +1877,7 @@ Object.assign(STRINGS.en,{
  ui_giocatore_3:" Player ",
  ui_affermazione_nascosta:" Hidden statement",
  ui_leggi_l_affermazione_all_altro:": read the statement out loud to the other.",
- ui_leggi_l_affermazione:"READ THE STATEMENT →",
+ ui_leggi_l_affermazione:"READ THE STATEMENT",
  ui_e_vera_o_falsa:": true or false?",
  ui_vera:" TRUE",
  ui_falsa:" FALSE",
@@ -1877,7 +1893,7 @@ Object.assign(STRINGS.en,{
  ui_vince_il_giocatore_2:"Player 2 wins! ",
  ui_pareggio_vi_conoscete_benissimo:"It's a tie — you know each other really well! ",
  ui_gioca_ancora_2:"PLAY AGAIN",
- ui_chi_paga_il_conto:"WHO PAYS THE BILL",
+ ui_chi_paga_il_conto:"WHO PAYS THE BILL?",
  ui_appoggiate_tutti_un_dito:"Everyone put a finger down ",
  ui_non_alzate_il_dito:"Don't lift your finger... ",
  ui_paga_lui:"THEY PAY!",
@@ -1910,8 +1926,8 @@ Object.assign(STRINGS.es,{
  ui_rompighiaccio:"ROMPEHIELOS",
  ui_primo_appuntamento:"PRIMERA CITA",
  ui_indovinello:"acertijo ",
- ui_nuovo:"★ NUEVO",
- ui_nascondi:"OCULTAR ▲",
+ ui_nuovo:"NUEVO",
+ ui_nascondi:"OCULTAR",
  ui_minimo:"mínimo ",
  ui_massimo:" · máximo ",
  ui_conferma:"CONFIRMAR ",
@@ -1943,16 +1959,16 @@ Object.assign(STRINGS.es,{
  ui_2_minuti_per_convincere_tutti:"2 minutos para convencer a todos ",
  ui_presenta_il_tuo_prodotto_assurdo:"¡Presenta tu producto absurdo como un anuncio de verdad: nombre, eslogan y por qué comprarlo!",
  ui_votate_lo_spot_migliore:" ¡Votad el mejor anuncio!",
- ui_prossimo_giocatore:"↺ SIGUIENTE JUGADOR",
+ ui_prossimo_giocatore:"SIGUIENTE JUGADOR",
  ui_inizia_lo_spot:" EMPEZAR EL ANUNCIO",
  ui_riprendi:" REANUDAR",
- ui_ricomincia:"↺ REINICIAR",
+ ui_ricomincia:"REINICIAR",
  ui_pausa:" PAUSA",
  ui_il_robot:"EL ROBOT",
  ui_2_minuti_per_completare_la:"2 minutos para completar la misión ",
  ui_il_programmatore_da_comandi_precisi:"El programador da órdenes precisas y el robot las cumple al pie de la letra. ¡Cuando acabe el tiempo, cambiad los papeles!",
  ui_cambiate_ruolo:" ¡Cambiad de papel!",
- ui_nuovo_turno:"↺ NUEVO TURNO",
+ ui_nuovo_turno:"NUEVO TURNO",
  ui_inizia_il_turno:" EMPEZAR EL TURNO",
  ui_specchio:"ESPEJO",
  ui_2_minuti_come_riflesso_poi:"2 minutos como reflejo, luego se cambia ",
@@ -1974,7 +1990,7 @@ Object.assign(STRINGS.es,{
  ui_5_minuti_di_conversazione_libera:"5 minutos de conversación libre ",
  ui_chiacchierate_liberamente_allo_scadere_del:"Charlad libremente. Cuando acabe el tiempo, cada uno pone un apodo a la persona de su derecha ¡y se revelan todos a la vez!",
  ui_tempo_rivelate_i_soprannomi:" ¡Tiempo! ¡Desvelad los apodos!",
- ui_nuovo_giro:"↺ NUEVA RONDA",
+ ui_nuovo_giro:"NUEVA RONDA",
  ui_inizia_la_conversazione:" EMPEZAR LA CONVERSACIÓN",
  ui_cosa_hai_in_comune:"¿QUÉ TENÉIS EN COMÚN?",
  ui_4_minuti_per_scoprirlo:"¡4 minutos para descubrirlo! ",
@@ -1995,7 +2011,7 @@ Object.assign(STRINGS.es,{
  ui_prossimo_giocatore_2:" SIGUIENTE JUGADOR",
  ui_appello:"LISTA",
  ui_memorizza_tutti_i_nomi_in:"¡Memoriza todos los nombres en 60 segundos!",
- ui_il_moderatore_punta_il_dito:"El moderador señala a alguien → otro jugador tiene 3 segundos para decir su nombre. Quien falle queda eliminado.",
+ ui_il_moderatore_punta_il_dito:"El moderador señala a alguien: otro jugador tiene 3 segundos para decir su nombre. Quien falle queda eliminado.",
  ui_via_iniziate_a_giocare:" ¡Ya! ¡A jugar!",
  ui_nuovo_giro_2:" NUEVA RONDA",
  ui_inizia_memorizzazione:" EMPEZAR A MEMORIZAR",
@@ -2035,7 +2051,7 @@ Object.assign(STRINGS.es,{
  ui_ha_vinto:" ¡ha ganado! ",
  ui_con:"Con ",
  ui_punti_su:" puntos de ",
- ui_gioca_ancora:"↺ JUGAR DE NUEVO",
+ ui_gioca_ancora:"JUGAR DE NUEVO",
  ui_l_ex:"EL EX",
  ui_2_minuti_per_raccontare_la:"2 minutos para contar la historia ",
  ui_racconta_la_storia_piu_assurda:"Cuenta la historia más absurda, vergonzosa o surrealista sobre un ex. ¡Nada de nombres reales!",
@@ -2044,12 +2060,12 @@ Object.assign(STRINGS.es,{
  ui_scrivi_una_confessione_anonima_qualcosa:"Escribe una confesión anónima. Algo verdadero, vergonzoso o inesperado. Nadie verá tu nombre.",
  ui_la_mia_confessione:"Mi confesión...",
  ui_tieni_il_telefono_verso_di:"Mantén el móvil hacia ti mientras escribes ",
- ui_passa_al_prossimo:"Pasar al siguiente →",
+ ui_passa_al_prossimo:"Pasar al siguiente",
  ui_mescola_e_inizia:"Mezclar y empezar ",
  ui_confessione:"CONFESIÓN ",
  ui_di_2:" DE ",
  ui_il_gruppo_vota_di_chi:"El grupo vota: ¿de quién es esta confesión?",
- ui_prossima_confessione:"Siguiente confesión →",
+ ui_prossima_confessione:"Siguiente confesión",
  ui_risultati_finali_2:"Resultados finales ",
  ui_fine_del_gioco:"¡Fin del juego! ",
  ui_tutte_le:"Las ",
@@ -2147,7 +2163,7 @@ Object.assign(STRINGS.es,{
  ui_pt:"&nbsp;part.</span></div>",
  ui_menu_piu_richiesti_3:"<h2> Lo más pedido del menú</h2>",
  ui_x:"x</span></div>",
- ui_valutazioni_per_gioco:"<h2>⭐ Valoraciones por juego</h2>",
+ ui_valutazioni_per_gioco:"<h2>Valoraciones por juego</h2>",
  ui_fil_s_report_analitico_i:"<div class=\"footer\">Fil&apos;s — Informe de análisis • Los datos no contienen información personal identificable</div>",
  ui_il_popup_e_stato_bloccato:"La ventana emergente se ha bloqueado. Permite las ventanas emergentes en este sitio para descargar el PDF.",
  ui_codice:"CÓDIGO",
@@ -2174,7 +2190,7 @@ Object.assign(STRINGS.es,{
  ui_il_viaggio_dei_sogni:"EL VIAJE DE LOS SUEÑOS",
  ui_rispondete_insieme_a_ogni_domanda:"Responded juntos a cada pregunta y construid vuestro viaje perfecto. ¡Sin límites!",
  ui_vedi_il_vostro_viaggio:"VER VUESTRO VIAJE ",
- ui_modifica:"← Editar",
+ ui_modifica:"Editar",
  ui_il_vostro_viaggio:"VUESTRO VIAJE",
  ui_il_vostro_viaggio_dei_sogni:"VUESTRO VIAJE DE LOS SUEÑOS",
  ui_modifica_2:" EDITAR",
@@ -2184,11 +2200,11 @@ Object.assign(STRINGS.es,{
  ui_scrivi_5_cose_che_l:" — escribe 5 cosas que el otro no sabe de ti",
  ui_possono_essere_vere_o_false:"Pueden ser verdaderas o falsas — ¡el otro tendrá que adivinarlo!",
  ui_scrivi_qualcosa:"Escribe algo…",
- ui_passa_al_giocatore_2:"PASAR AL JUGADOR 2 →",
- ui_inizia_il_gioco:"EMPEZAR EL JUEGO →",
+ ui_passa_al_giocatore_2:"PASAR AL JUGADOR 2",
+ ui_inizia_il_gioco:"EMPEZAR EL JUEGO",
  ui_giocatore_1_ha_finito:" ¡El jugador 1 ha terminado!",
  ui_ora_passa_il_telefono_al:"Ahora pasa el móvil al jugador 2.",
- ui_sono_il_giocatore_2:"SOY EL JUGADOR 2 →",
+ ui_sono_il_giocatore_2:"SOY EL JUGADOR 2",
  ui_ora_tocca_al_giocatore_2:"¡Ahora le toca al jugador 2!",
  ui_passa_il_telefono_al_giocatore:"Pasa el móvil al jugador 2 — adivinará las afirmaciones del jugador 1.",
  ui_nessuna_affermazione:"(ninguna afirmación)",
@@ -2196,7 +2212,7 @@ Object.assign(STRINGS.es,{
  ui_giocatore_3:" Jugador ",
  ui_affermazione_nascosta:" Afirmación oculta",
  ui_leggi_l_affermazione_all_altro:": lee la afirmación en voz alta al otro.",
- ui_leggi_l_affermazione:"LEER LA AFIRMACIÓN →",
+ ui_leggi_l_affermazione:"LEER LA AFIRMACIÓN",
  ui_e_vera_o_falsa:": ¿es verdadera o falsa?",
  ui_vera:" VERDADERA",
  ui_falsa:" FALSA",
@@ -2212,7 +2228,7 @@ Object.assign(STRINGS.es,{
  ui_vince_il_giocatore_2:"¡Gana el jugador 2! ",
  ui_pareggio_vi_conoscete_benissimo:"Empate — ¡os conocéis muy bien! ",
  ui_gioca_ancora_2:"JUGAR DE NUEVO",
- ui_chi_paga_il_conto:"QUIÉN PAGA LA CUENTA",
+ ui_chi_paga_il_conto:"¿QUIÉN PAGA LA CUENTA?",
  ui_appoggiate_tutti_un_dito:"Poned todos un dedo ",
  ui_non_alzate_il_dito:"No levantéis el dedo... ",
  ui_paga_lui:"¡PAGA ÉL!",
@@ -2255,6 +2271,22 @@ var LEGAL_TERMS={"it": [["Proprietà", "Filòs, il suo nome, il logo, la grafica
 Object.assign(STRINGS.it,{"invNow": "ora", "invChallenges": " ti sfida", "invGame": "Gioco: ", "invPlay": "Gioca", "invQv": "Quanto vale?"});
 Object.assign(STRINGS.en,{"invNow": "now", "invChallenges": " challenges you", "invGame": "Game: ", "invPlay": "Play", "invQv": "How much is it?"});
 Object.assign(STRINGS.es,{"invNow": "ahora", "invChallenges": " te desafía", "invGame": "Juego: ", "invPlay": "Jugar", "invQv": "¿Cuánto vale?"});
+Object.assign(STRINGS.it,{ui_bc:"a.C.",ui_indietro:"Indietro",ui_trend:"TREND",ui_nuovo_prodotto:"Nuovo prodotto"});
+Object.assign(STRINGS.en,{ui_bc:"BC",ui_indietro:"Back",ui_trend:"TRENDING",ui_nuovo_prodotto:"New product"});
+Object.assign(STRINGS.es,{ui_bc:"a. C.",ui_indietro:"Atrás",ui_trend:"TENDENCIA",ui_nuovo_prodotto:"Nuevo producto"});
+// Etichette dei pulsanti in stile iOS: maiuscola solo la prima lettera (sigle e nomi propri restano)
+(function(){
+ var KEYS="back ui_chi_paga_il_conto adultiOther adultiOtherIdea backBtn backToGame backToGames changeLevel codiceIAm codicePassTurn codiceSave codiceTry endBtn endGame exitBtn intesaGuessed intesaStart legalBack ncNobody ncSaidFirst otherGames quizReveal qvConfirm qvFinalScore qvNextQuestion qvPlayAgain qvRevealAnswers qvStart revealAnswer splashBtn startMrWhite starterDone starterEnd starterNext starterStart chiPagaRestart createRoom enterRoom obBtn quizzoneNextQ quizzoneStart qzFinalLeader qzShowAnswer quizzoneShowAnswer quizzoneFinalScore analyticsClose ui_conferma ui_conferma_risposta ui_era_falsa ui_era_vera ui_falsa ui_gioca_ancora ui_gioca_ancora_2 ui_ha_detto_si_no_non ui_ha_detto_si_no_non_2 ui_ha_trovato ui_ho_visto ui_indietro ui_inizia ui_inizia_2 ui_inizia_3 ui_inizia_a_giocare ui_inizia_il_mimo ui_inizia_il_round ui_inizia_il_timer ui_inizia_il_turno ui_inizia_la_conversazione ui_inizia_lo_spot ui_inizia_memorizzazione ui_inizia_il_gioco ui_leggi_l_affermazione ui_lo_sapevo_1 ui_non_sapevo ui_modifica ui_modifica_2 ui_nascondi ui_nuova_coppia ui_nuova_domanda ui_nuovo_giro ui_nuovo_giro_2 ui_nuovo_turno ui_nuovo_viaggio ui_passa ui_passa_al_giocatore_2 ui_pausa ui_prossima_confessione ui_prossima_domanda ui_prossimo_giocatore ui_prossimo_giocatore_2 ui_prossimo_mimo ui_prossimo_scultore ui_ricomincia ui_riprendi ui_risultati_finali ui_risultati_finali_2 ui_sono_il_giocatore_2 ui_vedi_il_vostro_viaggio ui_vedi_le_regole ui_vera ui_via ui_vedi_le_regole ui_home ui_esci_dalla_stanza ui_annulla_sfida ui_aggiungi_prodotto ui_elimina_prodotto ui_ripristina_menu_default ui_genera_e_scarica_pdf ui_modifica_menu".split(" ");
+ var KEEP={"MR.":"Mr.","WHITE":"White","PDF":"PDF","QR":"QR","NFC":"NFC","TV":"TV","OK":"OK","SÌ/NO/NON":"sì/no/non","YES/NO/NOT":"yes/no/not","SÍ/NO/TAMPOCO":"sí/no/tampoco"};
+ function sc(v){
+  if(typeof v!=="string"||v.indexOf("<")>=0)return v;
+  var letters=v.replace(/[^A-Za-zÀ-ÿ]/g,"");
+  if(letters.length<2||letters!==letters.toUpperCase())return v;
+  var out=v.toLowerCase().replace(/\S+/g,function(w){var u=w.toUpperCase();return KEEP[u]||w;});
+  return out.replace(/^(\s*[¡¿]?)(\S)/,function(m,a,b){return a+b.toUpperCase();});
+ }
+ ["it","en","es"].forEach(function(L){var t=STRINGS[L];if(!t)return;KEYS.forEach(function(k){if(k in t)t[k]=sc(t[k]);});});
+})();
 function T(k){return(STRINGS[LANG]||STRINGS.it)[k]||(STRINGS.it[k])||k;}
 // ──────────────────────────────────────────────────────────
 
@@ -2272,7 +2304,7 @@ function saveMenu(){try{localStorage.setItem("filos_menu",JSON.stringify(MENU));
 
 var GAMES={
  amici:[
- {name:"E UN 10 MA...",players:"3+",time:"15 min",hot:true,rules:"A turno un giocatore descrive una persona usando la formula 'È un 10, ma...' aggiungendo un difetto assurdo. Gli altri devono dire se la accetterebbero comunque, motivando la risposta.",tip:"I 'ma' più assurdi e specifici sono quelli che fanno ridere di più.",starter:["È un 10, ma canta ad alta voce in tutti i posti pubblici — metro, supermercato, ascensore.","È un 10, ma risponde sempre ai messaggi dopo tre giorni esatti.","È un 10, ma parla di sé in terza persona. Sempre.","È un 10, ma ha paura dei palloncini.","È un 10, ma ogni sera racconta per filo e per segno cosa ha sognato la notte prima.","È un 10, ma non ha mai guardato un film fino alla fine in vita sua.","È un 10, ma mastica con la bocca aperta e lo trova assolutamente normale.","È un 10, ma litiga con gli sconosciuti nei commenti online ogni sera.","È un 10, ma il suo ex lo chiama ancora ogni lunedì mattina.","È un 10, ma crede che tutte le malattie si curino con lo zenzero.","È un 10, ma non sa fare una valigia — porta sempre quattro trolley per un weekend.","È un 10, ma si offende se non rispondi entro dieci minuti.","È un 10, ma ride di sé stesso così tanto che non finisce mai una storia.","È un 10, ma dorme con la luce accesa e il ventilatore anche d'inverno.","È un 10, ma è convinto di essere il migliore cuoco del mondo pur sapendo fare solo la pasta in bianco.","È un 10, ma porta le sue posate ovunque perché non si fida di quelle dei ristoranti."]},
+ {name:"È UN 10 MA...",players:"3+",time:"15 min",hot:true,rules:"A turno un giocatore descrive una persona usando la formula 'È un 10, ma...' aggiungendo un difetto assurdo. Gli altri devono dire se la accetterebbero comunque, motivando la risposta.",tip:"I 'ma' più assurdi e specifici sono quelli che fanno ridere di più.",starter:["È un 10, ma canta ad alta voce in tutti i posti pubblici — metro, supermercato, ascensore.","È un 10, ma risponde sempre ai messaggi dopo tre giorni esatti.","È un 10, ma parla di sé in terza persona. Sempre.","È un 10, ma ha paura dei palloncini.","È un 10, ma ogni sera racconta per filo e per segno cosa ha sognato la notte prima.","È un 10, ma non ha mai guardato un film fino alla fine in vita sua.","È un 10, ma mastica con la bocca aperta e lo trova assolutamente normale.","È un 10, ma litiga con gli sconosciuti nei commenti online ogni sera.","È un 10, ma il suo ex lo chiama ancora ogni lunedì mattina.","È un 10, ma crede che tutte le malattie si curino con lo zenzero.","È un 10, ma non sa fare una valigia — porta sempre quattro trolley per un weekend.","È un 10, ma si offende se non rispondi entro dieci minuti.","È un 10, ma ride di sé stesso così tanto che non finisce mai una storia.","È un 10, ma dorme con la luce accesa e il ventilatore anche d'inverno.","È un 10, ma è convinto di essere il migliore cuoco del mondo pur sapendo fare solo la pasta in bianco.","È un 10, ma porta le sue posate ovunque perché non si fida di quelle dei ristoranti."]},
  {name:"MR. WHITE",players:"4+",time:"20 min",hot:true,mrwhite:true,rules:"L'app sceglie una parola segreta e la assegna a tutti tranne a Mr. White, sorteggiato casualmente. A turno ognuno passa il tablet a un giocatore che tocca il proprio pulsante per vedere la parola — o scoprire di essere Mr. White. Poi si danno indizi a turno. Il gruppo vota chi è Mr. White. Se lo beccano, Mr. White ha un'ultima chance: se indovina la parola, vince lui!",tip:"Mr. White deve ascoltare gli indizi degli altri per intuire la parola e salvarsi.",words:[
  {secret:"Spiaggia",similar:"Piscina"},
  {secret:"Pizzeria",similar:"Ristorante"},
@@ -2325,12 +2357,12 @@ var GAMES={
  {secret:"Autolavaggio",similar:"Officina"},
  {secret:"Maneggio",similar:"Fattoria"}
  ]},
- {name:"PUNTA IL DITO",players:"3+",time:"15 min",hot:true,rules:"Il moderatore legge una domanda tipo Chi e piu probabile che si perda in un supermercato. Tutti contano fino a tre e puntano il dito. Chi riceve piu dita deve rispondere a una domanda scomoda.",tip:"Le domande migliori sono quelle un po' imbarazzanti, ma mai offensive."},
+ {name:"PUNTA IL DITO",players:"3+",time:"15 min",hot:true,rules:"Il moderatore legge una domanda tipo Chi è più probabile che si perda in un supermercato. Tutti contano fino a tre e puntano il dito. Chi riceve più dita deve rispondere a una domanda scomoda.",tip:"Le domande migliori sono quelle un po' imbarazzanti, ma mai offensive."},
  {name:"TROVA LA BUGIA",players:"3+",time:"20 min",hot:true,rules:"Ogni giocatore dice tre cose su di sé: due vere e una falsa. Gli altri votano quale sia la bugia. Chi inganna più persone vince il round.",tip:"Le bugie più credibili contengono dettagli specifici e precisi."},
  {name:"HOT TAKES",players:"3+",time:"20 min",hot:true,rules:"Il moderatore lancia un'opinione. Tutti alzano la mano per sì o no, poi ognuno difende la propria posizione per 30 secondi.",tip:"Le opinioni che dividono il gruppo a metà sono le più interessanti."},
  {name:"IL SUSSURRO",players:"4+",time:"20 min",hot:true,rules:"Il moderatore sussurra una domanda scomoda a un giocatore. Il giocatore risponde ad alta voce con il nome di qualcuno del gruppo. Quella persona, se vuole scoprire qual era la domanda, deve lanciare una moneta: testa, la domanda viene rivelata; croce, rimane segreta.",tip:"La tensione cresce man mano che si accumulano risposte senza spiegazione."},
  {name:"CHI SONO IO?",players:"3+",time:"20 min",rules:"Un giocatore pensa a un personaggio famoso e lo scrive sul telefono, mostrando lo schermo a tutti tranne alla persona che deve indovinare. Quella persona fa domande con risposta sì/no per scoprire chi è.",tip:"Limitate le domande a 10 per turno per mantenere il ritmo."},
- {name:"IL TRADITORE",players:"6+",time:"30-45 min",hot:true,traditore:true,hidden:true,rules:"L'app assegna in segreto un ruolo a ogni giocatore. Un giocatore fa il Narratore e gestisce i turni di notte e giorno. Di notte tutti chiudono gli occhi e i personaggi speciali agiscono in segreto. Di giorno si discute e si vota chi eliminare. I lupi vincono se raggiungono la parita con i villici. I villici vincono se eliminano tutti i lupi.",tip:"Il narratore crea suspense e tiene il ritmo. Piu siete, piu e divertente."},
+ {name:"IL TRADITORE",players:"6+",time:"30-45 min",hot:true,traditore:true,hidden:true,rules:"L'app assegna in segreto un ruolo a ogni giocatore. Un giocatore fa il Narratore e gestisce i turni di notte e giorno. Di notte tutti chiudono gli occhi e i personaggi speciali agiscono in segreto. Di giorno si discute e si vota chi eliminare. I lupi vincono se raggiungono la parità con i villici. I villici vincono se eliminano tutti i lupi.",tip:"Il narratore crea suspense e tiene il ritmo. Più siete, più è divertente."},
  {name:"ALIBI",players:"4+",time:"20 min",rules:"Il gruppo inventa un crimine assurdo (es. qualcuno ha rubato le patatine dal tavolo). Due giocatori escono e hanno 2 minuti per costruire insieme un alibi dettagliato. Tornano e vengono interrogati separatamente con domande precise. Se le loro risposte si contraddicono, sono colpevoli!",tip:"Concordate anche i dettagli più banali: cosa avete mangiato, che scarpe indossavate, chi avete incontrato."},
  {name:"CONTARE FINO A 21",players:"4+",time:"10 min",hot:true,rules:"Il gruppo deve contare fino a 21 senza accordarsi in anticipo. Chiunque può dire il numero successivo quando vuole. Se due persone parlano contemporaneamente, si ricomincia da 1. Chi arriva a dire 21 può aggiungere o eliminare una regola del gioco.",tip:"Sembra semplice, ma diventa caotico molto in fretta."},
  {name:"SINCRONIA",players:"2+",time:"15 min",hot:true,
@@ -2346,7 +2378,7 @@ var GAMES={
  rules:"L'app estrae due lettere casuali — una per il nome e una per il cognome. Tutti devono essere i più veloci a urlare un nome e cognome che iniziano con quelle lettere. Il primo che lo dice vince il punto. Nomi inventati, personaggi famosi, chiunque va bene — l'importante è essere i primi!",
  tip:"Non pensarci troppo — la prima cosa che ti viene in mente è sempre la migliore. E no, Mario Rossi non vale se escono M e R."},
  {name:"QUINDICI",players:"2+",time:"15 min",hot:true,quindici:true,
- rules:"L'app lancia un dado. A turno ogni giocatore sceglie se aggiungere il valore al proprio punteggio oppure sottrarlo a quello di un avversario. Chi arriva a 15 per primo vince. Si può anche andare oltre — ma attenzione, gli altri possono farti scendere!",
+ rules:"L'app lancia un dado. A turno ogni giocatore sceglie se aggiungere il valore al proprio punteggio oppure sottrarlo a quello di un avversario. Vince chi arriva esattamente a 15. Se superi 15 sballi e torni a 0. E attenzione: gli altri possono farti scendere!",
  tip:"La strategia è tutto: quando sei vicino a 15 gli altri ti attaccano. A volte conviene restare bassi e far salire gli altri."},
  {name:T("codiceTitle"),players:"2+",time:"15 min",hot:true,codice:true,
  rules:"Ognuno sceglie di nascosto un codice segreto di 4 cifre (es. 3-7-1-9) e l'app lo ricorda. A turno provi a indovinare il codice di un avversario scrivendo tutte e 4 le cifre: l'app ti dice quante sono giuste al posto giusto (verde) e quante sono giuste ma al posto sbagliato (giallo). Chi per primo indovina un codice intero vince!",
@@ -2354,9 +2386,9 @@ var GAMES={
  
  ],
  coppia:[
- {name:"36 DOMANDE",players:"2",time:"45-60 min",hot:true,rules:"Le 36 domande di Arthur Aron per creare vera intimita. Tre round di intensita crescente. Si risponde a turno, ascoltando davvero.",tip:"Non correte: la pausa dopo ogni risposta e parte del gioco.",questions:Q36R},
- {name:"E UN 10 MA... (COPPIA)",players:"2",time:"10 min",hot:true,rules:"A turno si descrive l'altra persona usando la formula 'È un 10, ma...' aggiungendo un difetto affettuoso. L'altro deve rispondere se si accetterebbe così com'è.",tip:"Più il 'ma' è tenero e specifico, più vale."},
- {name:"CHI E PIU PROBABILE (COPPIA)",players:"2",time:"10 min",hot:true,rules:"A turno uno dei due fa una domanda del tipo 'Chi di noi è più probabile che si perda?'. Entrambi puntano il dito contemporaneamente e commentano la scelta.",tip:"Più siete onesti, più è divertente."},
+ {name:"36 DOMANDE",players:"2",time:"45-60 min",hot:true,rules:"Le 36 domande di Arthur Aron per creare vera intimità. Tre round di intensità crescente. Si risponde a turno, ascoltando davvero.",tip:"Non correte: la pausa dopo ogni risposta è parte del gioco.",questions:Q36R},
+ {name:"È UN 10 MA... (COPPIA)",players:"2",time:"10 min",hot:true,rules:"A turno si descrive l'altra persona usando la formula 'È un 10, ma...' aggiungendo un difetto affettuoso. L'altro deve rispondere se si accetterebbe così com'è.",tip:"Più il 'ma' è tenero e specifico, più vale."},
+ {name:"CHI È PIÙ PROBABILE? (COPPIA)",players:"2",time:"10 min",hot:true,rules:"A turno uno dei due fa una domanda del tipo 'Chi di noi è più probabile che si perda?'. Entrambi puntano il dito contemporaneamente e commentano la scelta.",tip:"Più siete onesti, più è divertente."},
  {name:"VERO O FALSO?",players:"2",time:"15 min",rules:"Uno racconta tre cose su di sé: due vere e una inventata. L'altro deve indovinare qual è la bugia.",tip:"Cercate episodi dell'infanzia: sono sempre i più sorprendenti."},
  {name:"SE FOSSI...",players:"2",time:"15 min",rules:"Un giocatore pensa a un concetto, un oggetto o una persona. L'altro fa domande del tipo 'Se fossi un piatto, saresti dolce o salato?' per indovinare a cosa sta pensando.",tip:"Le risposte rivelano molto del carattere di chi risponde."},
  {name:"MAPPA DEI SOGNI",players:"2",time:"30 min",rules:"Ognuno descrive cinque desideri per il futuro, dal più banale al più profondo. L'altro ascolta senza interrompere.",tip:"Ascoltate davvero, senza pensare già a cosa risponderete."},
@@ -2501,19 +2533,19 @@ var GAMES={
  ],
  creativi:[
  {name:"FRASE PER FRASE",players:"3+",time:"15 min",hot:true,rules:"Il gruppo costruisce una storia insieme, ma ogni giocatore può aggiungere solo esattamente tre parole per volta. Il primo inizia (es. 'C'era una volta...'), il secondo aggiunge tre parole, il terzo continua, e così via. Si va veloci senza pensarci troppo. Il risultato è sempre caotico e divertente.",tip:"Non cercate di controllare dove va la storia. Più è assurda, più è divertente."},
- {name:"PUBBLICITA ASSURDA",players:"3+",time:"20 min",pub:true,rules:"Il moderatore assegna a ogni giocatore un prodotto assurdo e inventato (es. un profumo che odora di pizza, scarpe per gatti, un corso per imparare a russare meglio). Ogni giocatore ha 2 minuti per presentare il proprio prodotto come fosse uno spot televisivo vero: nome del prodotto, slogan, a chi serve e perché comprarlo. Gli altri votano lo spot più convincente.",tip:"Più ci si crede, più è divertente. Immaginate di essere in diretta televisiva."},
+ {name:"PUBBLICITÀ ASSURDA",players:"3+",time:"20 min",pub:true,rules:"Il moderatore assegna a ogni giocatore un prodotto assurdo e inventato (es. un profumo che odora di pizza, scarpe per gatti, un corso per imparare a russare meglio). Ogni giocatore ha 2 minuti per presentare il proprio prodotto come fosse uno spot televisivo vero: nome del prodotto, slogan, a chi serve e perché comprarlo. Gli altri votano lo spot più convincente.",tip:"Più ci si crede, più è divertente. Immaginate di essere in diretta televisiva."},
  {name:"STORIA COLLETTIVA",players:"3+",time:"15 min",hot:true,rules:"Il primo giocatore dice una frase per iniziare una storia. Ogni giocatore aggiunge una frase, senza contraddire ciò che è già stato detto. La storia cresce turno dopo turno.",tip:"Un colpo di scena a testa rende la storia esplosiva."},
  {name:"CADAVERE SQUISITO",players:"3+",time:"10 min",rules:"Serve carta e penna. Il primo giocatore scrive una frase su un foglio, poi lo piega verso di sé in modo che la frase non si veda, lasciando visibile solo l'ultima parola. Il secondo legge solo quella parola, scrive la propria frase continuando da lì, piega di nuovo e passa avanti. Alla fine si apre il foglio e si legge tutto di fila ad alta voce.",tip:"Variante disegnata: invece di scrivere frasi, si disegna lasciando visibile solo l'ultimo pezzo del disegno."},
  {name:"ALIENO A TAVOLA",players:"3+",time:"15 min",rules:"Un giocatore è l'alieno appena atterrato sulla Terra e non conosce nulla. Gli altri devono spiegargli gli oggetti che lo circondano (il bicchiere, il telefono, il tavolo, le scarpe) senza mai usare il nome dell'oggetto né parole ovvie collegate. L'alieno fa domande ingenue del tipo: 'A cosa serve?', 'Come funziona?', 'Perché?'. Se qualcuno usa la parola proibita, paga un pegno.",tip:"Più l'alieno è letterale e ingenuo nelle domande, più mette in difficoltà gli altri."},
  ],
  cultura:[
- {name:"ANNO GIUSTO",players:"2+",time:"15 min",isnew:true,annogiusto:true,rules:"L app mostra un evento storico o una invenzione. I giocatori indovinano l anno il piu vicino possibile. Vince chi sbaglia meno.",tip:"Le invenzioni sono spesso molto piu antiche di quanto si pensi."},
- {name:"PRIMA O DOPO?",players:"2+",time:"15 min",rules:"L app mostra due eventi storici. I giocatori dicono quale e venuto prima.",tip:"Ottimo per scoprire connessioni inaspettate."},
+ {name:"ANNO GIUSTO",players:"2+",time:"15 min",isnew:true,annogiusto:true,rules:"L'app mostra un evento storico o una invenzione. I giocatori indovinano l'anno il più vicino possibile. Vince chi sbaglia meno.",tip:"Le invenzioni sono spesso molto più antiche di quanto si pensi."},
+ {name:"PRIMA O DOPO?",players:"2+",time:"15 min",rules:"L'app mostra due eventi storici. I giocatori dicono quale dei due è venuto prima.",tip:"Ottimo per scoprire connessioni inaspettate."},
  {name:"CHE BANDIERA È?",players:"2+",time:"20 min",isnew:true,rules:"L'app mostra la bandiera di un paese. I giocatori devono indovinare di quale nazione si tratta. Tre livelli di difficoltà.",tip:"Le bandiere più simili tra loro sono le più difficili!"},
- {name:"VERO O FALSO? SCIENTIFICO",players:"2+",time:"15 min",rules:"L app mostra fatti scientifici. I giocatori votano vero o falso.",tip:"I falsi piu convincenti sono quelli che suonano plausibili."},
- {name:"CHI L HA INVENTATO?",players:"2+",time:"20 min",rules:"L app mostra un oggetto o invenzione. Ognuno propone chi l ha inventata. Poi si rivela.",tip:"Molte invenzioni famose nascono per caso."},
- {name:"CAPITALI DEL MONDO",players:"3+",time:"15 min",rules:"L app mostra un paese. I giocatori rispondono con la capitale in meno di cinque secondi.",tip:"Iniziate con paesi semplici, poi aumentate la difficolta."},
- {name:"QUIZ DELLE CATEGORIE",players:"3+",time:"20 min",rules:"L app propone una categoria. I giocatori nominano elementi a turno. Chi non risponde in 5 secondi o ripete e eliminato.",tip:"Le categorie all apparenza semplici sono le piu difficili."},
+ {name:"VERO O FALSO? SCIENTIFICO",players:"2+",time:"15 min",rules:"L'app mostra fatti scientifici. I giocatori votano vero o falso.",tip:"I falsi più convincenti sono quelli che suonano plausibili."},
+ {name:"CHI L'HA INVENTATO?",players:"2+",time:"20 min",rules:"L'app mostra un oggetto o invenzione. Ognuno propone chi l'ha inventata. Poi si rivela.",tip:"Molte invenzioni famose nascono per caso."},
+ {name:"CAPITALI DEL MONDO",players:"3+",time:"15 min",rules:"L'app mostra un paese. I giocatori rispondono con la capitale in meno di cinque secondi.",tip:"Iniziate con paesi semplici, poi aumentate la difficoltà."},
+ {name:"QUIZ DELLE CATEGORIE",players:"3+",time:"20 min",rules:"L'app propone una categoria. I giocatori nominano elementi a turno. Chi non risponde in 5 secondi o ripete è eliminato.",tip:"Le categorie all'apparenza semplici sono le più difficili."},
  {name:"QUANTO VALE?",players:"2+",time:"20 min",hot:true,quantovale:true,
  rules:"L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?'). Ogni giocatore sposta il cursore per indicare la sua risposta. Chi è più vicino al valore reale vince il punto. Si gioca in 10 round — vince chi ne indovina di più!",
  tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."}
@@ -2686,7 +2718,7 @@ var QZ_COLORS = [
  {bg:"#E21B3C",icon:""}, // rosso triangolo
  {bg:"#1368CE",icon:""}, // blu rombo
  {bg:"#FFA602",icon:""}, // giallo cerchio
- {bg:"#26890C",icon:"■"}, // verde quadrato
+ {bg:"#26890C",icon:""}, // verde quadrato
 ];
 
 // Stato corrente Quizzone su Firebase
@@ -3403,9 +3435,9 @@ function renderViaggioCard(){
   var val=d[step.key];
   if(!val) return;
   var row=div("");row.style.cssText="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;padding:12px 14px;background:var(--surface);border-radius:12px;border:1px solid var(--border);";
-  var icon=div("");icon.style.cssText="font-size:22px;flex-shrink:0;";icon.textContent=T(step.label).split(" ")[0];row.appendChild(icon);
+  
   var right=div("");right.style.cssText="flex:1;";
-  var qlbl=div("");qlbl.style.cssText="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px;";qlbl.textContent=T(step.label).replace(/^.\s/,"");right.appendChild(qlbl);
+  var qlbl=div("");qlbl.style.cssText="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:3px;";qlbl.textContent=T(step.label).trim();right.appendChild(qlbl);
   var ans=div("");ans.style.cssText="font-size:16px;font-weight:600;color:var(--dark);";ans.textContent=val;right.appendChild(ans);
   row.appendChild(right);body.appendChild(row);
  });
@@ -3616,6 +3648,7 @@ function renderCnsEnd(){
 function render(){
  updateHdr();resetIdle();
  renderLangPill();
+ var _cp=document.getElementById("chipaga-btn");if(_cp)_cp.textContent=T("ui_chi_paga_il_conto");
  // Senza tag NFC valido si vede la schermata di blocco (tranne il pannello del gestore; una partita già iniziata si chiude normalmente)
  if(S.screen!=="analytics"&&typeof nfcGateNeeded==="function"&&nfcGateNeeded()&&(NFC_STATE.status==="checking"||["onboarding","splash","home","games"].indexOf(S.screen)>=0)){renderNfcGate();return;}
  if(S.screen==="onboarding"){
@@ -4000,6 +4033,7 @@ function showInviteBanner(inv, key){
 
  acc.onclick=function(){
   banner.remove();
+  if(typeof stopAllTimers==="function")stopAllTimers();
   // Rimuovi l'invito da Firebase
   try{fbRemove(fbRef(fbDB,"filos_invites/"+key));}catch(e){}
 
@@ -4166,10 +4200,10 @@ function showChallengeModal(){
 try{if(typeof applyAdulti==="function")applyAdulti();}catch(e){}
 (function alignGames(){
  var MAP={
-  en:{amici:{"THE TRAITOR":"IL TRADITORE","YES, NO, NOT":"SÌ, NO, NON","WHO AM I?":"CHI SONO IO?","COUNT TO 21":"CONTARE FINO A 21","SYNC":"SINCRONIA","SHE'S A 10 BUT...":"E UN 10 MA...","POINT THE FINGER":"PUNTA IL DITO","FIND THE LIE":"TROVA LA BUGIA","THE WHISPER":"IL SUSSURRO"},
+  en:{amici:{"THE TRAITOR":"IL TRADITORE","YES, NO, NOT":"SÌ, NO, NON","WHO AM I?":"CHI SONO IO?","COUNT TO 21":"CONTARE FINO A 21","SYNC":"SINCRONIA","SHE'S A 10 BUT...":"È UN 10 MA...","POINT THE FINGER":"PUNTA IL DITO","FIND THE LIE":"TROVA LA BUGIA","THE WHISPER":"IL SUSSURRO"},
       azione:{"FREEZE!":"FREEZE!","COUNT TO 21":"CONTARE FINO A 21","HUMAN KNOT":"IL NODO UMANO","THE VOICE ACTOR":"IL DOPPIATORE","DOMINO EFFECT":"EFFETTO DOMINO"},
       adulti:{"WHO'S MORE LIKELY?":"CHI È PIÙ PROBABILE?","THE WHISPER":"IL SUSSURRO","THE TRIAL":"IL PROCESSO","SPICY SCALE":"SCALA PICCANTE","EMBARRASSOMETER":"IMBARAZZOMETRO","FIRSTS AND LASTS":"PRIMI E ULTIMI"}},
-  es:{amici:{"EL TRAIDOR":"IL TRADITORE","SÍ, NO, TAMPOCO":"SÌ, NO, NON","¿QUIÉN SOY?":"CHI SONO IO?","CONTAR HASTA 21":"CONTARE FINO A 21","SINCRONÍA":"SINCRONIA","ES UN 10 PERO...":"E UN 10 MA...","SEÑALA CON EL DEDO":"PUNTA IL DITO","ENCUENTRA LA MENTIRA":"TROVA LA BUGIA","OPINIONES POLÉMICAS":"HOT TAKES","EL SUSURRO":"IL SUSSURRO","COARTADA":"ALIBI"},
+  es:{amici:{"EL TRAIDOR":"IL TRADITORE","SÍ, NO, TAMPOCO":"SÌ, NO, NON","¿QUIÉN SOY?":"CHI SONO IO?","CONTAR HASTA 21":"CONTARE FINO A 21","SINCRONÍA":"SINCRONIA","ES UN 10 PERO...":"È UN 10 MA...","SEÑALA CON EL DEDO":"PUNTA IL DITO","ENCUENTRA LA MENTIRA":"TROVA LA BUGIA","OPINIONES POLÉMICAS":"HOT TAKES","EL SUSURRO":"IL SUSSURRO","COARTADA":"ALIBI"},
       azione:{"¡FREEZE!":"FREEZE!","CONTAR HASTA 21":"CONTARE FINO A 21","EL NUDO HUMANO":"IL NODO UMANO","EL DOBLADOR":"IL DOPPIATORE","TOCA EL AZUL":"TOUCH BLUE","EFECTO DOMINÓ":"EFFETTO DOMINO"},
       adulti:{"¿QUIÉN ES MÁS PROBABLE?":"CHI È PIÙ PROBABILE?","EL SUSURRO":"IL SUSSURRO","VERDAD O BEBER":"TRUTH OR DRINK","EL JUICIO":"IL PROCESSO","CONFESIONES ANÓNIMAS":"CONFESSIONI ANONIME","ESCALA PICANTE":"SCALA PICCANTE","OPINIONES POLÉMICAS":"HOT TAKES","EMBARAZÓMETRO":"IMBARAZZOMETRO","PRIMEROS Y ÚLTIMOS":"PRIMI E ULTIMI"}}
  };
@@ -4201,6 +4235,14 @@ try{if(typeof applyAdulti==="function")applyAdulti();}catch(e){}
   }
  });
  for(var c in GAMES){(GAMES[c]||[]).forEach(function(x){if(!x._it)x._it=x.name;});}
+ // Stessi giochi in tutte le lingue: nasconde i doppioni e i giochi tradotti senza originale italiano
+ [GAMES,typeof GAMES_EN!=="undefined"?GAMES_EN:null,typeof GAMES_ES!=="undefined"?GAMES_ES:null].forEach(function(T2,ti){
+  if(!T2)return;
+  for(var c in T2){var seen={};(T2[c]||[]).forEach(function(x){
+   if(ti>0&&!x._it){x.hidden=true;return;}
+   var k=x._it||x.name;if(seen[k])x.hidden=true;seen[k]=1;
+  });}
+ });
 })();
 
 // Avvia subito il listener se il nome esiste già

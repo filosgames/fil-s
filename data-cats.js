@@ -8,16 +8,16 @@
  */
 // Dati CATS
 var CATS=[
- {id:"amici", icon:"\u25c8", name:"TRA AMICI", sub:"per gruppi e compagnie", min:3, cls:"c-amici", bg:"linear-gradient(135deg,#F97316,#EA580C)"},
- {id:"coppia", icon:"\u2661", name:"LA COPPIA", sub:"solo per voi due", min:2,max:2,cls:"c-coppia", bg:"linear-gradient(135deg,#EC4899,#DB2777)"},
- {id:"bambini", icon:"\u2726", name:"ROMPIGHIACCIO", sub:"per conoscersi", min:2, cls:"c-bambini", bg:"linear-gradient(135deg,#FF7A45,#F06030)"},
- {id:"indovinelli",icon:"\u25c9", name:"INDOVINELLI", sub:"logica e mente", min:2, cls:"c-indovinelli", bg:"linear-gradient(135deg,#7C3AED,#6D28D9)"},
- {id:"azione", icon:"\u25b2", name:"AZIONE", sub:"in piedi e divertimento", min:4, cls:"c-azione", bg:"linear-gradient(135deg,#EF4444,#DC2626)"},
- {id:"creativi", icon:"\u273f", name:"CREATIVI", sub:"fantasia e creatività", min:3, cls:"c-creativi", bg:"linear-gradient(135deg,#059669,#047857)"},
- {id:"cultura", icon:"\u2295", name:"CULTURA", sub:"cultura e curiosità", min:2, cls:"c-cultura", bg:"linear-gradient(135deg,#D97706,#B45309)"},
- {id:"adulti", icon:"\u263d", name:"18+", sub:"solo per adulti", min:2, cls:"c-adulti", bg:"linear-gradient(135deg,#DC2626,#B91C1C)"},
- {id:"relax", icon:"\ud83c\udf10", name:"A DISTANZA", sub:"gioca con chi vuoi", min:2, cls:"c-relax", bg:"linear-gradient(135deg,#1E293B,#0F172A)"},
- {id:"solitario", icon:"\u25ce", name:"SOLO", sub:"un momento per te", min:1,max:1, cls:"c-solitario", bg:"linear-gradient(135deg,#6B7280,#4B5563)"}
+ {id:"amici", icon:"", name:"TRA AMICI", sub:"per gruppi e compagnie", min:3, cls:"c-amici", bg:"linear-gradient(135deg,#F97316,#EA580C)"},
+ {id:"coppia", icon:"", name:"LA COPPIA", sub:"solo per voi due", min:2,max:2,cls:"c-coppia", bg:"linear-gradient(135deg,#EC4899,#DB2777)"},
+ {id:"bambini", icon:"", name:"ROMPIGHIACCIO", sub:"per conoscersi", min:2, cls:"c-bambini", bg:"linear-gradient(135deg,#FF7A45,#F06030)"},
+ {id:"indovinelli",icon:"", name:"INDOVINELLI", sub:"logica e mente", min:2, cls:"c-indovinelli", bg:"linear-gradient(135deg,#7C3AED,#6D28D9)"},
+ {id:"azione", icon:"", name:"AZIONE", sub:"in piedi e divertimento", min:4, cls:"c-azione", bg:"linear-gradient(135deg,#EF4444,#DC2626)"},
+ {id:"creativi", icon:"", name:"CREATIVI", sub:"fantasia e creatività", min:3, cls:"c-creativi", bg:"linear-gradient(135deg,#059669,#047857)"},
+ {id:"cultura", icon:"", name:"CULTURA", sub:"cultura e curiosità", min:2, cls:"c-cultura", bg:"linear-gradient(135deg,#D97706,#B45309)"},
+ {id:"adulti", icon:"", name:"18+", sub:"solo per adulti", min:2, cls:"c-adulti", bg:"linear-gradient(135deg,#DC2626,#B91C1C)"},
+ {id:"relax", icon:"", name:"A DISTANZA", sub:"gioca con chi vuoi", min:2, cls:"c-relax", bg:"linear-gradient(135deg,#1E293B,#0F172A)"},
+ {id:"solitario", icon:"", name:"SOLO", sub:"un momento per te", min:1,max:1, cls:"c-solitario", bg:"linear-gradient(135deg,#6B7280,#4B5563)"}
 ];
 
 
@@ -92,7 +92,7 @@ var GAMES_EN={amici:[
  {name:"THE RIGHT WORD",players:"4+",time:"20 min",hot:true,intesa:true,rules:"Play in teams of at least 2. In turn, a player describes the words to their team without saying them, without direct synonyms and without gestures. The team has 60 seconds to guess as many words as possible. The app shows words one at a time and keeps score. The team with the most points after three rounds wins.",tip:"The describer can't use words from the same family — if the word is 'Ice cream' you can't say 'cold' or 'cone'. The easiest words always hide the worst traps."},
  {name:"OBJECT HUNT",players:"2+",time:"15 min",hot:true,alfabeto:true,rules:"The app draws a random letter. Everyone has 30 seconds to find an object in the room that starts with that letter and bring it to the table. First to find and show it wins the point. First to 5 points wins.",tip:"The most absurd and creative objects score higher — if everyone finds a bottle for the letter B, whoever finds a box of biscuits wins the group's heart."},
  {name:"FIRST AND LAST NAME",players:"3+",time:"15 min",hot:true,nomecognome:true,rules:"The app draws two random letters — one for the first name and one for the last name. Everyone races to shout a full name starting with those letters. First to say it wins the point. Made-up names, famous people, anyone works — just be first!",tip:"Don't overthink it — the first thing that comes to mind is always best. And no, using the same name twice doesn't count."},
- {name:"FIFTEEN",players:"2+",time:"15 min",hot:true,quindici:true,rules:"The app rolls a die. Each player in turn chooses to add the value to their own score or subtract it from an opponent's. First to reach 15 wins. You can go higher — but watch out, others can bring you back down!",tip:"Strategy is everything: when you're close to 15 everyone attacks you. Sometimes it's better to stay low and let others climb."},
+ {name:"FIFTEEN",players:"2+",time:"15 min",hot:true,quindici:true,rules:"The app rolls a die. Each player in turn chooses to add the value to their own score or subtract it from an opponent's. Land exactly on 15 to win. Go over 15 and you bust back to 0. And watch out: the others can knock you back down!",tip:"Strategy is everything: when you're close to 15 everyone attacks you. Sometimes it's better to stay low and let others climb."},
  {name:"CRACK THE CODE",players:"2+",time:"15 min",hot:true,codice:true,rules:"Each player secretly picks a 4-digit code (e.g. 3-7-1-9) and the app remembers it. In turn, try to guess an opponent's code by entering all 4 digits: the app tells you how many are right and in the right place (green) and how many are right but in the wrong place (yellow). First to crack a whole code wins!",tip:"Use the earlier guesses, including other players' — they're all visible. If a digit gets neither green nor yellow, rule it out straight away."}
 ],coppia:[
  {name:"36 QUESTIONS",players:"2",time:"45-60 min",hot:true,rules:"The 36 questions by psychologist Arthur Aron, designed to create genuine intimacy between two people. Three rounds of increasing depth. Take turns answering, listening without interrupting.",tip:"Don't rush. The silence after each answer is part of the game.",questions:Q36R_EN},
@@ -261,7 +261,7 @@ var GAMES_ES={amici:[
  {name:"LA PALABRA CORRECTA",players:"4+",time:"20 min",hot:true,intesa:true,rules:"Se juega en equipos de al menos 2. Por turnos, un jugador describe las palabras a su equipo sin decirlas, sin sinónimos directos y sin gestos. El equipo tiene 60 segundos para adivinar el mayor número posible de palabras. La app muestra las palabras de una en una y cuenta los puntos. Gana el equipo con más puntos después de tres rondas.",tip:"El que describe no puede usar palabras de la misma familia — si la palabra es 'Helado' no puedes decir 'frío' ni 'cucurucho'. Las palabras más fáciles siempre esconden las peores trampas."},
  {name:"CAZA DEL OBJETO",players:"2+",time:"15 min",hot:true,alfabeto:true,rules:"La app saca una letra al azar. Todos tienen 30 segundos para encontrar en la sala un objeto que empiece por esa letra y traerlo a la mesa. El primero que lo encuentra y lo muestra gana el punto. ¡Primero en llegar a 5 puntos gana!",tip:"Los objetos más absurdos y creativos valen más — si todos encuentran una botella para la letra B, quien encuentre un bote de berberechos se lleva el corazón del grupo."},
  {name:"NOMBRE Y APELLIDO",players:"3+",time:"15 min",hot:true,nomecognome:true,rules:"La app saca dos letras al azar — una para el nombre y otra para el apellido. Todos compiten para gritar primero un nombre y apellido que empiecen por esas letras. ¡El primero en decirlo gana el punto!",tip:"No lo pienses demasiado — lo primero que se te ocurra es siempre lo mejor."},
- {name:"QUINCE",players:"2+",time:"15 min",hot:true,quindici:true,rules:"La app lanza un dado. Por turnos, cada jugador elige si sumar el valor a su propia puntuación o restárselo a un adversario. El primero en llegar a 15 gana. ¡Puedes pasarte, pero cuidado, los demás pueden hacerte bajar!",tip:"La estrategia lo es todo: cuando estás cerca de 15, todos te atacan. A veces conviene quedarse bajo y dejar que suban los demás."},
+ {name:"QUINCE",players:"2+",time:"15 min",hot:true,quindici:true,rules:"La app lanza un dado. Por turnos, cada jugador elige si sumar el valor a su propia puntuación o restárselo a un adversario. Gana quien llega exactamente a 15. Si te pasas de 15, vuelves a 0. ¡Y cuidado, los demás pueden hacerte bajar!",tip:"La estrategia lo es todo: cuando estás cerca de 15, todos te atacan. A veces conviene quedarse bajo y dejar que suban los demás."},
  {name:"ADIVINA EL CÓDIGO",players:"2+",time:"15 min",hot:true,codice:true,rules:"Cada uno elige en secreto un código de 4 cifras (ej. 3-7-1-9) y la app lo recuerda. Por turnos, intenta adivinar el código de un adversario escribiendo las 4 cifras: la app te dice cuántas son correctas y están en su sitio (verde) y cuántas son correctas pero fuera de sitio (amarillo). ¡El primero en descifrar un código entero gana!",tip:"Aprovecha los intentos anteriores, también los de los demás: todos están a la vista. Si una cifra no da ni verde ni amarillo, descártala enseguida."}
 ],coppia:[
  {name:"36 PREGUNTAS",players:"2",time:"45-60 min",hot:true,rules:"Las 36 preguntas del psicólogo Arthur Aron, diseñadas para crear verdadera intimidad entre dos personas. Tres rondas de profundidad creciente. Responded por turnos, escuchando de verdad.",tip:"No tengáis prisa. El silencio después de cada respuesta es parte del juego.",questions:Q36R_ES},
@@ -452,9 +452,9 @@ var CAT_SVGS={
 
 
 var Q36R=[
- {label:"ROUND I — ROMPIGHIACCIO",items:["Se potessi invitare chiunque al mondo a cena, chi sceglieresti?","Vorresti essere famoso? In che modo?","Prima di fare una telefonata ti capita di fare delle prove?","Per te cosa e una giornata perfetta?","Quando hai cantato per l ultima volta da solo?","Se potessi vivere fino a 90 anni mantenendo la mente o il corpo di un trentenne, quale sceglieresti?","Hai un presentimento su come morirai?","Nomina tre cose che tu e l altra persona sembrate avere in comune.","Per cosa sei piu grato nella vita?","Se potessi cambiare qualcosa del modo in cui sei stato cresciuto, cosa cambieresti?","Racconta la storia della tua vita in quattro minuti.","Se potessi svegliarti domani con una qualita nuova, quale vorresti?"]},
- {label:"ROUND II — IN PROFONDITÀ",items:["Se una sfera di cristallo potesse dirti la verita su qualsiasi cosa, cosa vorresti sapere?","C e qualcosa che sogni di fare da molto tempo? Perche non l hai ancora fatto?","Qual e il piu grande traguardo della tua vita?","Cosa valorizzi di piu in una amicizia?","Qual e il tuo ricordo piu prezioso?","Qual e il tuo ricordo piu doloroso?","Se sapessi che morirai tra un anno, cambieresti qualcosa?","Cosa significa l amicizia per te?","Quale ruolo giocano l amore e l affetto nella tua vita?","Di cinque cose che apprezzi dell altra persona.","Come e la tua famiglia? L infanzia e stata felice?","Come ti senti riguardo al rapporto con tua madre?"]},
- {label:"ROUND III — VULNERABILITÀ",items:["Vorrei avere qualcuno con cui condividere... completa la frase.","Se dovessi diventare amico intimo dell altra persona, cosa sarebbe importante che sapesse di te?","Di all altra persona cosa ti piace di lei. Sii onesto.","C e qualcosa che ritieni sacro che non discuteresti mai?","Se dovessi morire stasera, cosa ti dispiacerebbe non aver detto?","La casa prende fuoco. Salvate tutti: quale oggetto prendi?","Di quale persona cara ti mancherebbe di piu?","Condividi un problema personale e chiedi come l altro lo affronterebbe.","Guardate negli occhi l uno dell altro in silenzio per quattro minuti.","Nominate tre cose che avete in comune.","C e una cosa che vorreste dire all altro e non avete ancora detto?","Come vi sentite in questo momento?"]}
+ {label: "ROUND I — ROMPIGHIACCIO", "items": ["Se potessi invitare a cena chiunque al mondo, chi sceglieresti?", "Ti piacerebbe essere famoso? In che modo?", "Prima di fare una telefonata ti capita di provare quello che dirai?", "Come sarebbe per te una giornata perfetta?", "Quando hai cantato l'ultima volta da solo? E per qualcun altro?", "Se potessi vivere fino a 90 anni mantenendo per gli ultimi 60 la mente o il corpo di un trentenne, cosa sceglieresti?", "Hai un presentimento segreto su come morirai?", "Nomina tre cose che tu e l'altra persona sembrate avere in comune.", "Per cosa sei più grato nella vita?", "Se potessi cambiare qualcosa del modo in cui sei stato cresciuto, cosa cambieresti?", "Racconta la storia della tua vita in quattro minuti.", "Se domani potessi svegliarti con una qualità o un'abilità nuova, quale sceglieresti?"]},
+ {label: "ROUND II — IN PROFONDITÀ", "items": ["Se una sfera di cristallo potesse dirti la verità su di te, sulla tua vita, sul futuro o su qualsiasi altra cosa, cosa vorresti sapere?", "C'è qualcosa che sogni di fare da molto tempo? Perché non l'hai ancora fatto?", "Qual è il più grande traguardo della tua vita?", "Cosa apprezzi di più in un'amicizia?", "Qual è il tuo ricordo più prezioso?", "Qual è il tuo ricordo più doloroso?", "Se sapessi che tra un anno morirai all'improvviso, cambieresti qualcosa del modo in cui vivi adesso? Perché?", "Cosa significa l'amicizia per te?", "Che ruolo hanno l'amore e l'affetto nella tua vita?", "A turno, dite una qualità positiva dell'altra persona. Cinque a testa.", "Quanto è unita e affettuosa la tua famiglia? Pensi che la tua infanzia sia stata più felice di quella degli altri?", "Com'è il tuo rapporto con tua madre?"]},
+ {label: "ROUND III — VULNERABILITÀ", "items": ["Dite tre frasi vere che iniziano con 'noi'. Per esempio: 'Siamo tutti e due qui e ci sentiamo...'", "Completa la frase: 'Vorrei avere qualcuno con cui condividere...'", "Se dovessi diventare amico intimo dell'altra persona, cosa sarebbe importante che sapesse di te?", "Di' all'altra persona cosa ti piace di lei. Sii molto sincero: di' cose che non diresti a qualcuno appena conosciuto.", "Racconta un momento imbarazzante della tua vita.", "Quando hai pianto l'ultima volta davanti a qualcuno? E da solo?", "Di' all'altra persona una cosa che già ti piace di lei.", "Che cosa, se c'è qualcosa, è troppo serio per scherzarci sopra?", "Se dovessi morire stasera senza poter parlare con nessuno, cosa ti dispiacerebbe di più non aver detto a qualcuno? Perché non l'hai ancora fatto?", "La tua casa, con tutto quello che possiedi, prende fuoco. Dopo aver messo in salvo i tuoi cari e gli animali, hai il tempo di salvare un solo oggetto. Quale? Perché?", "Fra tutte le persone della tua famiglia, la morte di chi ti sconvolgerebbe di più? Perché?", "Condividi un problema personale e chiedi all'altra persona come lo affronterebbe. Poi chiedile di dirti come le sembra che tu ti senta riguardo a quel problema."]}
 ];
 
 var Q36R_EN=[
@@ -467,41 +467,104 @@ var Q36R_ES=[
  {label:"RONDA II — MÁS PROFUNDO",items:["Si una bola de cristal pudiera decirte la verdad sobre ti mismo, tu vida o el futuro, ¿qué querrías saber?","¿Hay algo que llevas mucho tiempo soñando con hacer? ¿Por qué no lo has hecho?","¿Cuál es el mayor logro de tu vida?","¿Qué valoras más en una amistad?","¿Cuál es tu recuerdo más preciado?","¿Cuál es tu recuerdo más terrible?","Si supieras que en un año morirías de repente, ¿cambiarías algo de tu forma de vivir actual? ¿Por qué?","¿Qué significa la amistad para ti?","¿Qué papel juegan el amor y el afecto en tu vida?","Por turnos, dile a la otra persona algo que consideras una característica positiva de ella. Cinco cada uno.","¿Qué tan unida y cálida es tu familia? ¿Sientes que tu infancia fue más feliz que la de la mayoría?","¿Cómo te sientes respecto a tu relación con tu madre?"]},
  {label:"RONDA III — VULNERABILIDAD",items:["Haz tres afirmaciones verdaderas con 'nosotros'. Por ejemplo: 'Los dos estamos aquí sintiéndonos...'","Completa esta frase: 'Ojalá tuviera a alguien con quien compartir...'","Si fueras a hacerte amigo íntimo de la otra persona, ¿qué sería importante que ella supiera de ti?","Dile a la otra persona qué es lo que te gusta de ella; sé muy honesto esta vez, diciendo cosas que quizás no le dirías a alguien que acabas de conocer.","Comparte un momento vergonzoso de tu vida.","¿Cuándo fue la última vez que lloraste delante de otra persona? ¿Solo?","Dile a la otra persona algo que ya te gusta de ella.","¿Hay algo demasiado serio como para bromear al respecto?","Si fueras a morir esta noche sin poder comunicarte con nadie, ¿qué lamentarías más no haber dicho? ¿Por qué no lo has dicho?","Tu casa, con todo lo que posees, se incendia. Después de salvar a tus seres queridos y mascotas, tienes tiempo de rescatar un objeto. ¿Cuál sería? ¿Por qué?","De todos los miembros de tu familia, ¿cuya muerte te resultaría más perturbadora? ¿Por qué?","Comparte un problema personal y pide consejo a la otra persona sobre cómo lo manejaría. Luego pídele que te refleje cómo pareces sentirte al respecto."]}
 ];
+// Indovinelli: italiano + versioni adattate (non tradotte alla lettera) in inglese e spagnolo
 var RIDDLES={
  facile:[
- {q:"È così delicato che se parli, lo rompi. Cos'è?",a:"Il silenzio.",extra:"Classico della tradizione italiana — basta pronunciare la parola 'silenzio' per distruggerlo."},
- {q:"Nasce grande e muore piccola. Cos'è?",a:"La candela.",extra:"Classico italiano: la candela nasce alta e si consuma fino a sparire."},
- {q:"Cosa è tuo ma lo usano gli altri più di te?",a:"Il tuo nome.",extra:"Celebre indovinello della tradizione italiana. Tutti chiamano il tuo nome tranne te."},
- {q:"Li puoi fare belli o brutti, ma a nessuno li puoi far vedere. Chi sono?",a:"I sogni.",extra:"Uno degli indovinelli più belli della tradizione italiana. I sogni sono privatissimi."},
- {q:"Più tu lavi e più mi sporco. Cosa sono?",a:"L'acqua.",extra:"Lavando le cose, l'acqua si sporca — più si lava, più l'acqua è sporca."},
- {q:"Chi la fa, la vende. Chi la compra non la usa. Chi la usa non lo sa. Cos'è?",a:"La bara.",extra:"Indovinello classicissimo della tradizione italiana. Chi compra la bara non la userà mai in prima persona."},
- {q:"Quando cala, aumenta. Cos'è?",a:"La nebbia.",extra:"Più la nebbia 'scende', più si addensa e aumenta — trabocchetto sul doppio senso di 'calare'."},
- {q:"Ho un letto ma non ci dormo, ho una bocca ma non parlo. Cosa sono?",a:"Il fiume.",extra:"Indovinello classico italiano: il fiume ha un letto (il fondale) e una foce (la bocca)."},
- {q:"Sono bianca quando sono sporca e nera quando sono pulita. Cosa sono?",a:"La lavagna.",extra:"Classico trabocchetto: la lavagna è pulita quando è nera, e sporca (di gesso bianco) quando è usata."},
- {q:"Va ridendo e torna piangendo. Cos'è?",a:"Il secchio del pozzo.",extra:"Indovinello popolare italiano: il secchio scende vuoto (allegro) e torna su pieno e pesante (affaticato)."}
+ {q:"È così delicato che, se lo nomini, lo rompi. Cos'è?",a:"Il silenzio.",
+  en:{q:"It's so fragile that saying its name breaks it. What is it?",a:"Silence."},
+  es:{q:"Es tan frágil que, si dices su nombre, se rompe. ¿Qué es?",a:"El silencio."}},
+ {q:"Nasce alta e muore bassa. Cos'è?",a:"La candela.",
+  en:{q:"I'm tall when I'm young and short when I'm old. What am I?",a:"A candle."},
+  es:{q:"Nace alta y muere bajita. ¿Qué es?",a:"La vela."}},
+ {q:"È tuo, ma gli altri lo usano più di te. Cos'è?",a:"Il tuo nome.",
+  en:{q:"It belongs to you, but other people use it more than you do. What is it?",a:"Your name."},
+  es:{q:"Es tuyo, pero los demás lo usan más que tú. ¿Qué es?",a:"Tu nombre."}},
+ {q:"Li puoi fare belli o brutti, ma a nessuno li puoi far vedere. Cosa sono?",a:"I sogni.",
+  en:{q:"You can make them beautiful or scary, but you can never show them to anyone. What are they?",a:"Dreams."},
+  es:{q:"Pueden ser bonitos o feos, pero no se los puedes enseñar a nadie. ¿Qué son?",a:"Los sueños."}},
+ {q:"Più lavo, più mi sporco. Cosa sono?",a:"L'acqua.",
+  en:{q:"The more I wash, the dirtier I get. What am I?",a:"Water."},
+  es:{q:"Cuanto más lavo, más me ensucio. ¿Qué soy?",a:"El agua."}},
+ {q:"Chi la fa la vende, chi la compra non la usa, chi la usa non lo sa. Cos'è?",a:"La bara.",
+  en:{q:"The person who makes it sells it. The person who buys it never uses it. The person who uses it never knows. What is it?",a:"A coffin."},
+  es:{q:"Quien la hace la vende, quien la compra no la usa y quien la usa no lo sabe. ¿Qué es?",a:"El ataúd."}},
+ {q:"Più ne togli, più diventa grande. Cos'è?",a:"La buca.",
+  en:{q:"The more you take away from it, the bigger it gets. What is it?",a:"A hole."},
+  es:{q:"Cuanto más le quitas, más grande se hace. ¿Qué es?",a:"Un agujero."}},
+ {q:"Ho un letto ma non dormo, ho una bocca ma non parlo. Cosa sono?",a:"Il fiume.",
+  en:{q:"I have a bed but never sleep, and a mouth but never speak. What am I?",a:"A river."},
+  es:{q:"Tengo lecho pero no duermo, tengo boca pero no hablo. ¿Qué soy?",a:"El río."}},
+ {q:"Sono nera quando sono pulita e bianca quando sono sporca. Cosa sono?",a:"La lavagna.",
+  en:{q:"I'm black when I'm clean and white when I'm dirty. What am I?",a:"A blackboard."},
+  es:{q:"Soy negra cuando estoy limpia y blanca cuando estoy sucia. ¿Qué soy?",a:"La pizarra."}},
+ {q:"Scende ridendo e risale piangendo. Cos'è?",a:"Il secchio del pozzo: scende vuoto e leggero, risale pieno e gocciolante.",
+  en:{q:"It goes down laughing and comes back up crying. What is it?",a:"A well bucket: it drops down empty and light, and comes back full and dripping."},
+  es:{q:"Baja riendo y sube llorando. ¿Qué es?",a:"El cubo del pozo: baja vacío y ligero, y sube lleno y goteando."}}
  ],
  media:[
- {q:"Nell'acqua nasce, nell'acqua si nutre, ma vedendo l'acqua sparisce. Cos'è?",a:"Il sale.",extra:"Indovinello classico italiano: il sale nasce dal mare, si scioglie nell'acqua e scompare."},
- {q:"Non ho piedi, non ho mani, non ho né zampe né ali, eppure mi arrampico fino al soffitto. Chi sono?",a:"Il fumo.",extra:"Indovinello della tradizione popolare italiana. Il fumo sale senza avere arti."},
- {q:"Se ne stanno in compagnia nella rossa scuderia, trenta bei cavalli bianchi e non sono mai stanchi. Chi sono?",a:"I denti.",extra:"Classicissimo indovinello in rima italiano: i denti sono i cavalli bianchi, la bocca la scuderia rossa."},
- {q:"Un uomo abita al decimo piano. Ogni sera sale con l'ascensore fino al settimo e poi fa le scale. Quando piove, sale fino al decimo. Perché?",a:"È basso di statura: arriva solo al tasto del 7. Con l'ombrello riesce a premere il 10.",extra:"Uno degli indovinelli di logica più famosi in Italia. Il trabocchetto è che si pensa a una scelta, non a una limitazione fisica."},
- {q:"Parla senza bocca, ti picchia senza mani, corre senza piedi, passa e non lo vedi. Cos'è?",a:"Il vento.",extra:"Indovinello in rima della tradizione italiana. Il vento produce suoni, sposta oggetti e non si vede."},
- {q:"Si trova una volta in un minuto, due volte in un momento, ma mai in un'ora. Cos'è?",a:"La lettera M.",extra:"Indovinello letterale: nella parola 'minuto' c'è una M, in 'momento' ce ne sono due, in 'ora' non ce n'è nessuna."},
- {q:"Vale solo se è a destra. Cos'è?",a:"Lo zero.",extra:"Lo zero vale solo se sta a destra di un altro numero. Da solo non vale nulla."},
- {q:"Sto tra l'erba vicino al fosso, non mi scotto mai ma ho il fuoco addosso. Chi sono?",a:"La lucciola.",extra:"Indovinello in rima della tradizione italiana: la lucciola brilla senza bruciarsi."},
- {q:"Quale ruota non gira quando un'auto svolta a destra?",a:"Quella di scorta.",extra:"Trabocchetto classico: la ruota di scorta è nel bagagliaio e non gira mai, qualunque cosa faccia l'auto."},
- {q:"Nasco nell'acqua ma quando la vedo sparisco. Cosa sono?",a:"Il sale.",extra:"Variante breve del classico indovinello sul sale: nasce dal mare, ma si scioglie in acqua e scompare."}
+ {q:"Nasce nell'acqua, ma quando vede l'acqua sparisce. Cos'è?",a:"Il sale.",
+  en:{q:"I'm born in water, but when I go back into water I disappear. What am I?",a:"Salt."},
+  es:{q:"Nace en el agua, pero cuando vuelve al agua desaparece. ¿Qué es?",a:"La sal."}},
+ {q:"Non ho piedi, non ho mani, non ho ali, eppure salgo fino al soffitto. Chi sono?",a:"Il fumo.",
+  en:{q:"I have no feet, no hands and no wings, yet I climb all the way to the ceiling. What am I?",a:"Smoke."},
+  es:{q:"No tengo pies, ni manos, ni alas, y aun así subo hasta el techo. ¿Qué soy?",a:"El humo."}},
+ {q:"Trenta cavalli bianchi in una stalla rossa: masticano, battono e non si stancano mai. Chi sono?",a:"I denti.",
+  en:{q:"Thirty white horses live in a red stable. They chew and they clatter and never get tired. What are they?",a:"Teeth."},
+  es:{q:"Treinta caballitos blancos viven en una cuadra roja: mastican, golpean y nunca se cansan. ¿Qué son?",a:"Los dientes."}},
+ {q:"Un uomo abita al decimo piano. Ogni sera prende l'ascensore fino al settimo e fa a piedi il resto. Solo quando piove arriva in ascensore fino al decimo. Perché?",a:"È basso: arriva solo al pulsante del 7. Quando piove ha l'ombrello e con quello preme il 10.",
+  en:{q:"A man lives on the tenth floor. Every evening he takes the lift to the seventh floor and walks the rest. Only on rainy days does he ride all the way to the tenth. Why?",a:"He's short and can only reach the button for 7. On rainy days he has an umbrella to press 10."},
+  es:{q:"Un hombre vive en el décimo piso. Cada tarde sube en ascensor hasta el séptimo y el resto lo hace a pie. Solo cuando llueve sube en ascensor hasta el décimo. ¿Por qué?",a:"Es bajito y solo llega al botón del 7. Cuando llueve lleva paraguas y con él pulsa el 10."}},
+ {q:"Parla senza bocca, spinge senza mani, corre senza piedi, passa e non lo vedi. Cos'è?",a:"Il vento.",
+  en:{q:"It speaks without a mouth, pushes without hands and runs without feet. It passes by and you never see it. What is it?",a:"The wind."},
+  es:{q:"Habla sin boca, empuja sin manos, corre sin pies; pasa y no lo ves. ¿Qué es?",a:"El viento."}},
+ {q:"C'è una volta in un minuto, due volte in un momento e mai in un'ora. Cos'è?",a:"La lettera M.",
+  en:{q:"It comes once in a minute, twice in a moment, but never in a thousand years. What is it?",a:"The letter M."},
+  es:{q:"Está una vez en un minuto, dos veces en un momento y ninguna en un siglo. ¿Qué es?",a:"La letra M."}},
+ {q:"Da solo non vale niente, ma messo a destra di un numero lo fa diventare dieci volte più grande. Cos'è?",a:"Lo zero.",
+  en:{q:"On its own it's worth nothing, but put it to the right of a number and it makes it ten times bigger. What is it?",a:"Zero."},
+  es:{q:"Solo no vale nada, pero a la derecha de un número lo hace diez veces más grande. ¿Qué es?",a:"El cero."}},
+ {q:"Vivo nell'erba vicino al fosso, non mi scotto ma ho il fuoco addosso. Chi sono?",a:"La lucciola.",
+  en:{q:"I live in the grass by the ditch. I carry a light on my back, yet I never get burned. What am I?",a:"A firefly."},
+  es:{q:"Vivo en la hierba junto a la acequia; llevo una luz encima y nunca me quemo. ¿Qué soy?",a:"La luciérnaga."}},
+ {q:"Quale ruota non gira quando un'auto svolta a destra?",a:"Quella di scorta.",
+  en:{q:"Which tyre doesn't move when a car turns right?",a:"The spare tyre."},
+  es:{q:"¿Qué rueda no gira cuando un coche gira a la derecha?",a:"La de repuesto."}},
+ {q:"Ha i denti ma non morde. Cos'è?",a:"Il pettine.",
+  en:{q:"It has teeth but never bites. What is it?",a:"A comb."},
+  es:{q:"Tiene dientes pero no muerde. ¿Qué es?",a:"El peine."}}
  ],
  difficile:[
- {q:"È più invadente di quanto pensi. Se ne mangi troppo, muori. Ogni povero ce l'ha. I ricchi non ne sentono il bisogno. Cos'è?",a:"Il nulla.",extra:"Indovinello paradossale: nessuno può mangiare 'nulla', i ricchi non hanno bisogno di nulla, ogni povero ha nulla."},
- {q:"Un padre ha 45 anni, suo figlio ne ha 50. Com'è possibile?",a:"Il padre è un prete — 'padre' è il suo titolo, non indica il genitore biologico.",extra:"Trabocchetto classico della tradizione italiana: si assume che 'padre' significhi genitore, invece è un titolo religioso."},
- {q:"In una stanza buia ci sono una candela, una lampada a olio e un camino. Hai un solo fiammifero. Cosa accendi prima?",a:"Il fiammifero.",extra:"Indovinello di logica famosissimo in Italia. La risposta ovvia sbagliata è la candela o il camino — ma prima devi accendere il fiammifero."},
- {q:"Se superi il secondo classificato in una gara, a che posto arrivi?",a:"Secondo.",extra:"Trabocchetto logico: se superi il secondo, prendi il suo posto — non il primo. Il primo è ancora davanti a te."},
- {q:"Tre medici dicono che Luca è loro fratello. Luca dice di non avere fratelli. Chi mente?",a:"Nessuno. I tre medici sono le sorelle di Luca.",extra:"Indovinello classico italiano sul pregiudizio implicito: si immagina automaticamente che i medici siano uomini."},
- {q:"Un uomo entra in un bar e chiede un bicchiere d'acqua. Il barista gli punta una pistola in faccia. L'uomo dice grazie e se ne va. Perché?",a:"L'uomo aveva il singhiozzo. Il barista lo ha spaventato per farlo passare — il bicchiere d'acqua non serviva più.",extra:"Indovinello di pensiero laterale molto diffuso in Italia nelle serate tra amici."},
- {q:"Un illusionista fa un numero straordinario. Nella sala cala il silenzio. Il numero riesce alla perfezione: ma nessuno applaude. Perché?",a:"Gli spettatori erano tutti sordi.",extra:"Indovinello di pensiero laterale: si cerca un errore nel numero, invece il problema è nel pubblico."},
- {q:"Se due sono compagnia e tre sono una folla, cosa sono quattro e cinque?",a:"Nove.",extra:"Indovinello matematico travestito da paradosso: 4+5=9. Il trabocchetto è cercare una risposta filosofica invece di fare la somma."},
- {q:"L'altro ieri Maria aveva 33 anni. L'anno prossimo ne compirà 36. Com'è possibile?",a:"Maria è nata il 31 dicembre. Oggi è il 1° gennaio: ieri (31 dicembre) ha compiuto 34 anni, l'altroieri ne aveva ancora 33. Quest'anno compirà 35, il prossimo 36.",extra:"Trabocchetto sul calendario: basta che oggi sia il 1° gennaio e che Maria sia nata il 31 dicembre per far tornare tutti i conti."},
- {q:"Dove si trovano 'ieri', 'domani' e 'dopodomani' prima di 'oggi'?",a:"Nel dizionario.",extra:"Indovinello letterale: nel dizionario le parole sono in ordine alfabetico, e D (domani, dopodomani) e I (ieri) vengono prima di O (oggi)."}
+ {q:"Più ce n'è, meno si vede. Cos'è?",a:"Il buio.",
+  en:{q:"The more of it there is, the less you see. What is it?",a:"Darkness."},
+  es:{q:"Cuanto más hay, menos se ve. ¿Qué es?",a:"La oscuridad."}},
+ {q:"Un padre ha 45 anni e suo figlio ne ha 50. Com'è possibile?",a:"Il 'padre' è un prete: è il suo titolo, non è il genitore.",
+  en:{q:"A Father is 45 and his son is 50. How is that possible?",a:"The 'Father' is a priest: it's his title, he isn't the parent."},
+  es:{q:"Un padre tiene 45 años y su hijo tiene 50. ¿Cómo es posible?",a:"El 'padre' es un cura: es su título, no es el padre de verdad."}},
+ {q:"In una stanza buia ci sono una candela, una lampada a olio e un camino. Hai un solo fiammifero. Cosa accendi per primo?",a:"Il fiammifero.",
+  en:{q:"In a dark room there's a candle, an oil lamp and a fireplace. You have one match. What do you light first?",a:"The match."},
+  es:{q:"En una habitación a oscuras hay una vela, un candil y una chimenea. Tienes una sola cerilla. ¿Qué enciendes primero?",a:"La cerilla."}},
+ {q:"In una gara superi il secondo classificato. In che posizione sei?",a:"Secondo: hai preso il suo posto, il primo è ancora davanti.",
+  en:{q:"In a race you overtake the person in second place. What position are you in now?",a:"Second: you took their place, and first is still ahead of you."},
+  es:{q:"En una carrera adelantas al que va segundo. ¿En qué posición vas?",a:"Segundo: has ocupado su puesto y el primero sigue delante."}},
+ {q:"Tre medici dicono che Luca è loro fratello. Luca dice di non avere fratelli. Chi mente?",a:"Nessuno: i tre medici sono le sorelle di Luca.",
+  en:{q:"Three doctors say that Luke is their brother. Luke says he has no brothers. Who is lying?",a:"Nobody: the three doctors are Luke's sisters."},
+  es:{q:"Tres médicos dicen que Lucas es su hermano. Lucas dice que no tiene hermanos. ¿Quién miente?",a:"Nadie: los tres médicos son las hermanas de Lucas."}},
+ {q:"Un uomo entra in un bar e chiede un bicchiere d'acqua. Il barista gli punta contro una pistola. L'uomo dice grazie e se ne va. Perché?",a:"Aveva il singhiozzo: lo spavento gliel'ha fatto passare e l'acqua non serviva più.",
+  en:{q:"A man walks into a bar and asks for a glass of water. The bartender points a gun at him. The man says thank you and leaves. Why?",a:"He had hiccups: the fright cured them, so he didn't need the water any more."},
+  es:{q:"Un hombre entra en un bar y pide un vaso de agua. El camarero le apunta con una pistola. El hombre le da las gracias y se va. ¿Por qué?",a:"Tenía hipo: el susto se lo quitó y ya no necesitaba el agua."}},
+ {q:"Un uomo spinge la sua auto fino a un albergo e capisce subito di essere in bancarotta. Perché?",a:"Sta giocando a Monopoli.",
+  en:{q:"A man pushes his car up to a hotel and immediately knows he's bankrupt. Why?",a:"He's playing Monopoly."},
+  es:{q:"Un hombre empuja su coche hasta un hotel y en ese momento sabe que está en bancarrota. ¿Por qué?",a:"Está jugando al Monopoly."}},
+ {q:"Se due sono compagnia e tre sono una folla, cosa sono quattro e cinque?",a:"Nove.",
+  en:{q:"If two's company and three's a crowd, what are four and five?",a:"Nine."},
+  es:{q:"Si dos son compañía y tres son multitud, ¿qué son cuatro y cinco?",a:"Nueve."}},
+ {q:"L'altro ieri Maria aveva 33 anni. L'anno prossimo ne compirà 36. Com'è possibile?",a:"Maria è nata il 31 dicembre e oggi è il 1° gennaio. L'altro ieri aveva 33 anni, ieri ne ha compiuti 34, quest'anno ne compirà 35 e l'anno prossimo 36.",
+  en:{q:"The day before yesterday Mary was 33. Next year she'll turn 36. How is that possible?",a:"Mary was born on 31 December and today is 1 January. The day before yesterday she was 33, yesterday she turned 34, this December she'll turn 35 and next year 36."},
+  es:{q:"Anteayer María tenía 33 años. El año que viene cumplirá 36. ¿Cómo es posible?",a:"María nació el 31 de diciembre y hoy es 1 de enero. Anteayer tenía 33, ayer cumplió 34, este diciembre cumplirá 35 y el año que viene 36."}},
+ {q:"Dove vengono 'ieri', 'domani' e 'dopodomani' prima di 'oggi'?",a:"Nel dizionario, in ordine alfabetico.",
+  en:{q:"Where does Thursday come before Wednesday?",a:"In the dictionary, in alphabetical order."},
+  es:{q:"¿Dónde va el jueves antes que el lunes?",a:"En el diccionario, por orden alfabético."}}
  ]
 };
+// Testo dell'indovinello nella lingua attiva
+function rq(r){var L=(typeof LANG!=="undefined")?LANG:"it";return (L!=="it"&&r&&r[L])?r[L]:r;}
