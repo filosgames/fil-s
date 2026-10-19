@@ -1404,7 +1404,7 @@ function renderDado(){
  var row=div("dado-player-row"+(i===S.dadoCurrentIdx?" current":"")+(S.dadoScores[name]>=S.dadoTarget?" winner":""));
  if(isBust) row.style.borderColor="var(--red)";
  var nameEl=div("dado-player-name");
- nameEl.textContent=name+(isBust?" "+T("dadoBust"):"");
+ nameEl.textContent=name+(isBust?" · "+T("dadoBust"):"");
  row.appendChild(nameEl);
  var scoreEl=div("dado-player-score"+(S.dadoScores[name]>=12?" close":"")+(S.dadoScores[name]>=S.dadoTarget?" win":""));
  scoreEl.textContent=S.dadoScores[name]+"/15";row.appendChild(scoreEl);
@@ -1420,9 +1420,9 @@ function renderDado(){
  var myScore=S.dadoScores[currentName];
  var myNew=myScore+S.dadoValue;
  var addLabel;
- if(myNew===S.dadoTarget){addLabel="+"+S.dadoValue+" "+T("dadoAddMe")+" "+myNew+"/15 "+T("dadoWinMe");}
- else if(myNew>S.dadoTarget){addLabel="+"+S.dadoValue+" "+T("dadoAddMe")+" "+myNew+" "+T("dadoBustMe");}
- else{addLabel="+"+S.dadoValue+" "+T("dadoAddMe")+" "+myNew+"/15";}
+ if(myNew===S.dadoTarget){addLabel="+"+S.dadoValue+" "+T("dadoAddMe")+" · "+T("dadoWinMe");}
+ else if(myNew>S.dadoTarget){addLabel="+"+S.dadoValue+" "+T("dadoAddMe")+" · "+T("dadoBustMe");}
+ else{addLabel="+"+S.dadoValue+" "+T("dadoAddMe")+" ("+myNew+"/15)";}
  var addBtn=btn("ebtn",addLabel,function(){dadoAction("add",null);});
  if(myNew===S.dadoTarget) addBtn.style.background="var(--green)";
  if(myNew>S.dadoTarget) addBtn.style.background="var(--red)";
@@ -1434,7 +1434,7 @@ function renderDado(){
  (function(targetName){
  var theirScore=S.dadoScores[targetName];
  var theirNew=Math.max(0,theirScore-S.dadoValue);
- var subBtn=btn("ebtn out","\u2212"+S.dadoValue+" "+T("dadoSubTo")+targetName+" "+T("dadoArrow")+" "+theirNew+"/15",function(){dadoAction("sub",targetName);});
+ var subBtn=btn("ebtn out","\u2212"+S.dadoValue+" "+T("dadoSubTo")+targetName+" ("+theirNew+"/15)",function(){dadoAction("sub",targetName);});
  actDiv.appendChild(subBtn);
  })(name);
  }
