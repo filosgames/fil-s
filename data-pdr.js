@@ -129,9 +129,13 @@ function pdrAttach(code,me){
 function pdrDetach(){if(PDR.unsub){try{PDR.unsub();}catch(e){}}PDR.unsub=null;clearTimeout(PDR.forceTimer);}
 function pdrLeave(){
  if(PDR.code&&PDR.me&&fbDB&&!PDR.closed){
-  try{fbSet(fbRef(fbDB,pdrPath("left/"+cdrKey(PDR.me))),true);}catch(e){}
+  // Lo stato si legge prima di segnare l'uscita: scrivere su Firebase aggiorna subito i dati locali
   // Se chi guida annulla la sfida mentre si aspetta, o se non resta nessuno, la stanza viene chiusa per tutti
-  try{var st=pdrState();if((st.phase==="lobby"&&st.leader===PDR.me)||st.lobby.filter(function(n){return n!==PDR.me;}).length===0){fbRemove(fbRef(fbDB,"rooms/"+PDR.code));}}catch(e){}
+  var close=false;
+  try{var st=pdrState();close=(st.phase==="lobby"&&st.leader===PDR.me)||st.lobby.filter(function(n){return n!==PDR.me;}).length===0;}catch(e){}
+  var code=PDR.code;
+  if(close){try{fbRemove(fbRef(fbDB,"rooms/"+code));}catch(e){}}
+  else{try{fbSet(fbRef(fbDB,pdrPath("left/"+cdrKey(PDR.me))),true);}catch(e){}}
  }
  pdrDetach();
  PDR.code=null;PDR.me=null;PDR.data=null;PDR.sig="";PDR.val=null;PDR.closed=false;
@@ -282,13 +286,13 @@ function pdrScreenAnswer(wrap,st){
   var b=btn("pdr-opt"+(PDR.val===c?" on":"")+(c==="S"?" same":""),pdrChoiceLabel(c),function(){
    PDR.val=c;
    [].forEach.call(opts.children,function(x){x.classList.toggle("on",x===b);});
-   if(ok)ok.disabled=PDR.busy;
+   if(ok)ok.disabled=false;
   });
   opts.appendChild(b);
  });
  wrap.appendChild(opts);
  ok=btn("codice-cta",T("pdrConfirm"),function(){if(ok.disabled||!PDR.val)return;ok.disabled=true;pdrAnswer(PDR.val);});
- ok.disabled=!PDR.val||PDR.busy;
+ ok.disabled=!PDR.val;
  wrap.appendChild(ok);
 }
 function pdrChips(wrap,st){

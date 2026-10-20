@@ -118,9 +118,13 @@ function agrAttach(code,me){
 function agrDetach(){if(AGR.unsub){try{AGR.unsub();}catch(e){}}AGR.unsub=null;clearTimeout(AGR.forceTimer);}
 function agrLeave(){
  if(AGR.code&&AGR.me&&fbDB&&!AGR.closed){
-  try{fbSet(fbRef(fbDB,agrPath("left/"+cdrKey(AGR.me))),true);}catch(e){}
+  // Lo stato si legge prima di segnare l'uscita: scrivere su Firebase aggiorna subito i dati locali
   // Se chi guida annulla la sfida mentre si aspetta, o se non resta nessuno, la stanza viene chiusa per tutti
-  try{var st=agrState();if((st.phase==="lobby"&&st.leader===AGR.me)||st.lobby.filter(function(n){return n!==AGR.me;}).length===0){fbRemove(fbRef(fbDB,"rooms/"+AGR.code));}}catch(e){}
+  var close=false;
+  try{var st=agrState();close=(st.phase==="lobby"&&st.leader===AGR.me)||st.lobby.filter(function(n){return n!==AGR.me;}).length===0;}catch(e){}
+  var code=AGR.code;
+  if(close){try{fbRemove(fbRef(fbDB,"rooms/"+code));}catch(e){}}
+  else{try{fbSet(fbRef(fbDB,agrPath("left/"+cdrKey(AGR.me))),true);}catch(e){}}
  }
  agrDetach();
  AGR.code=null;AGR.me=null;AGR.data=null;AGR.sig="";AGR.val=null;AGR.closed=false;
@@ -278,7 +282,6 @@ function agrScreenAnswer(wrap,st){
  });
  wrap.appendChild(fine);
  var ok=btn("codice-cta",T("agrConfirm"),function(){if(ok.disabled)return;ok.disabled=true;agrAnswer(AGR.val);});
- if(AGR.busy)ok.disabled=true;
  wrap.appendChild(ok);
 }
 function agrChips(wrap,st){

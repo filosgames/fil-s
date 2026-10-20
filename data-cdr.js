@@ -124,10 +124,13 @@ function cdrDetach(){if(CDR.unsub){try{CDR.unsub();}catch(e){}}CDR.unsub=null;}
 // Esce dalla stanza (segnala agli altri e smette di ascoltare)
 function cdrLeave(){
  if(CDR.code&&CDR.me&&fbDB&&!CDR.closed){
-  try{fbSet(fbRef(fbDB,cdrPath("left/"+cdrKey(CDR.me))),true);}catch(e){}
-    // Se dopo l'uscita non resta nessuno, la stanza viene cancellata
+  // Lo stato si legge prima di segnare l'uscita: scrivere su Firebase aggiorna subito i dati locali
   // Se chi guida annulla la sfida mentre si aspetta, o se non resta nessuno, la stanza viene chiusa per tutti
-  try{var st=cdrState();if((st.phase==="lobby"&&st.leader===CDR.me)||st.lobby.filter(function(n){return n!==CDR.me;}).length===0){fbRemove(fbRef(fbDB,"rooms/"+CDR.code));}}catch(e){}
+  var close=false;
+  try{var st=cdrState();close=(st.phase==="lobby"&&st.leader===CDR.me)||st.lobby.filter(function(n){return n!==CDR.me;}).length===0;}catch(e){}
+  var code=CDR.code;
+  if(close){try{fbRemove(fbRef(fbDB,"rooms/"+code));}catch(e){}}
+  else{try{fbSet(fbRef(fbDB,cdrPath("left/"+cdrKey(CDR.me))),true);}catch(e){}}
  }
  cdrDetach();
  CDR.code=null;CDR.me=null;CDR.data=null;CDR.sig="";CDR.entry=[];CDR.closed=false;
@@ -272,7 +275,7 @@ function cdrScreenSecret(wrap,st){
   cdrHeader(wrap,T("cdrRound").replace("{n}",st.round),CDR.me+T("codiceChooseSecret"),T("cdrSecretSub"));
   var ok;
   var keep=CDR.entry.slice();
-  var otp=codiceOtp(function(a){CDR.entry=a;if(ok)ok.disabled=a.length!==4||CDR.busy;});
+  var otp=codiceOtp(function(a){CDR.entry=a;if(ok)ok.disabled=a.length!==4;});
   wrap.appendChild(otp);
   if(keep.length){otp._input.value=keep.join("");CDR.entry=keep;}
   ok=btn("codice-cta",T("codiceSave"),function(){cdrSaveSecret(CDR.entry.slice());});
