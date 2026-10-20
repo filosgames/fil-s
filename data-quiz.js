@@ -4876,7 +4876,72 @@ function startQuizWithLevel(level){
  pool=pool.slice();
  for(var ii=pool.length-1;ii>0;ii--){var jj=Math.floor(Math.random()*(ii+1));var tmp=pool[ii];pool[ii]=pool[jj];pool[jj]=tmp;}
  S.quizQuestions=pool.slice(0,10);
+ S.quizOpts=null;S.quizQIdx=null;S.quizChoice={};S.quizTurn=0;
+ if(S.quizGame===FLAG_QUIZ){
+  // Bandiere: ogni bandiera ha 4 paesi tra cui scegliere (quello giusto più 3 a caso).
+  // Si ricordano per numero, così cambiando lingua i nomi si traducono
+  var all=allQ;
+  S.quizQIdx=S.quizQuestions.map(function(q){return all.indexOf(q);});
+  S.quizOpts=S.quizQIdx.map(function(qi){
+   var others=[];for(var k=0;k<all.length;k++)if(k!==qi)others.push(k);
+   for(var a=others.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1));var t=others[a];others[a]=others[b];others[b]=t;}
+   var o=[qi].concat(others.slice(0,3));
+   for(var c=o.length-1;c>0;c--){var d=Math.floor(Math.random()*(c+1));var t2=o[c];o[c]=o[d];o[d]=t2;}
+   return o;
+  });
+ }
  S.screen="quiz";render();
+}
+var FLAG_QUIZ="CHE BANDIERA \u00c8?";
+// Bandiere con la scelta: si risponde a turno (le scelte degli altri restano nascoste), poi l'app mostra chi ha indovinato e conta i punti
+function quizFlagBody(body,q){
+ var all=quizDataFor(S.quizGame).questions;
+ var qi=S.quizQIdx[S.quizIdx],opts=S.quizOpts[S.quizIdx]||[];
+ var pl=S.quizPlayers||[];
+ if(!S.quizChoice)S.quizChoice={};
+ var name=function(i){return all[i]?String(all[i].a):"";};
+ if(!S.quizRevealed){
+  var who=pl[S.quizTurn]||pl[0];
+  if(pl.length>1){
+   body.appendChild(div("quiz-turn",T("quizFlagTurn").replace("{n}",who)));
+   var done=pl.slice(0,S.quizTurn);
+   if(done.length)body.appendChild(div("quiz-turn-sub",T("quizFlagDone").replace("{n}",done.join(", "))));
+  }
+  var box=div("pdr-opts quiz-flag-opts");
+  opts.forEach(function(i){
+   box.appendChild(btn("pdr-opt fgr-opt",name(i),function(){
+    if(S.quizRevealed)return;
+    S.quizChoice[who]=i;
+    S.quizTurn++;
+    if(S.quizTurn>=pl.length){
+     S.quizRevealed=true;
+     // Punti contati una volta sola per bandiera
+     if(S.quizCountedIdx!==S.quizIdx){S.quizCountedIdx=S.quizIdx;pl.forEach(function(p){if(S.quizChoice[p]===qi)S.quizScores[p]=(S.quizScores[p]||0)+1;});}
+    }
+    renderQuiz();
+   }));
+  });
+  body.appendChild(box);
+  return;
+ }
+ var ans=div("quiz-answer correct");ans.textContent=name(qi);body.appendChild(ans);
+ if(all[qi]&&all[qi].extra)body.appendChild(div("quiz-answer-sub",all[qi].extra));
+ var list=div("agr-list quiz-flag-res");
+ pl.forEach(function(p){
+  var c=S.quizChoice[p],ok=c===qi;
+  var r=div("agr-row"+(ok?" win":""));
+  r.appendChild(div("agr-row-n",pl.length>1?p:(ok?T("quizFlagRight"):T("quizFlagWrong"))));
+  r.appendChild(div("agr-row-v",(c!==undefined?name(c):"")+(ok?"  ✓":"  ✗")));
+  list.appendChild(r);
+ });
+ body.appendChild(list);
+ var nav=div("quiz-nav");body.appendChild(nav);
+ var last=S.quizIdx+1>=S.quizQuestions.length;
+ var nb=btn("ebtn",last?T("ui_risultati_finali"):T("qvNextQuestion"),function(){
+  S.quizChoice={};S.quizTurn=0;S.quizIdx++;S.quizRevealed=false;render();
+ });
+ nb.style.cssText="flex:1;";
+ nav.appendChild(nb);
 }
 
 function renderQuizLevel(){
@@ -4968,6 +5033,7 @@ function renderQuiz(){
  btns.appendChild(btn("ebtn out",T("exitBtn"),goHome));
  document.getElementById("root").appendChild(wrap);return;
  }
+ if(S.quizOpts&&S.quizQIdx&&S.quizGame===FLAG_QUIZ){var _all=quizDataFor(S.quizGame).questions;S.quizQuestions=S.quizQIdx.map(function(i){return _all[i];});}
  var q=S.quizQuestions[S.quizIdx];
  var wrap=div("quiz-wrap");
  var hdr=div("quiz-header");wrap.appendChild(hdr);
@@ -4988,6 +5054,7 @@ function renderQuiz(){
  if(q.q.indexOf("<img")>=0||q.q.indexOf("data:image")>=0||q.q.indexOf("flagcdn")>=0){qqEl.innerHTML=q.q;}else{qqEl.textContent=q.q;}
  chdr.appendChild(qqEl);chdr.appendChild(div("quiz-hint",qdata.hint));
  var body=div("quiz-body");card.appendChild(body);
+ if(S.quizOpts&&S.quizQIdx&&S.quizGame===FLAG_QUIZ){quizFlagBody(body,q);document.getElementById("root").appendChild(wrap);return;}
  if(!S.quizRevealed){
  body.appendChild(btn("quiz-reveal-btn",T("quizReveal"),function(){S.quizRevealed=true;renderQuiz();}));
  } else {

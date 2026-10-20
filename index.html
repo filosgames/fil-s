@@ -788,6 +788,11 @@ button:disabled{opacity:0.35!important;transform:none;}
 .fgr-flag img{display:block;height:170px;width:auto;max-width:100%;border-radius:8px;box-shadow:0 0 0 1px rgba(0,0,0,0.08),0 6px 20px rgba(0,0,0,0.08);}
 .fgr-opt{font-size:17px;}
 .fgr-key{font-size:30px;}
+.quiz-card-hdr.light .quiz-q img{width:auto!important;max-width:100%;height:150px!important;margin:6px auto 4px!important;border-radius:6px;box-shadow:0 0 0 1px rgba(0,0,0,0.08);}
+.quiz-turn{font-size:17px;font-weight:700;color:var(--dark);text-align:center;margin:2px 0 4px;}
+.quiz-turn-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:12px;}
+.quiz-flag-opts{margin:6px auto 4px;}
+.quiz-flag-res{margin-top:14px;}
 .agr-score-v{font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;}
 
 #cdr-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);background:rgba(28,28,30,0.92);color:#fff;font-size:15px;font-weight:600;padding:11px 18px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;}
@@ -1129,7 +1134,7 @@ try {
 <script src="data-cats.js?v=13"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=42"></script>
+<script src="data-quiz.js?v=43"></script>
 <script src="data-cdr.js?v=5"></script>
 <script src="data-agr.js?v=2"></script>
 <script src="data-pdr.js?v=2"></script>
@@ -1695,7 +1700,7 @@ Object.assign(STRINGS.it,{
  ui_accetta:"Accetta",
  ui_stanza_non_trovata_o_scaduta:" Stanza non trovata o scaduta.",
  ui_rifiuta:"Rifiuta",
- ui_sfida_un_altro_tavolo:"Sfida un altro tavolo",ui_oppure_qv:"oppure",
+ ui_sfida_un_altro_tavolo:"Sfida un altro tavolo",quizFlagTurn:"Tocca a {n}",quizFlagDone:"Hanno già risposto: {n}",quizFlagRight:"Giusto!",quizFlagWrong:"Sbagliato",ui_oppure_qv:"oppure",
  ui_scegli_un_gioco_gli_altri:"Scegli un gioco — gli altri riceveranno la notifica.",
  ui_con_gli_amici:"Con gli amici",
  ui_in_coppia:"In coppia",
@@ -2030,7 +2035,7 @@ Object.assign(STRINGS.en,{
  ui_accetta:"Accept",
  ui_stanza_non_trovata_o_scaduta:" Room not found or expired.",
  ui_rifiuta:"Decline",
- ui_sfida_un_altro_tavolo:"Challenge another table",ui_oppure_qv:"or",
+ ui_sfida_un_altro_tavolo:"Challenge another table",quizFlagTurn:"{n}'s turn",quizFlagDone:"Already answered: {n}",quizFlagRight:"Right!",quizFlagWrong:"Wrong",ui_oppure_qv:"or",
  ui_scegli_un_gioco_gli_altri:"Pick a game — the others will get a notification.",
  ui_con_gli_amici:"With friends",
  ui_in_coppia:"As a couple",
@@ -2365,7 +2370,7 @@ Object.assign(STRINGS.es,{
  ui_accetta:"Aceptar",
  ui_stanza_non_trovata_o_scaduta:" Sala no encontrada o caducada.",
  ui_rifiuta:"Rechazar",
- ui_sfida_un_altro_tavolo:"Desafía a otra mesa",ui_oppure_qv:"o",
+ ui_sfida_un_altro_tavolo:"Desafía a otra mesa",quizFlagTurn:"Le toca a {n}",quizFlagDone:"Ya han respondido: {n}",quizFlagRight:"¡Correcto!",quizFlagWrong:"Incorrecto",ui_oppure_qv:"o",
  ui_scegli_un_gioco_gli_altri:"Elige un juego — los demás recibirán la notificación.",
  ui_con_gli_amici:"Con amigos",
  ui_in_coppia:"En pareja",
