@@ -716,6 +716,8 @@ button:disabled{opacity:0.35!important;transform:none;}
 .quiz-card-hdr.light .quiz-hint{color:var(--muted)!important;}
 .quiz-card-hdr.light .card-nav-btn{background:rgba(120,120,128,0.12)!important;color:var(--dark)!important;}
 .quiz-card-hdr.light .quiz-q img{box-shadow:0 0 0 1px var(--border);border-radius:6px;}
+#logoEl{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+#logoEl:active{opacity:0.6;}
 </style>
 
 <!-- Firebase SDK (bundled) -->
@@ -3772,6 +3774,11 @@ else if(S.screen==="specchio")renderSpecchio();
 }
 
 document.getElementById("logoEl").addEventListener("click",function(){
+ // Tocco sul logo: torna alla schermata principale (5 tocchi rapidi aprono ancora l'area del gestore)
+ if(["home","onboarding","splash","analytics"].indexOf(S.screen)<0&&typeof goHome==="function"){
+  var _ov=document.getElementById("chipaga-overlay");if(_ov&&_ov.classList.contains("active"))return;
+  goHome();window.scrollTo(0,0);
+ }
  logoTaps++;clearTimeout(logoTimer);
  if(logoTaps>=5){logoTaps=0;S.screen="analytics";S.pinOK=false;S.pinInput="";render();return;}
  logoTimer=setTimeout(function(){logoTaps=0;},400);
