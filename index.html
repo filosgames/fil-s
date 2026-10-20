@@ -1087,8 +1087,8 @@ try {
 <script src="data-cats.js?v=10"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=37"></script>
-<script src="data-cdr.js?v=2"></script>
+<script src="data-quiz.js?v=38"></script>
+<script src="data-cdr.js?v=3"></script>
 <script>
 
 
@@ -4145,6 +4145,14 @@ function showInviteBanner(inv, key){
   }
   // Caso speciale: invito QV con roomCode → join automatico
   if(inv.roomCode && inv.game === "Quanto Vale?"){
+   if(typeof qvrJoin==="function"){
+    qvrJoin(inv.roomCode,function(ok,msg){
+     S.cat="relax";S.game=null;
+     if(!ok){S.qvMode='locale';S.screen="games";render();cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
+     S.qvMode='distanza';S.screen='qv_setup';render();
+    });
+    return;
+   }
    var nick = S.qvMyName || FILOS_NAME || "Anonimo";
    S.qvMyName = nick;
    fbJoinRoom(inv.roomCode, function(ok, err){
