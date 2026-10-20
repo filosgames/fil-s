@@ -4952,6 +4952,8 @@ function renderQuiz(){
  _pl.forEach(function(p){var c=div("qv-score-chip"+((S.quizScores[p]||0)===_mx&&_mx>0?" leader":""));c.textContent=p+": "+(S.quizScores[p]||0);sb.appendChild(c);});
  var card=div("quiz-card");wrap.appendChild(card);
  var chdr=div("quiz-card-hdr");chdr.style.background=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:qdata.bg;card.appendChild(chdr);
+ // Bandiere: sfondo bianco, così i colori delle bandiere si vedono bene
+ if(S.quizGame==="CHE BANDIERA \u00c8?"){chdr.style.background="#fff";chdr.classList.add("light");}
  var qnav=div("dhdr-top");chdr.appendChild(qnav);
  qnav.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  qnav.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
