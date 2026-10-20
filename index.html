@@ -1129,7 +1129,7 @@ try {
 <script src="data-cats.js?v=13"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=41"></script>
+<script src="data-quiz.js?v=42"></script>
 <script src="data-cdr.js?v=5"></script>
 <script src="data-agr.js?v=2"></script>
 <script src="data-pdr.js?v=2"></script>
@@ -1251,7 +1251,9 @@ function fbHandleRemoteScreen(data) {
  S.qvPhase = 'answer';
  S.qvAnswers = {};
  S.qvCurrentPlayerIdx = 0;
- S.qvQuestions = data.questions || S.qvQuestions;
+ // Le domande arrivano per numero: ognuno le legge nella propria lingua
+ if (data.qi && data.qi.length && typeof qvSetQuestions === 'function') qvSetQuestions(data.qi);
+ else S.qvQuestions = data.questions || S.qvQuestions;
  S.qvTotalRounds = data.totalRounds || 10;
  S.qvPlayers = data.players || S.qvPlayers;
  S.qvScores = data.scores || S.qvScores;
@@ -1693,7 +1695,7 @@ Object.assign(STRINGS.it,{
  ui_accetta:"Accetta",
  ui_stanza_non_trovata_o_scaduta:" Stanza non trovata o scaduta.",
  ui_rifiuta:"Rifiuta",
- ui_sfida_un_altro_tavolo:"Sfida un altro tavolo",
+ ui_sfida_un_altro_tavolo:"Sfida un altro tavolo",ui_oppure_qv:"oppure",
  ui_scegli_un_gioco_gli_altri:"Scegli un gioco — gli altri riceveranno la notifica.",
  ui_con_gli_amici:"Con gli amici",
  ui_in_coppia:"In coppia",
@@ -2028,7 +2030,7 @@ Object.assign(STRINGS.en,{
  ui_accetta:"Accept",
  ui_stanza_non_trovata_o_scaduta:" Room not found or expired.",
  ui_rifiuta:"Decline",
- ui_sfida_un_altro_tavolo:"Challenge another table",
+ ui_sfida_un_altro_tavolo:"Challenge another table",ui_oppure_qv:"or",
  ui_scegli_un_gioco_gli_altri:"Pick a game — the others will get a notification.",
  ui_con_gli_amici:"With friends",
  ui_in_coppia:"As a couple",
@@ -2363,7 +2365,7 @@ Object.assign(STRINGS.es,{
  ui_accetta:"Aceptar",
  ui_stanza_non_trovata_o_scaduta:" Sala no encontrada o caducada.",
  ui_rifiuta:"Rechazar",
- ui_sfida_un_altro_tavolo:"Desafía a otra mesa",
+ ui_sfida_un_altro_tavolo:"Desafía a otra mesa",ui_oppure_qv:"o",
  ui_scegli_un_gioco_gli_altri:"Elige un juego — los demás recibirán la notificación.",
  ui_con_gli_amici:"Con amigos",
  ui_in_coppia:"En pareja",

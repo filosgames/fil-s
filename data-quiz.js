@@ -1739,20 +1739,28 @@ function qvScoreRound(q,players){
  S.qvRoundWinner=w;
  return w;
 }
+// Le domande si ricordano per numero: l'elenco ha lo stesso ordine in tutte le lingue,
+// così ognuno (anche a distanza, o cambiando lingua) le legge nella propria lingua
+function qvPickIdx(n){
+ var tot=(typeof QUANTO_VALE_DATA!=="undefined")?QUANTO_VALE_DATA.length:qvData().length;
+ var idx=[];for(var i=0;i<tot;i++)idx.push(i);
+ for(var k=idx.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=idx[k];idx[k]=idx[j];idx[j]=t;}
+ return idx.slice(0,n);
+}
+function qvSetQuestions(idx){
+ var L=qvData();
+ S.qvQIdx=idx.slice();
+ S.qvQuestions=idx.map(function(i){return L[i]||(typeof QUANTO_VALE_DATA!=="undefined"?QUANTO_VALE_DATA[i]:null);}).filter(Boolean);
+}
+function qvRefreshLang(){if(S.qvQIdx&&S.qvQIdx.length)qvSetQuestions(S.qvQIdx);}
 function startQuantoVale(players){
  S.qvPlayers=players;
  S.qvScores={};
  players.forEach(function(p){S.qvScores[p]=0;});
  S.qvRound=0;S.qvScoredRound=-1;S.qvRoundWinner=null;
  S.qvTotalRounds=10;
- // Shuffle questions
- var _qvData=qvData();
- S.qvQuestions=_qvData.slice();
- for(var i=S.qvQuestions.length-1;i>0;i--){
- var j=Math.floor(Math.random()*(i+1));
- var t=S.qvQuestions[i];S.qvQuestions[i]=S.qvQuestions[j];S.qvQuestions[j]=t;
- }
- S.qvQuestions=S.qvQuestions.slice(0,S.qvTotalRounds);
+ // Domande a caso (per numero)
+ qvSetQuestions(qvPickIdx(S.qvTotalRounds));
  S.qvAnswers={};
  S.qvCurrentPlayerIdx=0;
  S.qvPhase="answer"; // answer -> reveal -> scores
@@ -1762,10 +1770,9 @@ function startQuantoVale(players){
 }
 
 function startQuantoValeDistanza(playerNames){
- // Shuffle and select questions
- var qs=qvData().slice();
- for(var i=qs.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=qs[i];qs[i]=qs[j];qs[j]=t;}
- qs=qs.slice(0,10);
+ var qi=qvPickIdx(10);
+ qvSetQuestions(qi);
+ var qs=S.qvQuestions;
  var scores={};
  playerNames.forEach(function(p){scores[p]=0;});
  S.qvPlayers=playerNames;
@@ -1786,6 +1793,7 @@ function startQuantoValeDistanza(playerNames){
  totalRounds:10,
  players:playerNames,
  scores:scores,
+ qi:qi,
  questions:qs
  });
  }
@@ -3482,12 +3490,12 @@ function renderQvSetup(){
   if(fbDB){
    var sfidaSep=document.createElement("div");
    sfidaSep.style.cssText="display:flex;align-items:center;gap:10px;margin:20px 0 16px;";
-   sfidaSep.innerHTML='<div style="flex:1;height:1px;background:#eee;"></div><span style="font-size:12px;color:#ccc;font-weight:600;white-space:nowrap;">oppure</span><div style="flex:1;height:1px;background:#eee;"></div>';
+   sfidaSep.innerHTML='<div style="flex:1;height:1px;background:#eee;"></div><span style="font-size:12px;color:#ccc;font-weight:600;white-space:nowrap;">'+T("ui_oppure_qv")+'</span><div style="flex:1;height:1px;background:#eee;"></div>';
    body.appendChild(sfidaSep);
 
    var sfidaBtn=document.createElement("button");
    sfidaBtn.style.cssText="width:100%;padding:14px;background:#fff;color:#555;border:1.5px solid #e0e0e0;border-radius:14px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;";
-   sfidaBtn.innerHTML='<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2a8 8 0 1 1 0 16A8 8 0 0 1 10 2z" stroke="#aaa" stroke-width="1.8"/><path d="M6 10h8M10 6v8" stroke="#aaa" stroke-width="1.8" stroke-linecap="round"/></svg><span>Sfida un altro tavolo</span>';
+   sfidaBtn.innerHTML='<svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2a8 8 0 1 1 0 16A8 8 0 0 1 10 2z" stroke="#aaa" stroke-width="1.8"/><path d="M6 10h8M10 6v8" stroke="#aaa" stroke-width="1.8" stroke-linecap="round"/></svg><span></span>';sfidaBtn.querySelector("span").textContent=T("ui_sfida_un_altro_tavolo");
 
    var sfidaHint=document.createElement("div");
    sfidaHint.style.cssText="font-size:12px;color:#c0c0c0;text-align:center;margin-top:8px;margin-bottom:4px;";
@@ -3829,6 +3837,7 @@ function renderChiPaga(){
 function renderQuantoVale(){
  clr();
  addBackArrow(function(){fbLeaveRoom();goBackToGames();});
+ qvRefreshLang();
  var wrap=div("qv-wrap");
  var q=S.qvQuestions[S.qvRound];
  var players=S.qvPlayers;
@@ -4158,6 +4167,7 @@ function renderQuantoVale(){
  totalRounds:S.qvTotalRounds,
  players:S.qvPlayers,
  scores:S.qvScores,
+ qi:S.qvQIdx||null,
  questions:S.qvQuestions
  });
  // Also clear previous answers on Firebase
