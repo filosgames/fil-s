@@ -735,6 +735,8 @@ button:disabled{opacity:0.35!important;transform:none;}
 .cdr-sep-line{flex:1;height:1px;background:var(--border);}
 .cdr-sep-txt{font-size:13px;color:var(--muted);}
 .cdr-err{color:#ff3b30;font-size:14px;min-height:20px;margin-top:10px;}
+.cdr-link{display:block;margin:14px auto 0;padding:10px 16px;background:transparent;border:none;font-family:inherit;font-weight:600;font-size:14px;color:#007aff;cursor:pointer;}
+.cdr-link.muted{color:#8e8e93;margin-top:4px;}
 .cdr-last{background:var(--surface2);border-radius:18px;padding:14px 14px 10px;margin:0 auto 18px;max-width:420px;}
 .cdr-last-pass{font-size:14px;color:var(--muted);padding:12px;}
 .cdr-last-t{font-size:14px;color:var(--muted);margin-bottom:6px;}
@@ -1082,11 +1084,11 @@ try {
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
 <script src="data-sp.js?v=5"></script>
-<script src="data-cats.js?v=9"></script>
+<script src="data-cats.js?v=10"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
 <script src="data-quiz.js?v=37"></script>
-<script src="data-cdr.js?v=1"></script>
+<script src="data-cdr.js?v=2"></script>
 <script>
 
 
@@ -2666,7 +2668,7 @@ var GAMES={
  ],
  relax:[
  {name:"INDOVINA IL CODICE",players:"2-6",time:"10-20 min",isnew:true,codiceremote:true,
- rules:"Ognuno gioca dal proprio telefono, anche da tavoli o città diverse. Uno crea la partita e condivide il codice di 4 cifre, gli altri entrano con quel codice. Ognuno sceglie un codice segreto di 4 cifre. A turno si prova a indovinare il codice di un avversario: verde = cifra giusta al posto giusto, giallo = cifra giusta al posto sbagliato. Vince chi indovina per primo un codice.",
+ rules:"Ognuno gioca dal proprio telefono, anche da tavoli o città diverse. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. Ognuno sceglie un codice segreto di 4 cifre. A turno si prova a indovinare il codice di un avversario: verde = cifra giusta al posto giusto, giallo = cifra giusta al posto sbagliato. Vince chi indovina per primo un codice.",
  tip:"Guardate anche i tentativi degli altri: ogni risposta è un indizio per tutti."},
  {name:"QUANTO VALE?",players:"2+",time:"20 min",hot:true,quantovale:true,
  rules:"L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?'). Ogni giocatore sposta il cursore per indicare la sua risposta. Chi è più vicino al valore reale vince il punto. Si gioca in 10 round — vince chi ne indovina di più!",
@@ -4069,6 +4071,13 @@ document.getElementById("logoEl").addEventListener("click",function(){
 // ══════════════════════════════════════════════════════════
 
 var inviteUnsubscribe = null;
+// Identificativo del dispositivo: serve a non ricevere i propri inviti anche se due telefoni hanno lo stesso nome
+function filosDevId(){
+ if(window._filosDev)return window._filosDev;
+ var id=null;try{id=localStorage.getItem('filos_dev');}catch(e){}
+ if(!id){id='d'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem('filos_dev',id);}catch(e){}}
+ window._filosDev=id;return id;
+}
 
 // Avvia il listener inviti (chiamato dopo che l'utente ha inserito il nome)
 function startInviteListener(){
@@ -4082,7 +4091,8 @@ function startInviteListener(){
   var keys = Object.keys(data);
   for(var i=0;i<keys.length;i++){
    var inv = data[keys[i]];
-   if(!inv || inv.from === FILOS_NAME) continue;
+   if(!inv) continue;
+   if(inv.dev ? inv.dev === filosDevId() : inv.from === FILOS_NAME) continue;
    // Non ancora scaduto (max 30 sec)
    if(Date.now() - inv.ts > 30000) continue;
    // Filtro codice pub: l'invito deve essere per il nostro pub (o senza filtro)
@@ -4128,7 +4138,7 @@ function showInviteBanner(inv, key){
   if(inv.roomCode && inv.kind === "codice" && typeof cdrJoin==="function"){
    cdrJoin(inv.roomCode,function(ok,msg){
     S.cat="relax";S.game=null;
-    if(!ok){alert(msg||T("ui_stanza_non_trovata_o_scaduta"));S.screen="games";render();return;}
+    if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
     S.screen="cdr";render();
    });
    return;
@@ -4179,6 +4189,7 @@ function sendChallenge(gameName, catId){
   from: FILOS_NAME || "Anonimo",
   game: gameName,
   cat: catId || null,
+  dev: filosDevId(),
   pubCode: FILOS_PUB_CODE || null,
   ts: Date.now()
  };
@@ -4207,6 +4218,7 @@ function sendQvChallenge(onRoomReady){
    game: "Quanto Vale?",
    cat: "quantovale",
    roomCode: code,
+   dev: filosDevId(),
    pubCode: FILOS_PUB_CODE || null,
    ts: Date.now()
   };
