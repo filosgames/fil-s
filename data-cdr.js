@@ -126,7 +126,8 @@ function cdrLeave(){
  if(CDR.code&&CDR.me&&fbDB&&!CDR.closed){
   try{fbSet(fbRef(fbDB,cdrPath("left/"+cdrKey(CDR.me))),true);}catch(e){}
     // Se dopo l'uscita non resta nessuno, la stanza viene cancellata
-  try{var st=cdrState();if(st.lobby.filter(function(n){return n!==CDR.me;}).length===0){fbRemove(fbRef(fbDB,"rooms/"+CDR.code));}}catch(e){}
+  // Se chi guida annulla la sfida mentre si aspetta, o se non resta nessuno, la stanza viene chiusa per tutti
+  try{var st=cdrState();if((st.phase==="lobby"&&st.leader===CDR.me)||st.lobby.filter(function(n){return n!==CDR.me;}).length===0){fbRemove(fbRef(fbDB,"rooms/"+CDR.code));}}catch(e){}
  }
  cdrDetach();
  CDR.code=null;CDR.me=null;CDR.data=null;CDR.sig="";CDR.entry=[];CDR.closed=false;

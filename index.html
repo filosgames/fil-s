@@ -748,6 +748,37 @@ button:disabled{opacity:0.35!important;transform:none;}
 .cdr-mine-l{font-size:13px;color:var(--muted);}
 .cdr-mine-v{font-size:18px;font-weight:700;letter-spacing:3px;color:var(--dark);font-variant-numeric:tabular-nums;}
 .cdr-skip{margin-top:16px;}
+.agr-round{font-size:13px;font-weight:600;color:var(--muted);letter-spacing:.3px;margin:4px 0 10px;}
+.agr-q{font-size:21px;font-weight:700;line-height:1.3;color:var(--dark);max-width:420px;margin:0 auto 18px;}
+.agr-year{font-size:56px;font-weight:800;color:var(--dark);font-variant-numeric:tabular-nums;line-height:1.1;margin:6px 0 10px;}
+.agr-slider{width:100%;max-width:420px;accent-color:var(--dark);height:28px;margin:0 auto;display:block;}
+.agr-range{display:flex;justify-content:space-between;max-width:420px;margin:2px auto 14px;font-size:12px;color:var(--muted);}
+.agr-fine{display:flex;gap:8px;max-width:420px;margin:0 auto 20px;}
+.agr-step{flex:1;min-height:46px;border:none;border-radius:14px;background:rgba(120,120,128,0.12);font-family:inherit;font-size:17px;font-weight:600;color:var(--dark);cursor:pointer;}
+.agr-step:active{background:rgba(120,120,128,0.24);}
+.agr-sent{background:var(--surface2);border-radius:18px;padding:18px;max-width:420px;margin:0 auto 14px;}
+.agr-sent-t{font-size:18px;font-weight:700;color:#34c759;}
+.agr-sent-v{font-size:15px;color:var(--dark);margin-top:6px;}
+.agr-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:420px;margin:12px auto 18px;}
+.agr-chip{font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;background:rgba(120,120,128,0.12);color:var(--muted);}
+.agr-chip.on{background:var(--dark);color:#fff;}
+.agr-force{margin-top:6px;}
+.agr-answer{background:var(--surface2);border-radius:18px;padding:16px;max-width:420px;margin:0 auto 16px;}
+.agr-answer-l{font-size:13px;color:var(--muted);}
+.agr-answer-v{font-size:40px;font-weight:800;color:#34c759;font-variant-numeric:tabular-nums;}
+.agr-answer-c{font-size:14px;color:var(--muted);line-height:1.45;margin-top:8px;}
+.agr-list{display:flex;flex-direction:column;gap:6px;max-width:420px;margin:0 auto 10px;text-align:left;}
+.agr-row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface2);border-radius:14px;padding:12px 14px;}
+.agr-row.win{background:var(--dark);}
+.agr-row.win .agr-row-n,.agr-row.win .agr-row-v{color:#fff;}
+.agr-row-n{font-weight:600;color:var(--dark);font-size:16px;}
+.agr-row-v{font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.agr-point{font-size:15px;font-weight:600;color:var(--dark);margin:6px 0 18px;}
+.agr-scores{display:flex;flex-direction:column;gap:4px;max-width:420px;margin:0 auto 20px;}
+.agr-score{display:flex;justify-content:space-between;font-size:15px;padding:6px 4px;border-bottom:1px solid var(--border);}
+.agr-score-n{color:var(--dark);}
+.agr-score-v{font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;}
+
 #cdr-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);background:rgba(28,28,30,0.92);color:#fff;font-size:15px;font-weight:600;padding:11px 18px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;}
 #cdr-toast.on{opacity:1;transform:translate(-50%,0);}
 </style>
@@ -1084,11 +1115,12 @@ try {
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
 <script src="data-sp.js?v=5"></script>
-<script src="data-cats.js?v=10"></script>
+<script src="data-cats.js?v=11"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=38"></script>
-<script src="data-cdr.js?v=3"></script>
+<script src="data-quiz.js?v=39"></script>
+<script src="data-cdr.js?v=4"></script>
+<script src="data-agr.js?v=1"></script>
 <script>
 
 
@@ -2670,6 +2702,9 @@ var GAMES={
  {name:"INDOVINA IL CODICE",players:"2-6",time:"10-20 min",isnew:true,codiceremote:true,
  rules:"Ognuno gioca dal proprio telefono, anche da tavoli o città diverse. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. Ognuno sceglie un codice segreto di 4 cifre. A turno si prova a indovinare il codice di un avversario: verde = cifra giusta al posto giusto, giallo = cifra giusta al posto sbagliato. Vince chi indovina per primo un codice.",
  tip:"Guardate anche i tentativi degli altri: ogni risposta è un indizio per tutti."},
+ {name:"ANNO GIUSTO",players:"2-8",time:"15 min",isnew:true,annoremote:true,
+ rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. L'app mostra un evento storico o un'invenzione e ognuno sceglie l'anno con il cursore. Chi si avvicina di più all'anno giusto prende un punto. Dieci domande: vince chi fa più punti.",
+ tip:"Le invenzioni sono spesso molto più antiche di quanto si pensi."},
  {name:"QUANTO VALE?",players:"2+",time:"20 min",hot:true,quantovale:true,
  rules:"L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?'). Ogni giocatore sposta il cursore per indicare la sua risposta. Chi è più vicino al valore reale vince il punto. Si gioca in 10 round — vince chi ne indovina di più!",
  tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."}
@@ -3772,6 +3807,7 @@ else if(S.screen==="specchio")renderSpecchio();
  else if(S.screen==="quantovale")renderQuantoVale();
  else if(S.screen==="qv_end")renderQvEnd();
  else if(S.screen==="ag_setup")renderAgSetup();
+ else if(S.screen==="agr")renderAgRemote();
  else if(S.screen==="annogiusto")renderAnnoGiusto();
  else if(S.screen==="ag_end")renderAgEnd();
  else if(S.screen==="lex")renderLex();
@@ -4120,7 +4156,7 @@ function showInviteBanner(inv, key){
  top.appendChild(ic);top.appendChild(app);top.appendChild(when);
  var who = document.createElement("div");who.className="inv-title";
  who.textContent=(inv.from||T("ui_qualcuno"))+T("invChallenges");
- var gameLbl = inv.kind==="codice" ? T("codiceTitle") : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
+ var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
  gameLbl=String(gameLbl);if(gameLbl===gameLbl.toUpperCase())gameLbl=gameLbl.charAt(0)+gameLbl.slice(1).toLowerCase();
  var what = document.createElement("div");what.className="inv-body";what.textContent=T("invGame")+gameLbl;
  var btns = document.createElement("div");btns.className="inv-btns";
@@ -4140,6 +4176,15 @@ function showInviteBanner(inv, key){
     S.cat="relax";S.game=null;
     if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
     S.screen="cdr";render();
+   });
+   return;
+  }
+  // Invito ad Anno giusto a distanza: entra direttamente nella partita
+  if(inv.roomCode && inv.kind === "anno" && typeof agrJoin==="function"){
+   agrJoin(inv.roomCode,function(ok,msg){
+    S.cat="relax";S.game=null;
+    if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
+    S.screen="agr";render();
    });
    return;
   }
