@@ -777,6 +777,13 @@ button:disabled{opacity:0.35!important;transform:none;}
 .agr-scores{display:flex;flex-direction:column;gap:4px;max-width:420px;margin:0 auto 20px;}
 .agr-score{display:flex;justify-content:space-between;font-size:15px;padding:6px 4px;border-bottom:1px solid var(--border);}
 .agr-score-n{color:var(--dark);}
+.pdr-hint{font-size:15px;color:var(--muted);margin:0 0 14px;}
+.pdr-opts{display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto 20px;}
+.pdr-opt{min-height:56px;border:2px solid transparent;border-radius:16px;background:rgba(120,120,128,0.12);font-family:inherit;font-size:19px;font-weight:700;color:var(--dark);cursor:pointer;}
+.pdr-opt.same{font-size:16px;font-weight:600;min-height:48px;}
+.pdr-opt.on{background:var(--dark);color:#fff;}
+.pdr-key{font-size:34px;}
+.pdr-a{font-size:15px;font-weight:600;color:var(--dark);margin-top:4px;}
 .agr-score-v{font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;}
 
 #cdr-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);background:rgba(28,28,30,0.92);color:#fff;font-size:15px;font-weight:600;padding:11px 18px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;}
@@ -1115,12 +1122,13 @@ try {
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
 <script src="data-sp.js?v=5"></script>
-<script src="data-cats.js?v=11"></script>
+<script src="data-cats.js?v=12"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=39"></script>
+<script src="data-quiz.js?v=40"></script>
 <script src="data-cdr.js?v=4"></script>
 <script src="data-agr.js?v=1"></script>
+<script src="data-pdr.js?v=1"></script>
 <script>
 
 
@@ -2705,6 +2713,9 @@ var GAMES={
  {name:"ANNO GIUSTO",players:"2-8",time:"15 min",isnew:true,annoremote:true,
  rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. L'app mostra un evento storico o un'invenzione e ognuno sceglie l'anno con il cursore. Chi si avvicina di più all'anno giusto prende un punto. Dieci domande: vince chi fa più punti.",
  tip:"Le invenzioni sono spesso molto più antiche di quanto si pensi."},
+ {name:"PRIMA O DOPO?",players:"2-8",time:"15 min",isnew:true,primadoporemote:true,
+ rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. L'app mostra due eventi storici e ognuno risponde se il primo è venuto prima, dopo o nello stesso periodo del secondo. Ogni risposta giusta vale un punto. Dieci domande: vince chi fa più punti.",
+ tip:"Ottimo per scoprire connessioni inaspettate."},
  {name:"QUANTO VALE?",players:"2+",time:"20 min",hot:true,quantovale:true,
  rules:"L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?'). Ogni giocatore sposta il cursore per indicare la sua risposta. Chi è più vicino al valore reale vince il punto. Si gioca in 10 round — vince chi ne indovina di più!",
  tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."}
@@ -3808,6 +3819,7 @@ else if(S.screen==="specchio")renderSpecchio();
  else if(S.screen==="qv_end")renderQvEnd();
  else if(S.screen==="ag_setup")renderAgSetup();
  else if(S.screen==="agr")renderAgRemote();
+ else if(S.screen==="pdr")renderPdRemote();
  else if(S.screen==="annogiusto")renderAnnoGiusto();
  else if(S.screen==="ag_end")renderAgEnd();
  else if(S.screen==="lex")renderLex();
@@ -4156,7 +4168,7 @@ function showInviteBanner(inv, key){
  top.appendChild(ic);top.appendChild(app);top.appendChild(when);
  var who = document.createElement("div");who.className="inv-title";
  who.textContent=(inv.from||T("ui_qualcuno"))+T("invChallenges");
- var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
+ var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : inv.kind==="primadopo" ? ((typeof pdrStrings==="function"&&pdrStrings()),T("pdrTitle")) : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
  gameLbl=String(gameLbl);if(gameLbl===gameLbl.toUpperCase())gameLbl=gameLbl.charAt(0)+gameLbl.slice(1).toLowerCase();
  var what = document.createElement("div");what.className="inv-body";what.textContent=T("invGame")+gameLbl;
  var btns = document.createElement("div");btns.className="inv-btns";
@@ -4185,6 +4197,15 @@ function showInviteBanner(inv, key){
     S.cat="relax";S.game=null;
     if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
     S.screen="agr";render();
+   });
+   return;
+  }
+  // Invito a Prima o dopo a distanza: entra direttamente nella partita
+  if(inv.roomCode && inv.kind === "primadopo" && typeof pdrJoin==="function"){
+   pdrJoin(inv.roomCode,function(ok,msg){
+    S.cat="relax";S.game=null;
+    if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
+    S.screen="pdr";render();
    });
    return;
   }
