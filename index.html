@@ -784,6 +784,10 @@ button:disabled{opacity:0.35!important;transform:none;}
 .pdr-opt.on{background:var(--dark);color:#fff;}
 .pdr-key{font-size:34px;}
 .pdr-a{font-size:15px;font-weight:600;color:var(--dark);margin-top:4px;}
+.fgr-flag{display:flex;justify-content:center;margin:4px auto 16px;max-width:360px;}
+.fgr-flag img{display:block;height:170px;width:auto;max-width:100%;border-radius:8px;box-shadow:0 0 0 1px rgba(0,0,0,0.08),0 6px 20px rgba(0,0,0,0.08);}
+.fgr-opt{font-size:17px;}
+.fgr-key{font-size:30px;}
 .agr-score-v{font-weight:700;color:var(--dark);font-variant-numeric:tabular-nums;}
 
 #cdr-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);background:rgba(28,28,30,0.92);color:#fff;font-size:15px;font-weight:600;padding:11px 18px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;}
@@ -1122,13 +1126,14 @@ try {
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
 <script src="data-sp.js?v=5"></script>
-<script src="data-cats.js?v=12"></script>
+<script src="data-cats.js?v=13"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=40"></script>
+<script src="data-quiz.js?v=41"></script>
 <script src="data-cdr.js?v=5"></script>
 <script src="data-agr.js?v=2"></script>
 <script src="data-pdr.js?v=2"></script>
+<script src="data-fgr.js?v=1"></script>
 <script>
 
 
@@ -2716,6 +2721,9 @@ var GAMES={
  {name:"PRIMA O DOPO?",players:"2-8",time:"15 min",isnew:true,primadoporemote:true,
  rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. L'app mostra due eventi storici e ognuno risponde se il primo è venuto prima, dopo o nello stesso periodo del secondo. Ogni risposta giusta vale un punto. Dieci domande: vince chi fa più punti.",
  tip:"Ottimo per scoprire connessioni inaspettate."},
+ {name:"CHE BANDIERA È?",players:"2-8",time:"15 min",isnew:true,bandieraremote:true,
+ rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. L'app mostra la bandiera di un paese e ognuno sceglie tra quattro nazioni. Ogni risposta giusta vale un punto. Dieci bandiere: vince chi fa più punti.",
+ tip:"Le bandiere più simili tra loro sono le più difficili!"},
  {name:"QUANTO VALE?",players:"2+",time:"20 min",hot:true,quantovale:true,
  rules:"L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?'). Ogni giocatore sposta il cursore per indicare la sua risposta. Chi è più vicino al valore reale vince il punto. Si gioca in 10 round — vince chi ne indovina di più!",
  tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."}
@@ -3820,6 +3828,7 @@ else if(S.screen==="specchio")renderSpecchio();
  else if(S.screen==="ag_setup")renderAgSetup();
  else if(S.screen==="agr")renderAgRemote();
  else if(S.screen==="pdr")renderPdRemote();
+ else if(S.screen==="fgr")renderFlRemote();
  else if(S.screen==="annogiusto")renderAnnoGiusto();
  else if(S.screen==="ag_end")renderAgEnd();
  else if(S.screen==="lex")renderLex();
@@ -4168,7 +4177,7 @@ function showInviteBanner(inv, key){
  top.appendChild(ic);top.appendChild(app);top.appendChild(when);
  var who = document.createElement("div");who.className="inv-title";
  who.textContent=(inv.from||T("ui_qualcuno"))+T("invChallenges");
- var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : inv.kind==="primadopo" ? ((typeof pdrStrings==="function"&&pdrStrings()),T("pdrTitle")) : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
+ var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : inv.kind==="primadopo" ? ((typeof pdrStrings==="function"&&pdrStrings()),T("pdrTitle")) : inv.kind==="bandiera" ? ((typeof fgrStrings==="function"&&fgrStrings()),T("fgrTitle")) : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
  gameLbl=String(gameLbl);if(gameLbl===gameLbl.toUpperCase())gameLbl=gameLbl.charAt(0)+gameLbl.slice(1).toLowerCase();
  var what = document.createElement("div");what.className="inv-body";what.textContent=T("invGame")+gameLbl;
  var btns = document.createElement("div");btns.className="inv-btns";
@@ -4206,6 +4215,15 @@ function showInviteBanner(inv, key){
     S.cat="relax";S.game=null;
     if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
     S.screen="pdr";render();
+   });
+   return;
+  }
+  // Invito a Che bandiera è a distanza: entra direttamente nella partita
+  if(inv.roomCode && inv.kind === "bandiera" && typeof fgrJoin==="function"){
+   fgrJoin(inv.roomCode,function(ok,msg){
+    S.cat="relax";S.game=null;
+    if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
+    S.screen="fgr";render();
    });
    return;
   }
