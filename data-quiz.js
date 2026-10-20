@@ -179,7 +179,7 @@ function setCatBg(){
  }
 }
 function stopAllTimers(){["_appelloTimer","_cicTimer","_csdTimer","_lexTimer","_mimoTimer","_pubTimer","_robotTimer","_sculTimer","_sinonTimer","_sopTimer","_specTimer","_superTimer","alfaInterval"].forEach(function(n){try{if(window[n]){clearInterval(window[n]);window[n]=null;}}catch(e){}});if(typeof QZ!=="undefined"&&QZ&&QZ.timer){clearInterval(QZ.timer);QZ.timer=null;}["pubRunning","lexRunning","mimoRunning","robotRunning","sculRunning","sinonRunning","sopRunning","specRunning","superRunning","appelloRunning","cicRunning","csdRunning","alfaRunning","intesaRunning"].forEach(function(k){if(S[k])S[k]=false;});if(typeof intesaInterval!=='undefined'&&intesaInterval){clearInterval(intesaInterval);intesaInterval=null;}if(window._qvAutoTimer){clearTimeout(window._qvAutoTimer);window._qvAutoTimer=null;}if(window._qvCountdownInterval){clearInterval(window._qvCountdownInterval);window._qvCountdownInterval=null;}if(window._qvRevealTimer){clearTimeout(window._qvRevealTimer);window._qvRevealTimer=null;}if(window._qvRevealInterval){clearInterval(window._qvRevealInterval);window._qvRevealInterval=null;}if(window._qvNextTimer){clearTimeout(window._qvNextTimer);window._qvNextTimer=null;}if(window._qvNextInterval){clearInterval(window._qvNextInterval);window._qvNextInterval=null;}}
-function goHome(){stopAllTimers();S.screen="home";S.cat=null;S.game=null;render();fbSync();}
+function goHome(){if(typeof cdrLeave==="function"&&typeof CDR!=="undefined"&&CDR.code)cdrLeave();stopAllTimers();S.screen="home";S.cat=null;S.game=null;render();fbSync();}
 function addBackArrow(action){
  var left=document.getElementById("hdrLeft");
  if(!left) return;
@@ -190,7 +190,7 @@ function addBackArrow(action){
  b.onclick=action;
  left.appendChild(b);
 }
-function goBackToGames(){stopAllTimers();logPlayEnd();S.screen="games";S.game=null;render();}
+function goBackToGames(){if(typeof cdrLeave==="function"&&typeof CDR!=="undefined"&&CDR.code)cdrLeave();stopAllTimers();logPlayEnd();S.screen="games";S.game=null;render();}
 function endGame(name){stopAllTimers();logPlayEnd();S.lastGame=name;S.screen="end";S.stars=0;S.menuTab="drink";render();}
 function getMsg(n){return n>=4?T("endMsg4"):n===3?T("endMsg3"):T("endMsgElse");}
 
@@ -561,6 +561,9 @@ function renderGames(){
  }
  if(g.viaggiosogni){
  S.screen="viaggio_plan";S.viaggioData={dest:"",quando:"",durata:"",alloggio:"",attivita:"",cibo:"",momento:"",budget:""};render();return;
+ }
+ if(g.codiceremote){
+ S.screen="cdr";render();return;
  }
  if(g.traditore){
  S.screen="traditore_setup";render();return;

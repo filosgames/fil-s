@@ -718,6 +718,36 @@ button:disabled{opacity:0.35!important;transform:none;}
 .quiz-card-hdr.light .quiz-q img{box-shadow:0 0 0 1px var(--border);border-radius:6px;}
 #logoEl{cursor:pointer;-webkit-tap-highlight-color:transparent;}
 #logoEl:active{opacity:0.6;}
+.cdr .codice-cta.secondary{background:rgba(120,120,128,0.12);color:var(--dark);}
+.cdr-code{display:flex;gap:10px;justify-content:center;margin:6px 0 14px;}
+.cdr-code-d{width:58px;height:72px;border-radius:16px;background:var(--dark);color:#fff;font-size:38px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;}
+.cdr-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:0 0 22px;}
+.cdr-actions .ebtn{flex:1;min-width:140px;max-width:220px;padding:12px 14px;font-size:15px;min-height:44px;}
+.cdr-list{display:flex;flex-direction:column;gap:6px;max-width:360px;margin:0 auto 20px;text-align:left;}
+.cdr-row{display:flex;align-items:center;gap:12px;background:var(--surface2);border-radius:14px;padding:12px 14px;}
+.cdr-dot{width:10px;height:10px;border-radius:50%;background:#d1d1d6;flex-shrink:0;}
+.cdr-dot.on{background:#34c759;}
+.cdr-name{flex:1;font-weight:600;color:var(--dark);font-size:16px;}
+.cdr-tag{font-size:12px;font-weight:600;color:#fff;background:var(--dark);border-radius:999px;padding:3px 10px;}
+.cdr-tag.light{background:transparent;color:var(--muted);padding:0;}
+.cdr-wait{font-size:15px;color:var(--muted);margin:10px 0 16px;}
+.cdr-sep{display:flex;align-items:center;gap:12px;margin:22px 0 14px;}
+.cdr-sep-line{flex:1;height:1px;background:var(--border);}
+.cdr-sep-txt{font-size:13px;color:var(--muted);}
+.cdr-err{color:#ff3b30;font-size:14px;min-height:20px;margin-top:10px;}
+.cdr-last{background:var(--surface2);border-radius:18px;padding:14px 14px 10px;margin:0 auto 18px;max-width:420px;}
+.cdr-last-pass{font-size:14px;color:var(--muted);padding:12px;}
+.cdr-last-t{font-size:14px;color:var(--muted);margin-bottom:6px;}
+.cdr-last-r{display:flex;align-items:center;justify-content:center;gap:14px;}
+.cdr-last-r .codice-slots{margin:0;}
+.cdr-last-r .codice-slot{width:44px;height:52px;font-size:22px;}
+.cdr-last-s{font-size:14px;font-weight:600;color:var(--dark);margin-top:8px;}
+.cdr-mine{display:flex;justify-content:space-between;align-items:center;max-width:360px;margin:22px auto 0;padding:12px 14px;border-radius:14px;border:1px solid var(--border);cursor:pointer;-webkit-user-select:none;user-select:none;}
+.cdr-mine-l{font-size:13px;color:var(--muted);}
+.cdr-mine-v{font-size:18px;font-weight:700;letter-spacing:3px;color:var(--dark);font-variant-numeric:tabular-nums;}
+.cdr-skip{margin-top:16px;}
+#cdr-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);background:rgba(28,28,30,0.92);color:#fff;font-size:15px;font-weight:600;padding:11px 18px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;}
+#cdr-toast.on{opacity:1;transform:translate(-50%,0);}
 </style>
 
 <!-- Firebase SDK (bundled) -->
@@ -1055,7 +1085,8 @@ try {
 <script src="data-cats.js?v=9"></script>
 <script src="data-quizdata.js?v=4"></script>
 <script src="data-adulti.js?v=2"></script>
-<script src="data-quiz.js?v=36"></script>
+<script src="data-quiz.js?v=37"></script>
+<script src="data-cdr.js?v=1"></script>
 <script>
 
 
@@ -2634,6 +2665,9 @@ var GAMES={
  starter:["Prima volta che hai bevuto troppo — cosa è successo?","Ultima volta che hai fatto una cosa di cui ti sei pentito/a subito dopo.","Prima volta che hai provato a fare colpo su qualcuno in modo disastroso.","Ultima volta che hai mentito e l'hai passata liscia.","Prima volta che ti sei innamorato/a davvero — come lo hai capito?","Ultima volta che hai pianto per qualcuno che non ne valeva la pena."]}
  ],
  relax:[
+ {name:"INDOVINA IL CODICE",players:"2-6",time:"10-20 min",isnew:true,codiceremote:true,
+ rules:"Ognuno gioca dal proprio telefono, anche da tavoli o città diverse. Uno crea la partita e condivide il codice di 4 cifre, gli altri entrano con quel codice. Ognuno sceglie un codice segreto di 4 cifre. A turno si prova a indovinare il codice di un avversario: verde = cifra giusta al posto giusto, giallo = cifra giusta al posto sbagliato. Vince chi indovina per primo un codice.",
+ tip:"Guardate anche i tentativi degli altri: ogni risposta è un indizio per tutti."},
  {name:"QUANTO VALE?",players:"2+",time:"20 min",hot:true,quantovale:true,
  rules:"L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?'). Ogni giocatore sposta il cursore per indicare la sua risposta. Chi è più vicino al valore reale vince il punto. Si gioca in 10 round — vince chi ne indovina di più!",
  tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."}
@@ -3745,6 +3779,7 @@ else if(S.screen==="specchio")renderSpecchio();
  else if(S.screen==="ca_end")renderCaEnd();
  else if(S.screen==="codice_secret")renderCodiceSecret();
  else if(S.screen==="codice")renderCodice();
+ else if(S.screen==="cdr")renderCodiceRemote();
  else if(S.screen==="codice_win")renderCodiceWin();
  else if(S.screen==="dado")renderDado();
  else if(S.screen==="dado_win")renderDadoWin();
@@ -4075,7 +4110,7 @@ function showInviteBanner(inv, key){
  top.appendChild(ic);top.appendChild(app);top.appendChild(when);
  var who = document.createElement("div");who.className="inv-title";
  who.textContent=(inv.from||T("ui_qualcuno"))+T("invChallenges");
- var gameLbl = (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
+ var gameLbl = inv.kind==="codice" ? T("codiceTitle") : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
  gameLbl=String(gameLbl);if(gameLbl===gameLbl.toUpperCase())gameLbl=gameLbl.charAt(0)+gameLbl.slice(1).toLowerCase();
  var what = document.createElement("div");what.className="inv-body";what.textContent=T("invGame")+gameLbl;
  var btns = document.createElement("div");btns.className="inv-btns";
@@ -4089,6 +4124,15 @@ function showInviteBanner(inv, key){
   // Rimuovi l'invito da Firebase
   try{fbRemove(fbRef(fbDB,"filos_invites/"+key));}catch(e){}
 
+  // Invito a Indovina il codice a distanza: entra direttamente nella partita
+  if(inv.roomCode && inv.kind === "codice" && typeof cdrJoin==="function"){
+   cdrJoin(inv.roomCode,function(ok,msg){
+    S.cat="relax";S.game=null;
+    if(!ok){alert(msg||T("ui_stanza_non_trovata_o_scaduta"));S.screen="games";render();return;}
+    S.screen="cdr";render();
+   });
+   return;
+  }
   // Caso speciale: invito QV con roomCode → join automatico
   if(inv.roomCode && inv.game === "Quanto Vale?"){
    var nick = S.qvMyName || FILOS_NAME || "Anonimo";
