@@ -293,3 +293,77 @@ body[data-cat="cultura"]{--f-cat:#DCE3F7;}body[data-cat="adulti"]{--f-cat:#EEDCE
 .home-btn,.splash-tagline,.qnum,.mc-price,.quiz-score-num,.alfa-timer,.dado-player-score.close,.qv-slider-val,.qv-answer-val,.connect-code-display{color:var(--f-ink)!important;}
 .splash-divider{background:var(--f-bar)!important;}
 .mw-reveal-btn,.intesa-round-badge{color:var(--f-sand-ink)!important;}
+
+/* ════════════════════════════════════════════
+   13. BARRA IN ALTO: tre colonne, il nome resta sempre al centro e non si sovrappone
+   ════════════════════════════════════════════ */
+.hdr{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;column-gap:8px;}
+.hdr-left{min-width:0;grid-column:1;}
+.logo-wrap{position:static!important;left:auto!important;transform:none!important;grid-column:2;justify-self:center;}
+.hdr-rightwrap{grid-column:3;display:flex;justify-content:flex-end;align-items:center;gap:8px;min-width:0;}
+@media (max-width:380px){
+  .hdr{padding:0 12px!important;}
+  .lang-pill button{padding:5px 7px!important;font-size:10.5px!important;}
+  .logo{font-size:22px!important;}
+}
+@media (max-width:350px){
+  /* sui telefoni più stretti la freccia indietro resta senza scritta */
+  .back-arrow{font-size:0!important;padding:9px 12px!important;}
+  .back-arrow::before{margin:0!important;width:9px!important;height:9px!important;}
+}
+
+/* Indovina il codice: scelta dell'avversario */
+.codice-pick{max-width:420px;margin:4px auto 18px;text-align:left;}
+.codice-pick .codice-section{margin-bottom:8px;}
+.codice-pick-row{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:12px;width:100%;margin:0 0 8px;padding:12px 14px;border:2px solid transparent;border-radius:14px;background:var(--f-card);box-shadow:var(--f-shadow);font-family:inherit;text-align:left;cursor:pointer;color:var(--f-ink);}
+.codice-pick-row.on{border-color:var(--f-bar);background:var(--f-sand-soft);}
+.codice-pick-name{font-weight:600;font-size:16px;min-width:0;overflow-wrap:anywhere;}
+.codice-pick-n{font-size:13px;color:var(--f-ink-2);white-space:nowrap;}
+.codice-pick-empty{width:28px;}
+.codice-target{font-size:20px;font-weight:700;letter-spacing:-0.3px;color:var(--f-ink);text-align:center;margin:6px 0 10px;}
+.codice-head .codice-big{margin-bottom:6px;}
+.codice-slot.active{border-color:var(--f-bar)!important;box-shadow:0 0 0 3px rgba(237,203,51,0.28)!important;}
+.codice-slot.filled{border-color:var(--f-line)!important;}
+.ebtn.dado-good{background:#D7EFDD!important;color:#1F5B33!important;}
+.ebtn.dado-bad{background:var(--f-bad-soft)!important;color:#8E2F22!important;}
+
+/* Timer condiviso dei giochi a distanza */
+.rl-timer{max-width:420px;margin:0 auto 16px;display:flex;align-items:center;gap:12px;}
+.rl-timer-n{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--f-ink);min-width:44px;text-align:left;}
+.rl-timer-bar{flex:1;height:8px;border-radius:8px;background:var(--f-fill);overflow:hidden;}
+.rl-timer-fill{height:100%;border-radius:8px;background:var(--f-bar);transition:width .25s linear;}
+.rl-timer.low .rl-timer-n{color:var(--f-bad);}
+.rl-timer.low .rl-timer-fill{background:#E7907F;}
+
+/* ════════════════════════════════════════════
+   14. NIENTE TESTI SCHIACCIATI O SOVRAPPOSTI
+   La scheda cresce con il contenuto (si scorre la pagina) invece di schiacciarlo:
+   così una domanda lunga non finisce mai sopra i pulsanti.
+   ════════════════════════════════════════════ */
+.dcard{height:auto!important;max-height:none!important;min-height:min(820px,calc(100vh - 100px));min-height:min(820px,calc(100dvh - 100px));}
+.dbody{overflow:visible!important;}
+.dbody>*,.quiz-body>*,.starter-body>*,.dcard>*{flex-shrink:0;}
+.qcard{min-height:0!important;height:auto!important;}
+.qcard-text,.starter-phrase,.quiz-q,.riddle-q,.agr-q,.codice-big,.end-title{overflow-wrap:break-word;word-break:normal;hyphens:auto;-webkit-hyphens:auto;}
+/* titoli lunghi: si adattano alla larghezza e vanno a capo invece di essere tagliati */
+.dtitle,.intesa-title,.quiz-level-title,.starter-title,.quiz-title,.home-title,.sec-title{overflow-wrap:normal;min-width:0;max-width:100%;}
+@media (max-width:400px){
+  .dtitle{font-size:clamp(20px,6.6vw,28px)!important;letter-spacing:-0.3px!important;}
+  .intesa-title{font-size:clamp(19px,6.2vw,26px)!important;}
+  .quiz-title,.starter-title{font-size:clamp(20px,6.4vw,28px)!important;}
+  .end-title{font-size:clamp(26px,8.5vw,36px)!important;}
+  .codice-big{font-size:clamp(22px,7vw,30px)!important;}
+}
+
+/* 15. Righe nomi giocatori: niente testo che esce dalla card */
+.player-name-row{align-items:center!important;gap:12px!important;}
+.player-name-row:focus-within{border-bottom-color:var(--f-bar)!important;}
+.player-name-label{white-space:nowrap;min-width:0!important;flex:0 0 auto;}
+.player-name-input{min-width:0!important;width:100%;border:none!important;outline:none!important;box-shadow:none!important;}
+#chipaga-hint{width:calc(100% - 48px);text-align:center;font-family:var(--f-font)!important;font-size:20px!important;font-weight:600;color:var(--f-ink-2)!important;letter-spacing:0!important;line-height:1.4;top:50%;bottom:auto!important;transform:translate(-50%,-50%)!important;}
+#chipaga-msg{font-family:var(--f-font)!important;width:calc(100% - 48px);}
+#chipaga-hint.cp-bottom{top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 40px)!important;transform:translateX(-50%)!important;font-size:15px!important;}
+.mw-player-btn{gap:12px;}
+.mw-player-btn>span:first-child{white-space:nowrap;}
+.mw-player-btn>span:last-child{text-align:right;font-size:13px;font-weight:600;letter-spacing:.2px;}
+.mimo-pick .ebtn.out{background:#fff!important;padding:10px 16px!important;min-height:40px!important;font-size:15px!important;}

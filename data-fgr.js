@@ -15,6 +15,7 @@
 // opts: per ogni bandiera i 4 paesi tra cui scegliere, già mescolati, uguali per tutti:
 // ognuno li legge nella propria lingua.
 // ══════════════════════════════════════════
+var FGR_Q_MS=25000; // tempo per rispondere a ogni domanda
 var FGR_MAX_PLAYERS=8,FGR_ROUNDS=10,FGR_FORCE_MS=45000;
 var FGR={code:null,me:null,data:null,unsub:null,sig:"",val:null,valKey:"",busy:false,closed:false};
 
@@ -43,7 +44,8 @@ function fgrState(){
  }
  var cur=answersOf(q);
  var allIn=active.length>0&&active.every(function(n){return !!cur[n];});
- var reveal=phase==="play"&&(allIn||meta.rv===q);
+ var rvMap=d.rv||{};
+ var reveal=phase==="play"&&(allIn||meta.rv===q||!!rvMap[game+"_"+q]);
  // Punteggi: un punto a chi risponde giusto
  var scores={};order.forEach(function(n){scores[n]=0;});
  var rounds=[];
@@ -149,7 +151,7 @@ function fgrExit(){fgrLeave();goBackToGames();}
 function fgrStart(){
  var st=fgrState();if(st.leader!==FGR.me||st.lobby.length<2||FGR.busy)return;
  FGR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,FGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta)},fgrPickRound(rlLevel(st.meta))))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,FGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()},fgrPickRound(rlLevel(st.meta))))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 function fgrAnswer(v){
  if(typeof v!=="number")return;
@@ -167,16 +169,29 @@ function fgrAnswer(v){
 // Se qualcuno non risponde (telefono spento, app chiusa) dopo un po' chi ha già risposto può mostrare le risposte.
 // Scrivere due volte lo stesso valore non cambia nulla, quindi più telefoni possono farlo insieme senza problemi.
 function fgrForceReveal(){
- var st=fgrState();if(!st.cur[FGR.me]||st.reveal||st.ended||FGR.busy)return;
- FGR.busy=true;
- var m=Object.assign({},st.meta,{rv:st.q});
- cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
+ var st=fgrState();if(st.reveal||st.ended||st.phase!=="play")return;
+ // Segnale separato: non riscrive mai la partita, quindi non può riportare indietro la domanda
+ try{fbSet(fbRef(fbDB,fgrPath("rv/"+st.game+"_"+st.q)),true);}catch(e){}
+}
+// Allo scadere del tempo ogni telefono ancora in partita mostra le risposte (scrivere due volte non cambia nulla)
+function fgrTimeUp(game,q){
+ var st=fgrState();if(st.game!==game||st.q!==q||st.reveal||st.ended||st.phase!=="play")return;
+ if(st.active.indexOf(FGR.me)<0)return;
+ // Se avevo già scelto senza confermare, la mia scelta parte da sola
+ if(!st.cur[FGR.me]&&FGR.val!==null&&FGR.val!==undefined&&FGR.valKey===st.game+"|"+st.q){fgrAnswer(FGR.val);setTimeout(fgrForceReveal,800);return;}
+ // Un attimo di attesa: le scelte non confermate degli altri fanno in tempo ad arrivare
+ setTimeout(fgrForceReveal,1500);
+}
+function fgrTimer(wrap,st){
+ if(!st.meta||!st.meta.qt)return;
+ var g=st.game,q=st.q;
+ rlTimer(wrap,st.meta.qt,FGR_Q_MS,function(){fgrTimeUp(g,q);});
 }
 function fgrNext(){
  var st=fgrState();if(!st.reveal||st.ended||FGR.busy)return;
  FGR.busy=true;
  var m=Object.assign({},st.meta);
- if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;}
+ if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;m.qt=fbNow();}
  cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 function fgrRematch(){
@@ -184,7 +199,7 @@ function fgrRematch(){
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  FGR.busy=true;
  var lv=rlLevel(st.meta);
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv},fgrPickRound(lv));
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv,qt:fbNow()},fgrPickRound(lv));
  cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 // Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
@@ -291,6 +306,7 @@ function fgrQuestionBox(wrap,st){
 function fgrChoiceLabel(c){return fgrName(c);}
 function fgrScreenAnswer(wrap,st){
  fgrQuestionBox(wrap,st);
+ fgrTimer(wrap,st);
  var key=st.game+"|"+st.q;
  if(FGR.valKey!==key){FGR.valKey=key;FGR.val=null;}
  wrap.appendChild(div("pdr-hint",T("fgrHint")));
@@ -315,6 +331,7 @@ function fgrChips(wrap,st){
 }
 function fgrScreenWait(wrap,st){
  fgrQuestionBox(wrap,st);
+ fgrTimer(wrap,st);
  var mine=st.cur[FGR.me];
  var box=div("agr-sent");
  box.appendChild(div("agr-sent-t",T("qvAnswerSent")));
@@ -323,7 +340,7 @@ function fgrScreenWait(wrap,st){
  var missing=st.active.filter(function(n){return !st.cur[n];});
  wrap.appendChild(div("codice-sub",T("fgrWaiting").replace("{a}",st.active.length-missing.length).replace("{t}",st.active.length)));
  fgrChips(wrap,st);
- {
+ if(!(st.meta&&st.meta.qt)){
   var key=st.game+"|"+st.q;
   if(FGR.waitKey!==key){FGR.waitKey=key;FGR.waitSince=Date.now();}
   var waited=Date.now()-FGR.waitSince;

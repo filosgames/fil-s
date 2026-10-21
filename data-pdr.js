@@ -17,6 +17,7 @@
 // Ricavata dalle risposte del gioco e controllata a mano una per una.
 // ══════════════════════════════════════════
 var PDR_KEY="BBBABBBBBBBBBBAABBBABBBBBBBBBSBASBSBBBBSSABBAAABBSSSAASABSBBBAABBSBBBBBBBBASBBBAAA";
+var PDR_Q_MS=30000; // tempo per rispondere a ogni domanda
 var PDR_MAX_PLAYERS=8,PDR_ROUNDS=10,PDR_FORCE_MS=45000;
 var PDR={code:null,me:null,data:null,unsub:null,sig:"",val:null,valKey:"",busy:false,closed:false};
 
@@ -44,7 +45,8 @@ function pdrState(){
  }
  var cur=answersOf(q);
  var allIn=active.length>0&&active.every(function(n){return !!cur[n];});
- var reveal=phase==="play"&&(allIn||meta.rv===q);
+ var rvMap=d.rv||{};
+ var reveal=phase==="play"&&(allIn||meta.rv===q||!!rvMap[game+"_"+q]);
  // Punteggi: un punto a chi risponde giusto
  var scores={};order.forEach(function(n){scores[n]=0;});
  var rounds=[];
@@ -148,7 +150,7 @@ function pdrExit(){pdrLeave();goBackToGames();}
 function pdrStart(){
  var st=pdrState();if(st.leader!==PDR.me||st.lobby.length<2||PDR.busy)return;
  PDR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),{phase:"play",order:st.lobby.slice(0,PDR_MAX_PLAYERS),game:st.game,qs:pdrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta)})).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),{phase:"play",order:st.lobby.slice(0,PDR_MAX_PLAYERS),game:st.game,qs:pdrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()})).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
 }
 function pdrAnswer(v){
  if(!/^[BAS]$/.test(v||""))return;
@@ -165,16 +167,29 @@ function pdrAnswer(v){
 // Se qualcuno non risponde (telefono spento, app chiusa) dopo un po' chi ha già risposto può mostrare le risposte.
 // Scrivere due volte lo stesso valore non cambia nulla, quindi più telefoni possono farlo insieme senza problemi.
 function pdrForceReveal(){
- var st=pdrState();if(!st.cur[PDR.me]||st.reveal||st.ended||PDR.busy)return;
- PDR.busy=true;
- var m=Object.assign({},st.meta,{rv:st.q});
- cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),m)).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
+ var st=pdrState();if(st.reveal||st.ended||st.phase!=="play")return;
+ // Segnale separato: non riscrive mai la partita, quindi non può riportare indietro la domanda
+ try{fbSet(fbRef(fbDB,pdrPath("rv/"+st.game+"_"+st.q)),true);}catch(e){}
+}
+// Allo scadere del tempo ogni telefono ancora in partita mostra le risposte (scrivere due volte non cambia nulla)
+function pdrTimeUp(game,q){
+ var st=pdrState();if(st.game!==game||st.q!==q||st.reveal||st.ended||st.phase!=="play")return;
+ if(st.active.indexOf(PDR.me)<0)return;
+ // Se avevo già scelto senza confermare, la mia scelta parte da sola
+ if(!st.cur[PDR.me]&&PDR.val!==null&&PDR.val!==undefined&&PDR.valKey===st.game+"|"+st.q){pdrAnswer(PDR.val);setTimeout(pdrForceReveal,800);return;}
+ // Un attimo di attesa: le scelte non confermate degli altri fanno in tempo ad arrivare
+ setTimeout(pdrForceReveal,1500);
+}
+function pdrTimer(wrap,st){
+ if(!st.meta||!st.meta.qt)return;
+ var g=st.game,q=st.q;
+ rlTimer(wrap,st.meta.qt,PDR_Q_MS,function(){pdrTimeUp(g,q);});
 }
 function pdrNext(){
  var st=pdrState();if(!st.reveal||st.ended||PDR.busy)return;
  PDR.busy=true;
  var m=Object.assign({},st.meta);
- if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;}
+ if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;m.qt=fbNow();}
  cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),m)).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
 }
 function pdrRematch(){
@@ -182,7 +197,7 @@ function pdrRematch(){
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  PDR.busy=true;
  var lv=rlLevel(st.meta);
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:pdrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv};
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:pdrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv,qt:fbNow()};
  cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),m)).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
 }
 // Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
@@ -287,6 +302,7 @@ function pdrQuestionBox(wrap,st){
 function pdrChoiceLabel(c){return c==="B"?T("pdrBefore"):c==="A"?T("pdrAfter"):T("pdrSame");}
 function pdrScreenAnswer(wrap,st){
  pdrQuestionBox(wrap,st);
+ pdrTimer(wrap,st);
  var key=st.game+"|"+st.q;
  if(PDR.valKey!==key){PDR.valKey=key;PDR.val=null;}
  wrap.appendChild(div("pdr-hint",T("pdrHint")));
@@ -311,6 +327,7 @@ function pdrChips(wrap,st){
 }
 function pdrScreenWait(wrap,st){
  pdrQuestionBox(wrap,st);
+ pdrTimer(wrap,st);
  var mine=st.cur[PDR.me];
  var box=div("agr-sent");
  box.appendChild(div("agr-sent-t",T("qvAnswerSent")));
@@ -319,7 +336,7 @@ function pdrScreenWait(wrap,st){
  var missing=st.active.filter(function(n){return !st.cur[n];});
  wrap.appendChild(div("codice-sub",T("pdrWaiting").replace("{a}",st.active.length-missing.length).replace("{t}",st.active.length)));
  pdrChips(wrap,st);
- {
+ if(!(st.meta&&st.meta.qt)){
   var key=st.game+"|"+st.q;
   if(PDR.waitKey!==key){PDR.waitKey=key;PDR.waitSince=Date.now();}
   var waited=Date.now()-PDR.waitSince;

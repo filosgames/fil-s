@@ -40,10 +40,10 @@ function cdrState(){
  var movesRaw=rd.moves||{};var moves=[];
  Object.keys(movesRaw).map(Number).filter(function(n){return !isNaN(n);}).sort(function(a,b){return a-b;}).forEach(function(n){
   var m=movesRaw[n];if(!m||!m.by)return;
-  if(m.pass){moves.push({n:n,by:m.by,pass:true});return;}
+  if(m.pass){moves.push({n:n,by:m.by,pass:true,t:m.t||0});return;}
   if(!m.target||!m.guess)return;
   var g=String(m.guess).split("");var sec=secrets[m.target];if(!sec||g.length!==4)return;
-  var sc=codiceScore(sec,g);moves.push({n:n,by:m.by,target:m.target,guess:g,g:sc.g,y:sc.y});
+  var sc=codiceScore(sec,g);moves.push({n:n,by:m.by,target:m.target,guess:g,g:sc.g,y:sc.y,t:m.t||0});
  });
  // Vincitore: il primo che indovina un codice
  var winner=null,winnerTarget=null;
@@ -71,7 +71,11 @@ function cdrState(){
  // Chi guida la stanza: il primo giocatore ancora presente (se chi l'ha creata esce, passa al successivo)
  var leader=(phase==="lobby"?lobby:active.length?active:lobby)[0]||null;
  var tries=moves.filter(function(m){return !m.pass;});
- return {tries:tries,meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,secrets:secrets,moves:moves,turn:turn,winner:winner,winnerTarget:winnerTarget,ended:ended,interrupted:interrupted,leader:leader,round:round,isLeft:isLeft,nextMove:Object.keys(movesRaw).length};
+ // Inizio del turno in corso (ora del server): ultima mossa, oppure l'ultimo codice segreto salvato
+ var stimes=rd.st||{};var turnStart=0;
+ if(moves.length)turnStart=moves[moves.length-1].t||0;
+ else order.forEach(function(n){var t=stimes[cdrKey(n)];if(t&&t>turnStart)turnStart=t;});
+ return {turnStart:turnStart,tries:tries,meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,secrets:secrets,moves:moves,turn:turn,winner:winner,winnerTarget:winnerTarget,ended:ended,interrupted:interrupted,leader:leader,round:round,isLeft:isLeft,nextMove:Object.keys(movesRaw).length};
 }
 
 // ── Stanza: crea, entra, esci ──
@@ -146,7 +150,7 @@ function cdrStart(){
 function cdrSaveSecret(arr){
  var st=cdrState();if(arr.length!==4||CDR.busy)return;
  CDR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,cdrPath("r"+st.round+"/secrets/"+cdrKey(CDR.me))),cdrEnc(arr,st.round))).then(function(){CDR.busy=false;CDR.entry=[];cdrRender(true);}).catch(function(){CDR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,cdrPath("r"+st.round+"/st/"+cdrKey(CDR.me))),fbNow()).then(function(){return fbSet(fbRef(fbDB,cdrPath("r"+st.round+"/secrets/"+cdrKey(CDR.me))),cdrEnc(arr,st.round));})).then(function(){CDR.busy=false;CDR.entry=[];cdrRender(true);}).catch(function(){CDR.busy=false;cdrToast(T("connErr"));});
 }
 function cdrGuess(target,arr){
  var st=cdrState();
@@ -157,13 +161,15 @@ function cdrGuess(target,arr){
  // Il tentativo n viene scritto una volta sola: se esiste già (doppio tocco o rete lenta) non si riscrive
  cdrNet(fbGet(ref)).then(function(snap){
   if(snap.exists()){CDR.busy=false;return;}
-  return cdrNet(fbSet(ref,{by:CDR.me,target:target,guess:arr.join(""),t:Date.now()})).then(function(){CDR.busy=false;CDR.entry=[];cdrRender(true);});
+  return cdrNet(fbSet(ref,{by:CDR.me,target:target,guess:arr.join(""),t:fbNow()})).then(function(){CDR.busy=false;CDR.entry=[];cdrRender(true);});
  }).catch(function(){CDR.busy=false;cdrToast(T("connErr"));CDR.sig="";cdrRender(true);});
 }
-function cdrSkip(who){
- var st=cdrState();if(st.leader!==CDR.me||st.turn!==who||st.phase!=="play"||st.ended||CDR.busy)return;
+var CDR_TURN_MS=90000; // tempo per ogni turno
+function cdrSkip(who,auto){
+ var st=cdrState();if((!auto&&st.leader!==CDR.me)||st.turn!==who||st.phase!=="play"||st.ended||CDR.busy)return;
+ if(st.active.indexOf(CDR.me)<0)return;
  CDR.busy=true;var ref=fbRef(fbDB,cdrPath("r"+st.round+"/moves/"+st.nextMove));
- fbGet(ref).then(function(snap){if(snap.exists()){CDR.busy=false;return;}return fbSet(ref,{by:who,pass:true,t:Date.now()}).then(function(){CDR.busy=false;});}).catch(function(){CDR.busy=false;});
+ fbGet(ref).then(function(snap){if(snap.exists()){CDR.busy=false;return;}return fbSet(ref,{by:who,pass:true,t:fbNow()}).then(function(){CDR.busy=false;});}).catch(function(){CDR.busy=false;});
 }
 function cdrRematch(){
  var st=cdrState();if(st.leader!==CDR.me||CDR.busy)return;
@@ -312,15 +318,15 @@ function cdrScreenPlay(wrap,st){
   lb.appendChild(div("cdr-last-s",codiceFeedbackText(last.g,last.y)));
   wrap.appendChild(lb);
  }
+ // Tempo del turno, uguale per tutti: allo scadere il turno passa al giocatore successivo
+ if(st.turnStart){var who=st.turn;rlTimer(wrap,st.turnStart,CDR_TURN_MS,function(){cdrSkip(who,true);});}
  if(myTurn){
   if(!CDR.target||opps.indexOf(CDR.target)<0)CDR.target=opps[0];
   var target=CDR.target;
-  cdrHeader(wrap,T("cdrYourTurn"),T("codiceGuessShort")+target,null);
-  if(opps.length>1){
-   var tabs=div("codice-tabs");
-   opps.forEach(function(p){tabs.appendChild(btn("codice-tab"+(p===target?" on":""),p,function(){CDR.target=p;CDR.entry=[];cdrRender(true);}));});
-   wrap.appendChild(tabs);
-  }
+  cdrHeader(wrap,null,T("cdrYourTurn"),null);
+  var histOf=function(p){return st.tries.filter(function(m){return m.target===p;});};
+  if(opps.length>1)wrap.appendChild(codicePicker(opps,target,histOf,function(p){CDR.target=p;CDR.entry=[];cdrRender(true);}));
+  wrap.appendChild(div("codice-target",T("codiceGuessShort")+target));
   cdrHistory(wrap,st,target);
   var tryB;var keep2=CDR.entry.slice();
   var otp2=codiceOtp(function(a){CDR.entry=a;if(tryB)tryB.disabled=a.length!==4;});
@@ -333,13 +339,12 @@ function cdrScreenPlay(wrap,st){
   cdrHeader(wrap,T("cdrWaiting"),T("cdrTurnOf").replace("{n}",st.turn||""),null);
   // Si possono guardare i tentativi su ogni giocatore (anche sul proprio codice)
   if(!CDR.view||others.indexOf(CDR.view)<0)CDR.view=opps[0]||CDR.me;
-  var tabs2=div("codice-tabs");
-  others.forEach(function(p){tabs2.appendChild(btn("codice-tab"+(p===CDR.view?" on":""),p===CDR.me?T("cdrYourCode"):p,function(){CDR.view=p;cdrRender(true);}));});
-  wrap.appendChild(tabs2);
+  // Intanto si possono guardare i tentativi su ogni codice (anche sul proprio)
+  wrap.appendChild(codicePicker(others,CDR.view,function(p){return st.tries.filter(function(m){return m.target===p;});},function(p){CDR.view=p;cdrRender(true);},function(p){return p===CDR.me?T("cdrYourCode"):p;}));
   cdrHistory(wrap,st,CDR.view);
   wrap.appendChild(div("codice-legend",T("codiceLegend")));
   // Se chi deve giocare non risponde (telefono spento, app chiusa), chi guida può saltare il suo turno
-  if(st.leader===CDR.me){
+  if(st.leader===CDR.me&&!st.turnStart){
    var waited=Date.now()-(CDR.turnSince||Date.now());
    if(waited>=60000){
     wrap.appendChild(btn("ebtn out cdr-skip",T("cdrSkip").replace("{n}",st.turn),function(){cdrSkip(st.turn);}));
@@ -378,6 +383,31 @@ function cdrScreenEnd(wrap,st){
 }
 
 
+// ── Ora del server: uguale su tutti i telefoni anche se gli orologi sono diversi ──
+var FB_OFF=0,FB_OFF_ON=false;
+function fbNow(){
+ if(!FB_OFF_ON&&typeof fbDB!=="undefined"&&fbDB&&typeof fbOnValue==="function"){
+  FB_OFF_ON=true;
+  try{fbOnValue(fbRef(fbDB,".info/serverTimeOffset"),function(s){var v=s&&s.val?s.val():0;if(typeof v==="number"&&isFinite(v))FB_OFF=v;});}catch(e){}
+ }
+ return Date.now()+FB_OFF;
+}
+// Timer condiviso: secondi e barra, aggiornati da soli; onEnd viene chiamato una volta allo scadere
+function rlTimer(wrap,start,ms,onEnd){
+ var box=div("rl-timer");var num=div("rl-timer-n");var bar=div("rl-timer-bar");var fill=div("rl-timer-fill");
+ bar.appendChild(fill);box.appendChild(num);box.appendChild(bar);wrap.appendChild(box);
+ clearInterval(window._rlTimerIv);var fired=false;
+ function tick(){
+  if(!document.body.contains(box)){clearInterval(window._rlTimerIv);return;}
+  var left=Math.max(0,Math.min(ms,start+ms-fbNow()));var sec=Math.ceil(left/1000);
+  num.textContent=Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");
+  fill.style.width=(left/ms*100)+"%";
+  box.classList.toggle("low",sec<=5);
+  if(left<=0&&!fired){fired=true;clearInterval(window._rlTimerIv);if(onEnd)try{onEnd();}catch(e){}}
+ }
+ tick();window._rlTimerIv=setInterval(tick,250);
+ return box;
+}
 // ── Livelli dei giochi a distanza (Facile / Media / Difficile) ──
 // Chi guida sceglie il livello nella sala d'attesa (e a fine partita per la rivincita):
 // si salva in meta.lvl e tutti i telefoni lo vedono.

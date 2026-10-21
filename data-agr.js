@@ -15,6 +15,7 @@
 // Le domande sono indici dell'elenco ANNO GIUSTO (uguale in tutte le lingue):
 // ognuno legge la domanda nella propria lingua.
 // ══════════════════════════════════════════
+var AGR_Q_MS=45000; // tempo per rispondere a ogni domanda
 var AGR_MAX_PLAYERS=8,AGR_ROUNDS=10,AGR_FORCE_MS=45000;
 var AGR={code:null,me:null,data:null,unsub:null,sig:"",val:null,valKey:"",busy:false,closed:false};
 
@@ -43,7 +44,8 @@ function agrState(){
  }
  var cur=answersOf(q);
  var allIn=active.length>0&&active.every(function(n){return !!cur[n];});
- var reveal=phase==="play"&&(allIn||meta.rv===q);
+ var rvMap=d.rv||{};
+ var reveal=phase==="play"&&(allIn||meta.rv===q||!!rvMap[game+"_"+q]);
  // Punteggi: un punto a chi si avvicina di più (a pari distanza, a tutti i più vicini)
  var scores={};order.forEach(function(n){scores[n]=0;});
  var rounds=[];
@@ -143,7 +145,7 @@ function agrExit(){agrLeave();goBackToGames();}
 function agrStart(){
  var st=agrState();if(st.leader!==AGR.me||st.lobby.length<2||AGR.busy)return;
  AGR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),{phase:"play",order:st.lobby.slice(0,AGR_MAX_PLAYERS),game:st.game,qs:agrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta)})).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),{phase:"play",order:st.lobby.slice(0,AGR_MAX_PLAYERS),game:st.game,qs:agrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()})).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 function agrAnswer(v){
  var st=agrState();
@@ -159,16 +161,29 @@ function agrAnswer(v){
 // Se qualcuno non risponde (telefono spento, app chiusa) dopo un po' chi ha già risposto può mostrare le risposte.
 // Scrivere due volte lo stesso valore non cambia nulla, quindi più telefoni possono farlo insieme senza problemi.
 function agrForceReveal(){
- var st=agrState();if(!st.cur[AGR.me]||st.reveal||st.ended||AGR.busy)return;
- AGR.busy=true;
- var m=Object.assign({},st.meta,{rv:st.q});
- cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
+ var st=agrState();if(st.reveal||st.ended||st.phase!=="play")return;
+ // Segnale separato: non riscrive mai la partita, quindi non può riportare indietro la domanda
+ try{fbSet(fbRef(fbDB,agrPath("rv/"+st.game+"_"+st.q)),true);}catch(e){}
+}
+// Allo scadere del tempo ogni telefono ancora in partita mostra le risposte (scrivere due volte non cambia nulla)
+function agrTimeUp(game,q){
+ var st=agrState();if(st.game!==game||st.q!==q||st.reveal||st.ended||st.phase!=="play")return;
+ if(st.active.indexOf(AGR.me)<0)return;
+ // Se avevo già scelto senza confermare, la mia scelta parte da sola
+ if(!st.cur[AGR.me]&&AGR.touchedKey===st.game+"|"+st.q){agrAnswer(AGR.val);setTimeout(agrForceReveal,800);return;}
+ // Un attimo di attesa: le scelte non confermate degli altri fanno in tempo ad arrivare
+ setTimeout(agrForceReveal,1500);
+}
+function agrTimer(wrap,st){
+ if(!st.meta||!st.meta.qt)return;
+ var g=st.game,q=st.q;
+ rlTimer(wrap,st.meta.qt,AGR_Q_MS,function(){agrTimeUp(g,q);});
 }
 function agrNext(){
  var st=agrState();if(!st.reveal||st.ended||AGR.busy)return;
  AGR.busy=true;
  var m=Object.assign({},st.meta);
- if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;}
+ if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;m.qt=fbNow();}
  cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 function agrRematch(){
@@ -176,7 +191,7 @@ function agrRematch(){
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  AGR.busy=true;
  var lv=rlLevel(st.meta);
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:agrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv};
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:agrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv,qt:fbNow()};
  cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 // Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
@@ -280,19 +295,20 @@ function agrQuestionBox(wrap,st){
 }
 function agrScreenAnswer(wrap,st){
  agrQuestionBox(wrap,st);
+ agrTimer(wrap,st);
  var key=st.game+"|"+st.q;
  if(AGR.valKey!==key){AGR.valKey=key;AGR.val=1000;}
  var max=agrMaxYear();
  var year=div("agr-year");year.textContent=agYear(AGR.val);wrap.appendChild(year);
  var slider=document.createElement("input");
  slider.type="range";slider.className="agr-slider";slider.min=-3000;slider.max=max;slider.step=1;slider.value=AGR.val;
- slider.oninput=function(){AGR.val=parseInt(this.value,10);year.textContent=agYear(AGR.val);};
+ slider.oninput=function(){AGR.touchedKey=key;AGR.val=parseInt(this.value,10);year.textContent=agYear(AGR.val);};
  wrap.appendChild(slider);
  var range=div("agr-range");range.appendChild(el("span","",agYear(-3000)));range.appendChild(el("span","",String(max)));wrap.appendChild(range);
  var fine=div("agr-fine");
  [-10,-1,1,10].forEach(function(dv){
   fine.appendChild(btn("agr-step",(dv>0?"+":"−")+Math.abs(dv),function(){
-   AGR.val=Math.max(-3000,Math.min(max,AGR.val+dv));slider.value=AGR.val;year.textContent=agYear(AGR.val);
+   AGR.touchedKey=key;AGR.val=Math.max(-3000,Math.min(max,AGR.val+dv));slider.value=AGR.val;year.textContent=agYear(AGR.val);
   }));
  });
  wrap.appendChild(fine);
@@ -306,6 +322,7 @@ function agrChips(wrap,st){
 }
 function agrScreenWait(wrap,st){
  agrQuestionBox(wrap,st);
+ agrTimer(wrap,st);
  var mine=st.cur[AGR.me];
  var box=div("agr-sent");
  box.appendChild(div("agr-sent-t",T("qvAnswerSent")));
@@ -314,7 +331,7 @@ function agrScreenWait(wrap,st){
  var missing=st.active.filter(function(n){return !st.cur[n];});
  wrap.appendChild(div("codice-sub",T("agrWaiting").replace("{a}",st.active.length-missing.length).replace("{t}",st.active.length)));
  agrChips(wrap,st);
- {
+ if(!(st.meta&&st.meta.qt)){
   var key=st.game+"|"+st.q;
   if(AGR.waitKey!==key){AGR.waitKey=key;AGR.waitSince=Date.now();}
   var waited=Date.now()-AGR.waitSince;
