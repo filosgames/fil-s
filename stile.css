@@ -19,11 +19,12 @@
   --f-ink-2:#5B626B;         /* secondario */
   --f-ink-3:#8E959E;         /* solo segnaposto e icone, mai testo da leggere */
   /* conferme: giallo pastello */
-  --f-sand:#F6E3A1;          /* pulsante principale */
-  --f-sand-press:#EED37A;
-  --f-sand-ink:#3B2F06;      /* testo sul giallo */
-  --f-sand-soft:#FBF3D5;     /* evidenze leggere */
-  --f-sand-deep:#7E6210;     /* link, numeri e barre: dorato scuro (contrasto 5,6:1 sul bianco) */
+  --f-sand:#FCF0A4;          /* pulsante principale: giallo limone pastello */
+  --f-bar:#EDCB33;           /* barre del tempo, cursori, avanzamento */
+  --f-sand-press:#F7E47C;
+  --f-sand-ink:#2F2B0E;      /* testo sul giallo */
+  --f-sand-soft:#FFF9DB;     /* evidenze leggere */
+  --f-sand-deep:#1A1D21;     /* link e numeri in evidenza: quasi nero (il giallo non si legge come testo) */
   /* stati */
   --f-ok:#3E8E5A;
   --f-ok-soft:#E3F1E6;
@@ -40,8 +41,8 @@
   /* le vecchie variabili seguono la nuova palette */
   --cream:var(--f-bg);--dark:var(--f-ink);--muted:var(--f-ink-2);--border:var(--f-line);
   --surface:var(--f-card);--surface2:var(--f-fill);
-  --orange:var(--f-sand-deep);--blue:var(--f-sand-deep);--accent:var(--f-sand-deep);--accent-light:var(--f-sand-soft);
-  --coral:var(--f-sand-deep);--blue-bg:var(--f-sand-soft);
+  --orange:var(--f-bar);--blue:var(--f-bar);--accent:var(--f-bar);--accent-light:var(--f-sand-soft);
+  --coral:var(--f-bar);--blue-bg:var(--f-sand-soft);
   --green:var(--f-ok);--teal:var(--f-ok);--teal-bg:var(--f-ok-soft);--green-bg:var(--f-ok-soft);
   --red:var(--f-bad);--ocra:var(--f-warn);
 }
@@ -87,7 +88,7 @@ button{-webkit-tap-highlight-color:transparent;}
 /* disattivato */
 .ebtn:disabled,.codice-cta:disabled,.codice-cta[disabled]{background:var(--f-fill)!important;color:var(--f-ink-3)!important;opacity:1!important;cursor:default;transform:none!important;}
 /* link */
-.cdr-link{color:var(--f-sand-deep)!important;}
+.cdr-link{color:var(--f-ink)!important;text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--f-bar);}
 .cdr-link.muted{color:var(--f-ink-2)!important;}
 .home-btn{background:var(--f-sand-soft)!important;color:var(--f-sand-ink)!important;}
 .home-btn:hover{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
@@ -143,14 +144,14 @@ button{-webkit-tap-highlight-color:transparent;}
 
 /* barre del tempo e grandi numeri dei timer (stili scritti nel codice dei giochi) */
 div[style*="height:12px;background:var(--border)"],div[style*="height:10px;background:var(--border)"],div[style*="height:8px;background:var(--border)"]{background:var(--f-fill)!important;height:8px!important;}
-div[style*="height:12px;background:var(--border)"]>div,div[style*="height:10px;background:var(--border)"]>div,div[style*="height:8px;background:var(--border)"]>div{background:var(--f-sand-deep)!important;}
+div[style*="height:12px;background:var(--border)"]>div,div[style*="height:10px;background:var(--border)"]>div,div[style*="height:8px;background:var(--border)"]>div{background:var(--f-bar)!important;}
 div[style*="font-size:90px"]{color:var(--f-ink)!important;font-weight:700!important;letter-spacing:-2px!important;}
 
 /* cursori */
-input[type=range]{accent-color:var(--f-sand-deep)!important;}
+input[type=range]{accent-color:var(--f-bar)!important;}
 .qv-slider{background:var(--f-fill)!important;}
-.qv-slider::-webkit-slider-thumb{background:var(--f-sand-deep)!important;border:3px solid #fff!important;box-shadow:0 1px 4px rgba(26,29,33,0.25)!important;}
-.qv-slider::-moz-range-thumb{background:var(--f-sand-deep)!important;border:3px solid #fff!important;}
+.qv-slider::-webkit-slider-thumb{background:var(--f-bar)!important;border:3px solid #fff!important;box-shadow:0 1px 4px rgba(26,29,33,0.25)!important;}
+.qv-slider::-moz-range-thumb{background:var(--f-bar)!important;border:3px solid #fff!important;}
 
 /* ════════════════════════════════════════════
    7. QUIZ, PUNTEGGI, RISULTATI
@@ -167,7 +168,7 @@ input[type=range]{accent-color:var(--f-sand-deep)!important;}
 .quiz-level-card{border:none!important;box-shadow:var(--f-shadow)!important;border-radius:var(--f-r-md)!important;}
 .quiz-level-card .ql-name{color:var(--f-ink)!important;}
 .quiz-progress{background:var(--f-fill)!important;}
-.quiz-progress-bar{background:var(--f-sand-deep)!important;}
+.quiz-progress-bar{background:var(--f-bar)!important;}
 .quiz-answer.correct{background:var(--f-ok-soft)!important;color:var(--f-ok)!important;border:none!important;}
 .quiz-pick{background:var(--f-fill)!important;color:var(--f-ink)!important;border:none!important;}
 .quiz-pick.on{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
@@ -205,7 +206,7 @@ input[type=range]{accent-color:var(--f-sand-deep)!important;}
    ════════════════════════════════════════════ */
 /* barre del tempo: stessa barra sabbia in tutti i giochi */
 div[style*="max-width: 260px"][style*="overflow: hidden"]{background:var(--f-fill)!important;height:8px!important;}
-div[style*="max-width: 260px"][style*="overflow: hidden"]>div{background:var(--f-sand-deep)!important;}
+div[style*="max-width: 260px"][style*="overflow: hidden"]>div{background:var(--f-bar)!important;}
 /* parole vietate di Sì, no, non */
 div[style*="font-weight: 900"][style*="padding: 8px 20px"]{background:var(--f-bad-soft)!important;color:var(--f-bad)!important;font-weight:700!important;}
 /* spunti e domande su fondo scuro: inchiostro caldo invece del bordeaux */
@@ -287,3 +288,8 @@ body[data-cat="cultura"]{--f-cat:#DCE3F7;}body[data-cat="adulti"]{--f-cat:#EEDCE
 /* schede bianche su fondo bianco: bordo sottile */
 .dcard,.quiz-card,.starter-card{box-shadow:0 0 0 1px #E6EAEF,0 10px 30px rgba(26,29,33,0.06)!important;}
 .cb{box-shadow:0 0 0 1px #E9EDF1,0 6px 18px rgba(26,29,33,0.05)!important;}
+
+/* testi che usavano il colore d'accento: quasi nero (il giallo non si legge come testo) */
+.home-btn,.splash-tagline,.qnum,.mc-price,.quiz-score-num,.alfa-timer,.dado-player-score.close,.qv-slider-val,.qv-answer-val,.connect-code-display{color:var(--f-ink)!important;}
+.splash-divider{background:var(--f-bar)!important;}
+.mw-reveal-btn,.intesa-round-badge{color:var(--f-sand-ink)!important;}
