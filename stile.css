@@ -1,6 +1,6 @@
 /*!
  * Filòs — © 2026 i titolari del progetto Filòs. Tutti i diritti riservati.
- * Stile unico dell'app: pulito, essenziale, leggibile. Conferme in azzurro pastello.
+ * Stile unico dell'app: fondo bianco, pastelli delle categorie, conferme in giallo pastello.
  * Caricato dopo lo stile principale: le regole qui sotto valgono per tutta l'app.
  */
 
@@ -18,12 +18,12 @@
   --f-ink:#1A1D21;           /* quasi nero */
   --f-ink-2:#5B626B;         /* secondario */
   --f-ink-3:#8E959E;         /* solo segnaposto e icone, mai testo da leggere */
-  /* conferme: azzurro pastello */
-  --f-sand:#BBD5EC;          /* pulsante principale */
-  --f-sand-press:#A6C6E3;
-  --f-sand-ink:#102A43;      /* testo sull'azzurro */
-  --f-sand-soft:#E5EFF8;     /* evidenze leggere */
-  --f-sand-deep:#2E6390;     /* link e accenti su chiaro (contrasto 6:1 sul bianco) */
+  /* conferme: giallo pastello */
+  --f-sand:#F6E3A1;          /* pulsante principale */
+  --f-sand-press:#EED37A;
+  --f-sand-ink:#3B2F06;      /* testo sul giallo */
+  --f-sand-soft:#FBF3D5;     /* evidenze leggere */
+  --f-sand-deep:#7E6210;     /* link, numeri e barre: dorato scuro (contrasto 5,6:1 sul bianco) */
   /* stati */
   --f-ok:#3E8E5A;
   --f-ok-soft:#E3F1E6;
@@ -264,13 +264,16 @@ div[style*="border-radius: 24px"][style*="background: rgb(28, 28, 30)"]{backgrou
 [style*="font-weight: 900"],[style*="font-weight:900"],.intesa-title,.trad-num-disp{font-weight:800!important;}
 
 /* ════════════════════════════════════════════
-   12. BIANCO E AZZURRO PASTELLO: niente riquadri scuri
+   12. FONDO BIANCO E PASTELLI: niente riquadri scuri
    ════════════════════════════════════════════ */
-/* intestazioni dei giochi: sempre azzurro pastello */
-.dhdr,.quiz-card-hdr:not(.light),.starter-card-hdr{background:var(--f-sand-soft)!important;}
+/* colore pastello della categoria aperta (lo imposta l'app su <body data-cat>) */
+body{--f-cat:var(--f-sand-soft);}
+body[data-cat="amici"]{--f-cat:#F6E0CF;}body[data-cat="coppia"]{--f-cat:#F5DADF;}body[data-cat="bambini"]{--f-cat:#D8F0E6;}
+body[data-cat="indovinelli"]{--f-cat:#E8E0F5;}body[data-cat="azione"]{--f-cat:#F8D9D3;}body[data-cat="creativi"]{--f-cat:#DCEBDD;}
+body[data-cat="cultura"]{--f-cat:#DCE3F7;}body[data-cat="adulti"]{--f-cat:#EEDCEB;}body[data-cat="relax"]{--f-cat:#D9ECF7;}body[data-cat="solitario"]{--f-cat:#E8E8EE;}
 /* riquadri che prima erano scuri */
 .adulti-q,.qv-reveal-box,.intesa-score-board,.starter-final,.mw-word-box,.nc-letter-box,.codice-secret-digit,.codice-turn-info,.cdr-code-d{
-  background:var(--f-sand-soft)!important;color:var(--f-ink)!important;box-shadow:none!important;}
+  background:var(--f-cat)!important;color:var(--f-ink)!important;box-shadow:none!important;}
 .adulti-q *,.qv-reveal-answer,.intesa-score-num,.starter-final-title,.mw-word,.nc-letter-box .ncl-char,.codice-secret-digit{color:var(--f-ink)!important;}
 .adulti-q-label,.qv-reveal-label,.qv-reveal-curiosita,.intesa-score-label,.starter-final-sub,.mw-word-label,.nc-letter-box .ncl-label{color:var(--f-ink-2)!important;}
 .adulti-q-next{border-color:var(--f-sand-deep)!important;color:var(--f-sand-deep)!important;background:#fff!important;}
