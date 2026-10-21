@@ -75,8 +75,9 @@ function fgrName(idx){var it=fgrList()[idx];return it?String(it.a):"";}
 function fgrQuestion(idx){var it=fgrList()[idx];if(!it)return null;return {src:fgrFlagSrc(idx),a:it.a,extra:it.extra};}
 function fgrShuffle(a){for(var j=a.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=a[j];a[j]=a[k];a[k]=t;}return a;}
 // 10 bandiere diverse, e per ognuna 4 paesi (quello giusto più 3 a caso) in ordine casuale
-function fgrPickRound(){
- var n=fgrCount();var idx=[];for(var i=0;i<n;i++)idx.push(i);
+function fgrPickRound(lvl){
+ // Stessi tre livelli della versione al tavolo; anche i paesi sbagliati vengono dallo stesso livello
+ var idx=rlThirds(fgrCount(),lvl);var n=idx.length;
  var qs=fgrShuffle(idx.slice()).slice(0,Math.min(FGR_ROUNDS,n));
  var opts=qs.map(function(q){
   var others=fgrShuffle(idx.filter(function(x){return x!==q;})).slice(0,Math.min(3,n-1));
@@ -148,7 +149,7 @@ function fgrExit(){fgrLeave();goBackToGames();}
 function fgrStart(){
  var st=fgrState();if(st.leader!==FGR.me||st.lobby.length<2||FGR.busy)return;
  FGR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,FGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false},fgrPickRound()))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,FGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta)},fgrPickRound(rlLevel(st.meta))))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 function fgrAnswer(v){
  if(typeof v!=="number")return;
@@ -182,8 +183,15 @@ function fgrRematch(){
  var st=fgrState();if(st.leader!==FGR.me||FGR.busy)return;
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  FGR.busy=true;
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false},fgrPickRound());
+ var lv=rlLevel(st.meta);
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv},fgrPickRound(lv));
  cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
+}
+// Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
+function fgrSetLevel(l){
+ var st=fgrState();if(st.leader!==FGR.me||FGR.busy||RL_LEVELS.indexOf(l)<0)return;
+ FGR.busy=true;
+ cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({},st.meta,{lvl:l}))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 function fgrInvite(silent){
  if(!fbDB||!FGR.code)return;
@@ -195,7 +203,7 @@ function fgrInvite(silent){
 // ── Schermate ──
 function renderFlRemote(){fgrRender(true);}
 function fgrSignature(st){
- var s=[FGR.closed,st.phase,st.lobby,st.active,st.game,st.q,st.reveal,st.ended,st.leader,LANG,!!st.cur[FGR.me]];
+ var s=[FGR.closed,st.phase,rlLevel(st.meta),st.lobby,st.active,st.game,st.q,st.reveal,st.ended,st.leader,LANG,!!st.cur[FGR.me]];
  // Mentre si sceglie la risposta la schermata non si ridisegna quando rispondono gli altri
  if(st.cur[FGR.me]||st.reveal||st.active.indexOf(FGR.me)<0)s.push(Object.keys(st.cur));
  return JSON.stringify(s);
@@ -260,6 +268,7 @@ function fgrScreenLobby(wrap,st){
  var list=div("cdr-list");
  st.lobby.forEach(function(n){var r=div("cdr-row");r.appendChild(div("cdr-dot on"));r.appendChild(div("cdr-name",n+(n===FGR.me?" "+T("cdrYou"):"")));if(n===st.leader)r.appendChild(div("cdr-tag",T("cdrHost")));list.appendChild(r);});
  wrap.appendChild(list);
+ rlLevelPicker(wrap,rlLevel(st.meta),lead,fgrSetLevel);
  if(lead){
   var go=btn("codice-cta",T("qvStart"),fgrStart);
   go.disabled=st.lobby.length<2;
@@ -272,7 +281,7 @@ function fgrScreenLobby(wrap,st){
  }
 }
 function fgrQuestionBox(wrap,st){
- wrap.appendChild(div("agr-round",T("fgrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)));
+ wrap.appendChild(div("agr-round",T("fgrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)+" · "+rlLevelName(rlLevel(st.meta))));
  var q=fgrQuestion(st.qs[st.q])||{src:"",a:"",extra:""};
  var box=div("fgr-flag");
  if(q.src){var im=document.createElement("img");im.src=q.src;im.alt="";box.appendChild(im);}
@@ -381,6 +390,7 @@ function fgrScreenEnd(wrap,st){
   wrap.appendChild(div("end-sub",T("fgrEndSub").replace("{p}",max).replace("{t}",st.qs.length)));
  }
  fgrScores(wrap,st);
+ if(st.leader===FGR.me)rlLevelPicker(wrap,rlLevel(st.meta),true,fgrSetLevel);
  var btns=div("endbtns");
  if(st.leader===FGR.me)btns.appendChild(btn("ebtn",T("qvPlayAgain"),fgrRematch));
  else wrap.appendChild(div("cdr-wait",T("cdrWaitRematch").replace("{n}",st.leader||"")));

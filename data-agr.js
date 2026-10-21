@@ -65,9 +65,16 @@ function agrState(){
  return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1};
 }
 function agrQuestion(idx){var l=agData();return l[idx]||(typeof ANNO_GIUSTO_DATA!=="undefined"?ANNO_GIUSTO_DATA[idx]:null);}
-function agrPickQuestions(){
+// Livelli di Anno giusto: l'elenco va dalle domande più famose alle più difficili.
+// Facile: 0-57 · Media: 58-83 più le ultime (sport e spettacolo, 152-172) · Difficile: 84-151
+function agrLevelPool(lvl){
  var n=(typeof ANNO_GIUSTO_DATA!=="undefined")?ANNO_GIUSTO_DATA.length:0;
- var idx=[];for(var i=0;i<n;i++)idx.push(i);
+ var r=function(a,b){var o=[];for(var i=a;i<=Math.min(b,n-1);i++)o.push(i);return o;};
+ var pool=lvl==="facile"?r(0,57):lvl==="media"?r(58,83).concat(r(152,n-1)):r(84,151);
+ return pool.length>=AGR_ROUNDS?pool:r(0,n-1);
+}
+function agrPickQuestions(lvl){
+ var idx=agrLevelPool(lvl);var n=idx.length;
  for(var j=idx.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=idx[j];idx[j]=idx[k];idx[k]=t;}
  return idx.slice(0,Math.min(AGR_ROUNDS,n));
 }
@@ -136,7 +143,7 @@ function agrExit(){agrLeave();goBackToGames();}
 function agrStart(){
  var st=agrState();if(st.leader!==AGR.me||st.lobby.length<2||AGR.busy)return;
  AGR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),{phase:"play",order:st.lobby.slice(0,AGR_MAX_PLAYERS),game:st.game,qs:agrPickQuestions(),q:0,rv:-1,end:false})).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),{phase:"play",order:st.lobby.slice(0,AGR_MAX_PLAYERS),game:st.game,qs:agrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta)})).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 function agrAnswer(v){
  var st=agrState();
@@ -168,8 +175,15 @@ function agrRematch(){
  var st=agrState();if(st.leader!==AGR.me||AGR.busy)return;
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  AGR.busy=true;
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1}:{phase:"play",order:still,game:st.game+1,qs:agrPickQuestions(),q:0,rv:-1,end:false};
+ var lv=rlLevel(st.meta);
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:agrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv};
  cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
+}
+// Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
+function agrSetLevel(l){
+ var st=agrState();if(st.leader!==AGR.me||AGR.busy||RL_LEVELS.indexOf(l)<0)return;
+ AGR.busy=true;
+ cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),Object.assign({},st.meta,{lvl:l}))).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 function agrInvite(silent){
  if(!fbDB||!AGR.code)return;
@@ -181,7 +195,7 @@ function agrInvite(silent){
 // ── Schermate ──
 function renderAgRemote(){agrRender(true);}
 function agrSignature(st){
- var s=[AGR.closed,st.phase,st.lobby,st.active,st.game,st.q,st.reveal,st.ended,st.leader,LANG,!!st.cur[AGR.me]];
+ var s=[AGR.closed,st.phase,rlLevel(st.meta),st.lobby,st.active,st.game,st.q,st.reveal,st.ended,st.leader,LANG,!!st.cur[AGR.me]];
  // Mentre si sceglie l'anno la schermata non si ridisegna quando rispondono gli altri (il cursore resterebbe a metà)
  if(st.cur[AGR.me]||st.reveal||st.active.indexOf(AGR.me)<0)s.push(Object.keys(st.cur));
  return JSON.stringify(s);
@@ -246,6 +260,7 @@ function agrScreenLobby(wrap,st){
  var list=div("cdr-list");
  st.lobby.forEach(function(n){var r=div("cdr-row");r.appendChild(div("cdr-dot on"));r.appendChild(div("cdr-name",n+(n===AGR.me?" "+T("cdrYou"):"")));if(n===st.leader)r.appendChild(div("cdr-tag",T("cdrHost")));list.appendChild(r);});
  wrap.appendChild(list);
+ rlLevelPicker(wrap,rlLevel(st.meta),lead,agrSetLevel);
  if(lead){
   var go=btn("codice-cta",T("qvStart"),agrStart);
   go.disabled=st.lobby.length<2;
@@ -258,7 +273,7 @@ function agrScreenLobby(wrap,st){
  }
 }
 function agrQuestionBox(wrap,st){
- wrap.appendChild(div("agr-round",T("agrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)));
+ wrap.appendChild(div("agr-round",T("agrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)+" · "+rlLevelName(rlLevel(st.meta))));
  var q=agrQuestion(st.qs[st.q])||{q:""};
  wrap.appendChild(div("agr-q",q.q));
  return q;
@@ -369,6 +384,7 @@ function agrScreenEnd(wrap,st){
   wrap.appendChild(div("end-sub",T("agrEndSub").replace("{p}",max).replace("{t}",st.qs.length)));
  }
  agrScores(wrap,st);
+ if(st.leader===AGR.me)rlLevelPicker(wrap,rlLevel(st.meta),true,agrSetLevel);
  var btns=div("endbtns");
  if(st.leader===AGR.me)btns.appendChild(btn("ebtn",T("qvPlayAgain"),agrRematch));
  else wrap.appendChild(div("cdr-wait",T("cdrWaitRematch").replace("{n}",st.leader||"")));
