@@ -1,0 +1,286 @@
+/*!
+ * Filòs — © 2026 i titolari del progetto Filòs. Tutti i diritti riservati.
+ * Stile unico dell'app: pulito, essenziale, leggibile. Conferme in azzurro pastello.
+ * Caricato dopo lo stile principale: le regole qui sotto valgono per tutta l'app.
+ */
+
+/* ════════════════════════════════════════════
+   1. COLORI E MISURE
+   ════════════════════════════════════════════ */
+:root{
+  /* fondo e superfici */
+  --f-bg:#FFFFFF;            /* fondo bianco */
+  --f-card:#FFFFFF;
+  --f-fill:#F0F3F6;          /* riempimenti leggeri, campi, pulsanti secondari */
+  --f-fill-2:#E4E9EE;        /* stato premuto */
+  --f-line:#E6EAEF;          /* separatori */
+  /* testo */
+  --f-ink:#1A1D21;           /* quasi nero */
+  --f-ink-2:#5B626B;         /* secondario */
+  --f-ink-3:#8E959E;         /* solo segnaposto e icone, mai testo da leggere */
+  /* conferme: azzurro pastello */
+  --f-sand:#BBD5EC;          /* pulsante principale */
+  --f-sand-press:#A6C6E3;
+  --f-sand-ink:#102A43;      /* testo sull'azzurro */
+  --f-sand-soft:#E5EFF8;     /* evidenze leggere */
+  --f-sand-deep:#2E6390;     /* link e accenti su chiaro (contrasto 6:1 sul bianco) */
+  /* stati */
+  --f-ok:#3E8E5A;
+  --f-ok-soft:#E3F1E6;
+  --f-warn:#C99A2E;
+  --f-bad:#C2513F;
+  --f-bad-soft:#F7E4E0;
+  /* forme */
+  --f-r-lg:24px;
+  --f-r-md:16px;
+  --f-r-sm:12px;
+  --f-shadow:0 0 0 1px #E9EDF1,0 6px 20px rgba(26,29,33,0.05);
+  --f-font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+
+  /* le vecchie variabili seguono la nuova palette */
+  --cream:var(--f-bg);--dark:var(--f-ink);--muted:var(--f-ink-2);--border:var(--f-line);
+  --surface:var(--f-card);--surface2:var(--f-fill);
+  --orange:var(--f-sand-deep);--blue:var(--f-sand-deep);--accent:var(--f-sand-deep);--accent-light:var(--f-sand-soft);
+  --coral:var(--f-sand-deep);--blue-bg:var(--f-sand-soft);
+  --green:var(--f-ok);--teal:var(--f-ok);--teal-bg:var(--f-ok-soft);--green-bg:var(--f-ok-soft);
+  --red:var(--f-bad);--ocra:var(--f-warn);
+}
+
+/* ════════════════════════════════════════════
+   2. BASE
+   ════════════════════════════════════════════ */
+html,body{background:var(--f-bg)!important;}
+body{font-family:var(--f-font)!important;color:var(--f-ink)!important;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;}
+h1,h2,h3,.logo,.splash-logo,.home-title,.sec-title,.dtitle,.gn,.end-ti,.end-title,button,input,textarea,select{font-family:var(--f-font)!important;}
+::selection{background:var(--f-sand-soft);}
+input,textarea{caret-color:var(--f-sand-deep);}
+button{-webkit-tap-highlight-color:transparent;}
+:focus-visible{outline:2px solid var(--f-sand-deep);outline-offset:2px;}
+
+/* ════════════════════════════════════════════
+   3. BARRA IN ALTO
+   ════════════════════════════════════════════ */
+.hdr{background:rgba(255,255,255,0.9)!important;-webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);border-bottom:0.5px solid var(--f-line)!important;}
+.logo,#logoEl{color:var(--f-ink)!important;letter-spacing:-0.4px;}
+.back-arrow{background:var(--f-fill)!important;color:var(--f-ink)!important;}
+.back-arrow:hover{background:var(--f-fill-2)!important;}
+.lang-pill{background:var(--f-fill)!important;}
+.lang-pill button{color:var(--f-ink-3)!important;}
+.lang-pill button.active{color:var(--f-ink)!important;background:#fff!important;box-shadow:0 1px 3px rgba(26,29,33,0.12)!important;}
+
+/* ════════════════════════════════════════════
+   4. PULSANTI
+   ════════════════════════════════════════════ */
+/* principale: sabbia */
+.ebtn,.codice-cta,.inv-btn.primary,.quiz-reveal-btn{
+  background:var(--f-sand)!important;color:var(--f-sand-ink)!important;border:none!important;
+  border-radius:14px!important;font-weight:600!important;font-size:17px!important;letter-spacing:-0.1px!important;
+  min-height:50px;box-shadow:none!important;transition:background .15s,transform .1s;
+}
+.ebtn:hover,.codice-cta:hover,.inv-btn.primary:hover,.quiz-reveal-btn:hover{background:var(--f-sand-press)!important;opacity:1!important;}
+.ebtn:active,.codice-cta:active,.inv-btn.primary:active,.quiz-reveal-btn:active{background:var(--f-sand-press)!important;transform:scale(0.98);}
+/* secondario */
+.ebtn.out,.inv-btn:not(.primary),.cdr .codice-cta.secondary,.agr-step{
+  background:var(--f-fill)!important;color:var(--f-ink)!important;border:none!important;
+}
+.ebtn.out:hover,.inv-btn:not(.primary):hover,.agr-step:hover{background:var(--f-fill-2)!important;}
+/* disattivato */
+.ebtn:disabled,.codice-cta:disabled,.codice-cta[disabled]{background:var(--f-fill)!important;color:var(--f-ink-3)!important;opacity:1!important;cursor:default;transform:none!important;}
+/* link */
+.cdr-link{color:var(--f-sand-deep)!important;}
+.cdr-link.muted{color:var(--f-ink-2)!important;}
+.home-btn{background:var(--f-sand-soft)!important;color:var(--f-sand-ink)!important;}
+.home-btn:hover{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+
+/* ════════════════════════════════════════════
+   5. HOME, CATEGORIE, LISTE
+   ════════════════════════════════════════════ */
+.home-title,.sec-title{color:var(--f-ink)!important;letter-spacing:-0.6px!important;font-weight:700!important;}
+.home-hint{color:var(--f-ink-2)!important;}
+.home-pay{background:var(--f-card)!important;border:none!important;border-radius:var(--f-r-md)!important;box-shadow:var(--f-shadow)!important;}
+.home-pay-ic{background:var(--f-sand)!important;}
+.home-pay-ic svg *{stroke:var(--f-sand-ink)!important;}
+.home-pay-chev{border-color:var(--f-ink-3)!important;}
+.cb{border-radius:22px!important;box-shadow:var(--f-shadow)!important;border:none!important;}
+/* lista giochi */
+.grow{background:var(--f-card)!important;border:none!important;border-radius:var(--f-r-md)!important;box-shadow:var(--f-shadow)!important;transition:transform .12s,box-shadow .12s;}
+.grow:hover{transform:none!important;box-shadow:0 1px 2px rgba(26,29,33,0.05),0 12px 28px rgba(26,29,33,0.09)!important;}
+.grow:active{transform:scale(0.99)!important;}
+.gn{color:var(--f-ink)!important;letter-spacing:-0.2px;}
+.garr{color:var(--f-ink-3)!important;}
+.panel h2,.sec-title{color:var(--f-ink)!important;}
+/* etichetta NUOVO */
+.new-badge,.badge-new,.gbadge,.gnew{background:var(--f-sand-soft)!important;color:var(--f-sand-deep)!important;}
+
+/* ════════════════════════════════════════════
+   6. SCHEDE DEI GIOCHI
+   ════════════════════════════════════════════ */
+.dcard,.quiz-card,.starter-card{background:var(--f-card)!important;border:none!important;border-radius:var(--f-r-lg)!important;box-shadow:var(--f-shadow)!important;}
+.dhdr,.quiz-card-hdr,.starter-card-hdr{color:var(--f-ink)!important;border-radius:var(--f-r-lg) var(--f-r-lg) 0 0!important;}
+.dhdr .dtitle,.dtitle,.intesa-title,.quiz-card-hdr .quiz-q,.starter-phrase{color:var(--f-ink)!important;letter-spacing:-0.5px;}
+.dhdr .intesa-desc,.intesa-desc,.quiz-card-hdr .quiz-hint{color:var(--f-ink-2)!important;}
+.card-nav-btn,.dhdr .card-nav-btn,.quiz-card-hdr .card-nav-btn,.starter-card-hdr .card-nav-btn{background:rgba(26,29,33,0.07)!important;color:var(--f-ink)!important;border:none!important;}
+.card-nav-btn:hover{background:rgba(26,29,33,0.12)!important;}
+.card-nav-btn.back{background:rgba(26,29,33,0.07)!important;}
+.dhdr .gtag,.dhdr .tag,.dhdr span[class*="tag"]{background:rgba(26,29,33,0.07)!important;color:var(--f-ink)!important;}
+.rlabel{color:var(--f-ink-2)!important;letter-spacing:1.4px!important;font-size:12px!important;font-weight:600!important;}
+.rtext{color:var(--f-ink)!important;}
+.tip{background:var(--f-sand-soft)!important;border:none!important;color:var(--f-sand-ink)!important;border-radius:var(--f-r-sm)!important;}
+
+/* nomi dei giocatori */
+.player-name-row{border-bottom:0.5px solid var(--f-line)!important;}
+.player-name-label{color:var(--f-ink-2)!important;letter-spacing:0.4px!important;font-size:12px!important;}
+.player-name-input{color:var(--f-ink)!important;background:transparent;}
+.player-name-input::placeholder{color:var(--f-ink-3)!important;}
+
+/* contatori + / − : tutti uguali */
+.trad-num-btn{background:var(--f-fill)!important;color:var(--f-ink)!important;width:44px!important;height:44px!important;}
+.trad-num-btn:hover{background:var(--f-fill-2)!important;}
+.trad-num-btn:disabled{opacity:0.35!important;}
+.trad-num-btn::before,.trad-num-btn.plus::after{width:16px!important;height:2px!important;}
+.trad-num-btn.plus::after{width:2px!important;height:16px!important;}
+.trad-num-disp{color:var(--f-ink)!important;font-weight:700!important;font-variant-numeric:tabular-nums;}
+
+/* barre del tempo e grandi numeri dei timer (stili scritti nel codice dei giochi) */
+div[style*="height:12px;background:var(--border)"],div[style*="height:10px;background:var(--border)"],div[style*="height:8px;background:var(--border)"]{background:var(--f-fill)!important;height:8px!important;}
+div[style*="height:12px;background:var(--border)"]>div,div[style*="height:10px;background:var(--border)"]>div,div[style*="height:8px;background:var(--border)"]>div{background:var(--f-sand-deep)!important;}
+div[style*="font-size:90px"]{color:var(--f-ink)!important;font-weight:700!important;letter-spacing:-2px!important;}
+
+/* cursori */
+input[type=range]{accent-color:var(--f-sand-deep)!important;}
+.qv-slider{background:var(--f-fill)!important;}
+.qv-slider::-webkit-slider-thumb{background:var(--f-sand-deep)!important;border:3px solid #fff!important;box-shadow:0 1px 4px rgba(26,29,33,0.25)!important;}
+.qv-slider::-moz-range-thumb{background:var(--f-sand-deep)!important;border:3px solid #fff!important;}
+
+/* ════════════════════════════════════════════
+   7. QUIZ, PUNTEGGI, RISULTATI
+   ════════════════════════════════════════════ */
+.qv-score-chip{background:var(--f-fill)!important;color:var(--f-ink)!important;font-weight:600!important;}
+.qv-score-chip.leader{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.qv-slider-wrap{border:none!important;box-shadow:var(--f-shadow)!important;border-radius:var(--f-r-md)!important;}
+.qv-slider-val{color:var(--f-ink)!important;}
+.qv-reveal-box{background:var(--f-ink)!important;border-radius:var(--f-r-md)!important;}
+.qv-player-answer{border:none!important;background:var(--f-card)!important;box-shadow:var(--f-shadow)!important;}
+.qv-player-answer.winner{background:var(--f-ok-soft)!important;}
+.qv-player-answer.current{background:var(--f-sand-soft)!important;}
+.qv-answer-val{color:var(--f-sand-deep)!important;}
+.quiz-level-card{border:none!important;box-shadow:var(--f-shadow)!important;border-radius:var(--f-r-md)!important;}
+.quiz-level-card .ql-name{color:var(--f-ink)!important;}
+.quiz-progress{background:var(--f-fill)!important;}
+.quiz-progress-bar{background:var(--f-sand-deep)!important;}
+.quiz-answer.correct{background:var(--f-ok-soft)!important;color:var(--f-ok)!important;border:none!important;}
+.quiz-pick{background:var(--f-fill)!important;color:var(--f-ink)!important;border:none!important;}
+.quiz-pick.on{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.quiz-board-row{background:var(--f-card)!important;border:none!important;box-shadow:var(--f-shadow)!important;}
+.quiz-board-row.win{background:var(--f-sand-soft)!important;}
+.agr-row.win,.agr-row.win .agr-row-n,.agr-row.win .agr-row-v{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.agr-row{background:var(--f-card)!important;box-shadow:var(--f-shadow);}
+.agr-answer,.agr-sent{background:var(--f-card)!important;box-shadow:var(--f-shadow);}
+.agr-answer-v,.agr-sent-t{color:var(--f-ok)!important;}
+.agr-chip.on{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.pdr-opt{background:var(--f-card)!important;box-shadow:var(--f-shadow);border:2px solid transparent!important;}
+.pdr-opt.on{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.cdr-row{background:var(--f-card)!important;box-shadow:var(--f-shadow);}
+.cdr-tag{background:var(--f-sand-soft)!important;color:var(--f-sand-deep)!important;}
+.cdr-dot.on{background:var(--f-ok)!important;}
+.codice-tab.on{color:var(--f-ink)!important;}
+.codice-slot{border-color:var(--f-line)!important;}
+.codice-peg.g{background:var(--f-ok)!important;border-color:var(--f-ok)!important;}
+.codice-peg.y{background:#E7BE3F!important;border-color:#E7BE3F!important;}
+.end-title{color:var(--f-ink)!important;letter-spacing:-1px!important;}
+.end-sub{color:var(--f-ink-2)!important;}
+
+/* ════════════════════════════════════════════
+   8. NOTIFICHE, AVVISI, FINESTRE
+   ════════════════════════════════════════════ */
+.inv-card{border-radius:22px!important;box-shadow:0 12px 40px rgba(26,29,33,0.18)!important;}
+.inv-icon{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+#cdr-toast{background:rgba(26,29,33,0.88)!important;}
+.menu-tab.on{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.menu-card{border:none!important;box-shadow:var(--f-shadow)!important;}
+
+/* ════════════════════════════════════════════
+   9. ELEMENTI CON STILE SCRITTO NEL CODICE DEI GIOCHI
+   (il browser li riscrive con gli spazi: "height: 12px")
+   ════════════════════════════════════════════ */
+/* barre del tempo: stessa barra sabbia in tutti i giochi */
+div[style*="max-width: 260px"][style*="overflow: hidden"]{background:var(--f-fill)!important;height:8px!important;}
+div[style*="max-width: 260px"][style*="overflow: hidden"]>div{background:var(--f-sand-deep)!important;}
+/* parole vietate di Sì, no, non */
+div[style*="font-weight: 900"][style*="padding: 8px 20px"]{background:var(--f-bad-soft)!important;color:var(--f-bad)!important;font-weight:700!important;}
+/* spunti e domande su fondo scuro: inchiostro caldo invece del bordeaux */
+.adulti-q{background:var(--f-ink)!important;border-radius:var(--f-r-md)!important;box-shadow:none!important;}
+/* etichette nell'intestazione della scheda (giocatori, durata, categoria) */
+.dbadge{background:rgba(26,29,33,0.07)!important;color:var(--f-ink)!important;font-weight:600!important;}
+/* schermata iniziale */
+.splash-btn{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;border-radius:14px!important;font-weight:600!important;}
+.splash-btn:hover{background:var(--f-sand-press)!important;}
+/* livelli di La parola giusta come gli altri livelli */
+.intesa-level-card{border:none!important;box-shadow:var(--f-shadow)!important;border-radius:var(--f-r-md)!important;background:var(--f-card)!important;}
+.intesa-level-card .il-name,.il-name{color:var(--f-ink)!important;}
+.intesa-level-card .il-desc,.il-desc{color:var(--f-ink-2)!important;}
+/* messaggi di errore */
+.cdr-err{color:var(--f-bad)!important;}
+
+/* ════════════════════════════════════════════
+   10. TESTI SULLE INTESTAZIONI CHIARE E PULSANTI SCURI RIMASTI
+   ════════════════════════════════════════════ */
+.riddle-q{color:var(--f-ink)!important;}
+.riddle-ans{background:var(--f-sand-soft)!important;color:var(--f-ink)!important;}
+.reveal-btn,.mw-reveal-btn,.connect-btn-main,.me-add{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;border:none!important;border-radius:14px!important;font-weight:600!important;}
+.reveal-btn:hover,.mw-reveal-btn:hover,.connect-btn-main:hover{background:var(--f-sand-press)!important;opacity:1!important;}
+/* scelte selezionate (filtri, schede, chip): sabbia */
+.pchip.on,.ftag.on,.me-tab.on{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;border-color:var(--f-sand)!important;}
+.pchip,.ftag,.me-tab{border-color:var(--f-line)!important;}
+/* punteggi ed etichette informative: grigio caldo */
+.alfa-score-chip,.nc-score-chip,.qround,.codice-turn-info{background:var(--f-fill)!important;color:var(--f-ink)!important;}
+.alfa-score-chip.leader{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.intesa-round-badge,.client-indicator{background:var(--f-sand-soft)!important;color:var(--f-sand-deep)!important;}
+/* etichette della lista giochi */
+.new{background:var(--f-sand-soft)!important;color:var(--f-sand-deep)!important;}
+.hot{background:var(--f-ink)!important;color:#fff!important;}
+.codice-known-slot.found,.codice-num-btn.found{background:var(--f-ok)!important;}
+.pin-btn:hover{background:var(--f-sand)!important;color:var(--f-sand-ink)!important;}
+.order-toast{background:rgba(26,29,33,0.9)!important;}
+.mw-is-white{color:#F08A7A!important;}
+
+/* ════════════════════════════════════════════
+   11. LEGGIBILITÀ: grigi abbastanza scuri su ogni fondo
+   ════════════════════════════════════════════ */
+.codice-sub,.codice-eyebrow,.codice-legend,.codice-step,.legal-foot,.legal-foot *,.home-legal,.home-legal *{color:var(--f-ink-2)!important;}
+.intesa-desc,.dhdr .intesa-desc{color:#4A525C!important;}
+.qcard-round{color:#4A525C!important;}
+.qv-reveal-label{color:rgba(255,255,255,0.68)!important;}
+/* grigi chiari scritti nel codice dei giochi */
+[style*="color: rgb(170, 170, 170)"],[style*="color: rgb(192, 192, 192)"],[style*="color: rgb(204, 204, 204)"],[style*="color: rgb(187, 187, 187)"],
+[style*="color: rgb(153, 153, 153)"],[style*="color: rgb(136, 136, 136)"],[style*="color: rgb(142, 142, 147)"],[style*="color: rgb(160, 160, 160)"],
+[style*="color: rgb(200, 200, 200)"],[style*="color: rgb(176, 176, 176)"],[style*="color: rgb(192, 186, 176)"]{color:var(--f-ink-2)!important;}
+[style*="color: rgb(102, 102, 102)"],[style*="color: rgb(85, 85, 85)"],[style*="color: rgb(68, 68, 68)"],[style*="color: rgb(99, 99, 102)"]{color:var(--f-ink)!important;}
+[style*="color:#ccc"],[style*="color:#aaa"],[style*="color:#bbb"],[style*="color:#999"],[style*="color:#888"],[style*="color:#c0c0c0"],[style*="color:#c0bab0"],[style*="color:#8e8e93"]{color:var(--f-ink-2)!important;}
+/* icone delle schermate di accesso (NFC, area riservata) */
+div[style*="border-radius: 24px"][style*="background: rgb(28, 28, 30)"]{background:var(--f-ink)!important;}
+/* un solo carattere in tutta l'app, anche dove il codice ne chiedeva un altro */
+[style*="Space Grotesk"],[style*="DM Sans"],[style*="SF Pro"]{font-family:var(--f-font)!important;}
+[style*="font-weight: 900"],[style*="font-weight:900"],.intesa-title,.trad-num-disp{font-weight:800!important;}
+
+/* ════════════════════════════════════════════
+   12. BIANCO E AZZURRO PASTELLO: niente riquadri scuri
+   ════════════════════════════════════════════ */
+/* intestazioni dei giochi: sempre azzurro pastello */
+.dhdr,.quiz-card-hdr:not(.light),.starter-card-hdr{background:var(--f-sand-soft)!important;}
+/* riquadri che prima erano scuri */
+.adulti-q,.qv-reveal-box,.intesa-score-board,.starter-final,.mw-word-box,.nc-letter-box,.codice-secret-digit,.codice-turn-info,.cdr-code-d{
+  background:var(--f-sand-soft)!important;color:var(--f-ink)!important;box-shadow:none!important;}
+.adulti-q *,.qv-reveal-answer,.intesa-score-num,.starter-final-title,.mw-word,.nc-letter-box .ncl-char,.codice-secret-digit{color:var(--f-ink)!important;}
+.adulti-q-label,.qv-reveal-label,.qv-reveal-curiosita,.intesa-score-label,.starter-final-sub,.mw-word-label,.nc-letter-box .ncl-label{color:var(--f-ink-2)!important;}
+.adulti-q-next{border-color:var(--f-sand-deep)!important;color:var(--f-sand-deep)!important;background:#fff!important;}
+/* schermata segreta di Mr. White */
+.mw-reveal-screen{background:#fff!important;}
+.mw-reveal-msg,.mw-reveal-sub,.mw-is-white-sub{color:var(--f-ink-2)!important;}
+.mw-reveal-word{color:var(--f-ink)!important;}
+.mw-is-white{color:var(--f-bad)!important;}
+/* etichette */
+.hot{background:#FCE5E0!important;color:#9C3B2B!important;}
+/* schede bianche su fondo bianco: bordo sottile */
+.dcard,.quiz-card,.starter-card{box-shadow:0 0 0 1px #E6EAEF,0 10px 30px rgba(26,29,33,0.06)!important;}
+.cb{box-shadow:0 0 0 1px #E9EDF1,0 6px 18px rgba(26,29,33,0.05)!important;}

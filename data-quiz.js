@@ -271,7 +271,7 @@ function renderNfcGate(){
  wrap.appendChild(sub);
  // Animazione onda NFC
  var nfcAnim=div("");nfcAnim.style.cssText="position:relative;width:80px;height:80px;margin:8px auto;";
- nfcAnim.innerHTML='<style>@keyframes nfc-ring{0%{transform:scale(0.4);opacity:0.8}100%{transform:scale(1.6);opacity:0}}.nfc-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #FF7A45;animation:nfc-ring 1.6s ease-out infinite;}.nfc-ring:nth-child(2){animation-delay:0.5s}.nfc-ring:nth-child(3){animation-delay:1s}</style><div class="nfc-ring"></div><div class="nfc-ring"></div><div class="nfc-ring"></div>';
+ nfcAnim.innerHTML='<style>@keyframes nfc-ring{0%{transform:scale(0.4);opacity:0.8}100%{transform:scale(1.6);opacity:0}}.nfc-ring{position:absolute;inset:0;border-radius:50%;border:2px solid #2E6390;animation:nfc-ring 1.6s ease-out infinite;}.nfc-ring:nth-child(2){animation-delay:0.5s}.nfc-ring:nth-child(3){animation-delay:1s}</style><div class="nfc-ring"></div><div class="nfc-ring"></div><div class="nfc-ring"></div>';
  wrap.appendChild(nfcAnim);
  if(NFC_STATE.status==="checking"){wrap.appendChild(div("",T("nfcChecking")));}
  else if(NFC_STATE.status==="invalid"){var m=div("",T("nfcInvalid"));m.style.cssText="color:#ff3b30;font-weight:600;max-width:300px;";wrap.appendChild(m);}
@@ -289,7 +289,7 @@ function renderOnboarding(){
  // Logo
  var logo=div("","Filòs");
  logo.setAttribute("translate","no");
- logo.style.cssText="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14px;letter-spacing:4px;color:#FF7A45;text-transform:uppercase;margin-bottom:40px;";
+ logo.style.cssText="font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:14px;letter-spacing:4px;color:#2E6390;text-transform:uppercase;margin-bottom:40px;";
  wrap.appendChild(logo);
 
  // Titolo
@@ -308,7 +308,7 @@ function renderOnboarding(){
  var inputRow=div("");
  inputRow.style.cssText="display:flex;align-items:center;padding:0 16px;min-height:52px;gap:12px;";
  var icon=div("");
- icon.style.cssText="flex-shrink:0;color:#FF7A45;display:flex;align-items:center;";
+ icon.style.cssText="flex-shrink:0;color:#2E6390;display:flex;align-items:center;";
  icon.innerHTML='<svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="8" r="4.5" stroke="currentColor" stroke-width="1.8"/><circle cx="15" cy="8" r="3.5" stroke="currentColor" stroke-width="1.8" opacity="0.5"/><path d="M1 17c0-3 3.5-5 8-5s8 2 8 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity="0.5"/><path d="M13.5 12.5c2 .3 4 1.5 4 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
  var inp=el("input","");
  inp.type="text";inp.placeholder=T("ui_il_tuo_nome_o_soprannome");inp.maxLength=24;
@@ -328,7 +328,7 @@ function renderOnboarding(){
   S.screen="home";render();
   startInviteListener();
  });
- startBtn.style.cssText="background:#FF7A45;border:none;border-radius:12px;color:#fff;font-weight:700;font-size:17px;cursor:pointer;padding:15px 0;width:100%;max-width:390px;letter-spacing:-0.2px;opacity:0.45;pointer-events:none;transition:opacity 0.1s,background 0.1s;font-family:'Space Grotesk',sans-serif;";
+ startBtn.style.cssText="background:#BBD5EC;border:none;border-radius:14px;color:#102A43;font-weight:600;font-size:17px;cursor:pointer;padding:15px 0;width:100%;max-width:390px;letter-spacing:-0.2px;opacity:0.45;pointer-events:none;transition:opacity 0.1s,background 0.1s;font-family:'Space Grotesk',sans-serif;";
 
  var _updateBtn=function(){
   var ok=inp.value.trim().length>=2;
@@ -4795,7 +4795,8 @@ function renderGame(){
  if(g.mrwhite){
  ew.appendChild(btn("ebtn",T("startMrWhite"),function(){S.screen="mrwhite_setup";render();}));
  }
- ew.appendChild(btn("ebtn",T("endGame"),function(){S.fromStarter=false;endGame(g.name);}));
+ // Se c'è già un pulsante per iniziare il gioco, "Fine gioco" diventa secondario
+ ew.appendChild(btn(g.mrwhite?"ebtn out":"ebtn",T("endGame"),function(){S.fromStarter=false;endGame(g.name);}));
  body.appendChild(ew);
  document.getElementById("root").appendChild(panel);
 }
@@ -5028,8 +5029,8 @@ function renderQuiz(){
   });
  }
  var btns=div("endbtns");sc.appendChild(btns);
- btns.appendChild(btn("ebtn",T("changeLevel"),function(){S.screen="quizlevel";render();}));
- btns.appendChild(btn("ebtn out",T("qvPlayAgain"),function(){startQuizWithLevel(S.quizLevel);}));
+ btns.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startQuizWithLevel(S.quizLevel);}));
+ btns.appendChild(btn("ebtn out",T("changeLevel"),function(){S.screen="quizlevel";render();}));
  btns.appendChild(btn("ebtn out",T("exitBtn"),goHome));
  document.getElementById("root").appendChild(wrap);return;
  }
@@ -5210,7 +5211,7 @@ function renderMenuEditor(panel){
    var chip=document.createElement("div");
    var on=itAllergeni.indexOf(a)>=0;
    chip.textContent=a;
-   chip.style.cssText="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;"+(on?"background:#E8571A;color:#fff;":"background:#f0f0f0;color:#888;");
+   chip.style.cssText="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;"+(on?"background:#BBD5EC;color:#102A43;":"background:#f0f0f0;color:#888;");
    chip.onclick=function(){
     var cur=MENU[tab][idx].allergeni||[];
     var pos=cur.indexOf(a);
@@ -5218,8 +5219,8 @@ function renderMenuEditor(panel){
     MENU[tab][idx].allergeni=cur;
     saveMenu();
     var isOn=cur.indexOf(a)>=0;
-    chip.style.background=isOn?"#E8571A":"#f0f0f0";
-    chip.style.color=isOn?"#fff":"#888";
+    chip.style.background=isOn?"#BBD5EC":"#EBEFF3";
+    chip.style.color=isOn?"#102A43":"#5B626B";
    };
    algGrid.appendChild(chip);
   });
@@ -5412,10 +5413,10 @@ function renderAnalytics(){
   ".as-bar-rank{width:18px;font-size:12px;color:#8e8e93;text-align:right;flex-shrink:0;}",
   ".as-bar-name{font-size:14px;color:var(--dark,#111);min-width:80px;max-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0;}",
   ".as-bar-track{flex:1;height:5px;background:rgba(0,0,0,.07);border-radius:3px;overflow:hidden;}",
-  ".as-bar-fill{height:100%;border-radius:3px;background:#007aff;}",
+  ".as-bar-fill{height:100%;border-radius:3px;background:#2E6390;}",
   ".as-bar-val{font-size:12px;color:#8e8e93;flex-shrink:0;min-width:40px;text-align:right;}",
   ".as-btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;text-align:center;margin-top:10px;}",
-  ".as-btn-primary{background:#007aff;color:#fff;}",
+  ".as-btn-primary{background:#2E6390;color:#fff;}",
   ".as-btn-destructive{background:none;border:1.5px solid #ff3b30;color:#ff3b30;}",
   ".as-btn-pdf{background:#34c759;color:#fff;}",
   "@media(prefers-color-scheme:dark){.as-page .as-group{background:#1c1c1e;}.as-page .as-row{border-color:rgba(255,255,255,.07);}.as-page .as-stat{background:#1c1c1e;}.as-page .as-bar-track{background:rgba(255,255,255,.1);}}"
@@ -5777,7 +5778,7 @@ function generatePDFReport(pubName, period){
  var reportDate=new Date().toLocaleDateString("it-IT",{weekday:"long",day:"2-digit",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
 
  // Bar SVG
- function bar(pct,color){return '<div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden;flex:1;"><div style="width:'+Math.round(pct)+'%;height:100%;background:'+(color||"#007aff")+';border-radius:4px;"></div></div>';}
+ function bar(pct,color){return '<div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden;flex:1;"><div style="width:'+Math.round(pct)+'%;height:100%;background:'+(color||"#2E6390")+';border-radius:4px;"></div></div>';}
 
  // HTML del report
  var html='<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><title>Report '+pubName+'</title><style>';
@@ -5812,7 +5813,7 @@ function generatePDFReport(pubName, period){
  if(topGames.length){
   html+=T("ui_giochi_piu_giocati_2");
   topGames.slice(0,10).forEach(function(g,i){
-   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+g[0]+'</span>'+bar(g[1]/maxG*100,"#007aff")+'<span class="bar-val">'+g[1]+T("ui_pt");
+   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+g[0]+'</span>'+bar(g[1]/maxG*100,"#2E6390")+'<span class="bar-val">'+g[1]+T("ui_pt");
   });
  }
 
@@ -5836,7 +5837,7 @@ function generatePDFReport(pubName, period){
  }
 
  html+=T("ui_fil_s_report_analitico_i");
- html+='<br><button onclick="window.print()" style="display:block;margin:0 auto;padding:12px 32px;background:#007aff;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">Stampa / Salva PDF</button>';
+ html+='<br><button onclick="window.print()" style="display:block;margin:0 auto;padding:12px 32px;background:#2E6390;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;">Stampa / Salva PDF</button>';
  html+='</body></html>';
 
  var win=window.open("","_blank","width=860,height=700");
