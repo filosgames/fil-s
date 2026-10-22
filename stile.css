@@ -19,9 +19,9 @@
   --f-ink-2:#5B626B;         /* secondario */
   --f-ink-3:#8E959E;         /* solo segnaposto e icone, mai testo da leggere */
   /* conferme: giallo pastello */
-  --f-sand:#FCF0A4;          /* pulsante principale: giallo limone pastello */
-  --f-bar:#EDCB33;           /* barre del tempo, cursori, avanzamento */
-  --f-sand-press:#F7E47C;
+  --f-sand:#F9DB4A;          /* pulsante principale: giallo pieno scelto dal cliente */
+  --f-bar:#F9DB4A;           /* barre del tempo, cursori, avanzamento */
+  --f-sand-press:#EFCB2E;
   --f-sand-ink:#2F2B0E;      /* testo sul giallo */
   --f-sand-soft:#FFF9DB;     /* evidenze leggere */
   --f-sand-deep:#1A1D21;     /* link e numeri in evidenza: quasi nero (il giallo non si legge come testo) */
@@ -322,7 +322,7 @@ body[data-cat="cultura"]{--f-cat:#DCE3F7;}body[data-cat="adulti"]{--f-cat:#EEDCE
 .codice-pick-empty{width:28px;}
 .codice-target{font-size:20px;font-weight:700;letter-spacing:-0.3px;color:var(--f-ink);text-align:center;margin:6px 0 10px;}
 .codice-head .codice-big{margin-bottom:6px;}
-.codice-slot.active{border-color:var(--f-bar)!important;box-shadow:0 0 0 3px rgba(237,203,51,0.28)!important;}
+.codice-slot.active{border-color:var(--f-bar)!important;box-shadow:0 0 0 3px rgba(249,219,74,0.35)!important;}
 .codice-slot.filled{border-color:var(--f-line)!important;}
 .ebtn.dado-good{background:#D7EFDD!important;color:#1F5B33!important;}
 .ebtn.dado-bad{background:var(--f-bad-soft)!important;color:#8E2F22!important;}

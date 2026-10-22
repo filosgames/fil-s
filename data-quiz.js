@@ -328,7 +328,7 @@ function renderOnboarding(){
   S.screen="home";render();
   startInviteListener();
  });
- startBtn.style.cssText="background:#FCF0A4;border:none;border-radius:14px;color:#2F2B0E;font-weight:600;font-size:17px;cursor:pointer;padding:15px 0;width:100%;max-width:390px;letter-spacing:-0.2px;opacity:0.45;pointer-events:none;transition:opacity 0.1s,background 0.1s;font-family:'Space Grotesk',sans-serif;";
+ startBtn.style.cssText="background:#F9DB4A;border:none;border-radius:14px;color:#2F2B0E;font-weight:600;font-size:17px;cursor:pointer;padding:15px 0;width:100%;max-width:390px;letter-spacing:-0.2px;opacity:0.45;pointer-events:none;transition:opacity 0.1s,background 0.1s;font-family:'Space Grotesk',sans-serif;";
 
  var _updateBtn=function(){
   var ok=inp.value.trim().length>=2;
@@ -5330,7 +5330,7 @@ function renderMenuEditor(panel){
    var chip=document.createElement("div");
    var on=itAllergeni.indexOf(a)>=0;
    chip.textContent=a;
-   chip.style.cssText="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;"+(on?"background:#FCF0A4;color:#2F2B0E;":"background:#f0f0f0;color:#888;");
+   chip.style.cssText="padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;"+(on?"background:#F9DB4A;color:#2F2B0E;":"background:#f0f0f0;color:#888;");
    chip.onclick=function(){
     var cur=MENU[tab][idx].allergeni||[];
     var pos=cur.indexOf(a);
@@ -5338,7 +5338,7 @@ function renderMenuEditor(panel){
     MENU[tab][idx].allergeni=cur;
     saveMenu();
     var isOn=cur.indexOf(a)>=0;
-    chip.style.background=isOn?"#FCF0A4":"#EBEFF3";
+    chip.style.background=isOn?"#F9DB4A":"#EBEFF3";
     chip.style.color=isOn?"#2F2B0E":"#5B626B";
    };
    algGrid.appendChild(chip);
@@ -5475,7 +5475,7 @@ function renderAnalytics(){
   // Bottone
   var obErr=div("");obErr.style.cssText="font-size:13px;color:#ff3b30;font-weight:600;text-align:center;min-height:18px;";ob.appendChild(obErr);
   var obBtn=document.createElement("button");
-  obBtn.style.cssText="width:100%;padding:16px;border-radius:14px;border:none;background:var(--f-sand,#FCF0A4);color:var(--f-sand-ink,#2F2B0E);font-size:17px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;";
+  obBtn.style.cssText="width:100%;padding:16px;border-radius:14px;border:none;background:var(--f-sand,#F9DB4A);color:var(--f-sand-ink,#2F2B0E);font-size:17px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:-0.2px;";
   obBtn.textContent=T("obBtn");
   obBtn.onclick=function(){
    var nome=fNome.querySelector("input").value.trim();
@@ -5507,7 +5507,7 @@ function renderAnalytics(){
   ".as-tabs{display:flex;flex-wrap:wrap;gap:4px 2px;overflow-x:visible;padding:8px 16px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}",
   ".as-tabs::-webkit-scrollbar{display:none;}",
   ".as-tab{flex-shrink:0;padding:7px 13px;border-radius:20px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:#888;transition:all .18s;}",
-  ".as-tab.on{background:var(--f-sand,#FCF0A4);color:var(--f-sand-ink,#2F2B0E);}",
+  ".as-tab.on{background:var(--f-sand,#F9DB4A);color:var(--f-sand-ink,#2F2B0E);}",
   ".as-section{margin:20px 16px 0;}",
   ".as-section-title{font-size:12px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:.5px;padding:0 8px;margin-bottom:6px;}",
   ".as-group{background:var(--f-fill,#F0F3F6);border-radius:12px;overflow:hidden;}",
@@ -5535,9 +5535,9 @@ function renderAnalytics(){
   ".as-bar-fill{height:100%;border-radius:3px;background:#1A1D21;}",
   ".as-bar-val{font-size:12px;color:#8e8e93;flex-shrink:0;min-width:40px;text-align:right;}",
   ".as-btn{display:block;width:100%;padding:14px;border:none;border-radius:12px;font-family:inherit;font-size:16px;font-weight:600;cursor:pointer;text-align:center;margin-top:10px;}",
-  ".as-btn-primary{background:var(--f-sand,#FCF0A4);color:var(--f-sand-ink,#2F2B0E);}",
+  ".as-btn-primary{background:var(--f-sand,#F9DB4A);color:var(--f-sand-ink,#2F2B0E);}",
   ".as-btn-destructive{background:none;border:1.5px solid #ff3b30;color:#ff3b30;}",
-  ".as-btn-pdf{background:var(--f-sand,#FCF0A4);color:var(--f-sand-ink,#2F2B0E);}",
+  ".as-btn-pdf{background:var(--f-sand,#F9DB4A);color:var(--f-sand-ink,#2F2B0E);}",
   ""
  ].join("");
  root.appendChild(style);
@@ -5665,7 +5665,7 @@ function renderAnalytics(){
      rb.onclick=function(){if(confirm(T("nfcRegenConfirm")))publish();};
      box.appendChild(rb);
     } else {
-     var gb=document.createElement("button");gb.style.cssText=BTN+"border:none;background:#FCF0A4;color:#2F2B0E;";gb.textContent=T("nfcGenerate");
+     var gb=document.createElement("button");gb.style.cssText=BTN+"border:none;background:#F9DB4A;color:#2F2B0E;";gb.textContent=T("nfcGenerate");
      gb.onclick=publish;box.appendChild(gb);
     }
     // Chiave del gestore: serve per gestire i tag da un altro telefono
@@ -5746,7 +5746,7 @@ function renderAnalytics(){
     var br=div("as-bar-row");
     br.appendChild(Object.assign(div("as-bar-rank"),{textContent:String(idx+1)}));
     var nm=div("as-bar-name");nm.textContent=(m.tab==="drink"?"":"")+" "+m.name;nm.style.maxWidth="160px";br.appendChild(nm);
-    var track=div("as-bar-track");var fill=div("as-bar-fill");fill.style.background="#EDCB33";fill.style.width=Math.round(m.count/maxM*100)+"%";track.appendChild(fill);br.appendChild(track);
+    var track=div("as-bar-track");var fill=div("as-bar-fill");fill.style.background="#F9DB4A";fill.style.width=Math.round(m.count/maxM*100)+"%";track.appendChild(fill);br.appendChild(track);
     br.appendChild(Object.assign(div("as-bar-val"),{textContent:m.count+"x"}));
     mGrp.appendChild(br);
    });
@@ -5947,7 +5947,7 @@ function generatePDFReport(pubName, period){
   html+=T("ui_menu_piu_richiesti_3");
   menuArr.slice(0,10).forEach(function(m,i){
    var icon="";
-   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+icon+' '+m.name+'</span>'+bar(m.count/maxM*100,"#EDCB33")+'<span class="bar-val">'+m.count+T("ui_x");
+   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+icon+' '+m.name+'</span>'+bar(m.count/maxM*100,"#F9DB4A")+'<span class="bar-val">'+m.count+T("ui_x");
   });
  }
 
@@ -5957,7 +5957,7 @@ function generatePDFReport(pubName, period){
   html+=T("ui_valutazioni_per_gioco");
   ratArr.slice(0,10).forEach(function(r,i){
    var avg=(r[1].t/r[1].c).toFixed(1);
-   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+r[0]+'</span>'+bar(r[1].t/r[1].c/5*100,"#EDCB33")+'<span class="bar-val">&nbsp;'+avg+'</span></div>';
+   html+='<div class="bar-row"><span class="bar-rank">'+(i+1)+'</span><span class="bar-name">'+r[0]+'</span>'+bar(r[1].t/r[1].c/5*100,"#F9DB4A")+'<span class="bar-val">&nbsp;'+avg+'</span></div>';
   });
  }
 
