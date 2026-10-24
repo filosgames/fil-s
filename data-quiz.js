@@ -366,23 +366,30 @@ function pigDrop(pig){
  if(_pigBusy)return;_pigBusy=true;
  var img=pig.querySelector("img");var r=img.getBoundingClientRect();
  function open(){if(typeof openChiPaga==="function")openChiPaga();}
- var reduce=false;try{reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){}
- if(reduce||!img.animate){_pigBusy=false;open();return;}
- var fly=img.cloneNode(true);fly.className="pig-fly";
- fly.style.cssText="position:fixed;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:9998;pointer-events:none;margin:0;";
+ // Animazione con transizioni CSS: funziona su tutti i telefoni (anche iPhone vecchi)
+ var fly=document.createElement("img");fly.src=img.currentSrc||img.src;fly.alt="";
+ fly.style.cssText="position:fixed;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:9998;pointer-events:none;margin:0;will-change:transform;-webkit-transform:translate3d(0,0,0);transform:translate3d(0,0,0);";
  document.body.appendChild(fly);img.style.visibility="hidden";
- var dy=Math.max(0,window.innerHeight-r.bottom-14);
- var a=fly.animate([
-  {transform:"translateY(0) rotate(0deg)"},
-  {transform:"translateY(-14px) rotate(-6deg)",offset:0.12},
-  {transform:"translateY("+dy+"px) rotate(14deg)",offset:0.78},
-  {transform:"translateY("+(dy-18)+"px) rotate(6deg)",offset:0.88},
-  {transform:"translateY("+dy+"px) rotate(10deg)"}
- ],{duration:950,easing:"ease-in",fill:"forwards"});
- a.onfinish=function(){
-  open();
-  setTimeout(function(){try{fly.remove();}catch(e){}img.style.visibility="";_pigBusy=false;},350);
- };
+ var vh=window.innerHeight||document.documentElement.clientHeight;
+ var dy=Math.max(0,vh-r.bottom-14);
+ function setT(t,tr){fly.style.webkitTransition=tr;fly.style.transition=tr;fly.style.webkitTransform=t;fly.style.transform=t;}
+ void fly.offsetWidth;
+ requestAnimationFrame(function(){
+  setT("translate3d(0,-16px,0) rotate(-6deg)","transform .16s ease-out");
+  setTimeout(function(){
+   setT("translate3d(0,"+dy+"px,0) rotate(14deg)","transform .62s cubic-bezier(.55,0,.9,.6)");
+   setTimeout(function(){
+    setT("translate3d(0,"+(dy-20)+"px,0) rotate(6deg)","transform .13s ease-out");
+    setTimeout(function(){
+     setT("translate3d(0,"+dy+"px,0) rotate(10deg)","transform .13s ease-in");
+     setTimeout(function(){
+      open();
+      setTimeout(function(){try{fly.parentNode.removeChild(fly);}catch(e){}img.style.visibility="";_pigBusy=false;},350);
+     },160);
+    },140);
+   },640);
+  },170);
+ });
 }
 function renderHome(){
  clr();
