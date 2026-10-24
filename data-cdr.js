@@ -306,40 +306,46 @@ function cdrScreenPlay(wrap,st){
  var myTurn=st.turn===CDR.me;
  var opps=st.active.filter(function(p){return p!==CDR.me;});
  var others=st.active;
- // Ultimo tentativo, visibile a tutti
+ // Ultima mossa: riassunto compatto (in basso, non distrae da tempo e tentativo)
  var lastAny=st.moves[st.moves.length-1];
- if(lastAny&&lastAny.pass){wrap.appendChild(div("cdr-last cdr-last-pass",T("cdrSkipped").replace("{n}",lastAny.by)));}
- var last=lastAny&&!lastAny.pass?lastAny:null;
- if(last){
+ function lastBox(){
+  if(!lastAny)return null;
+  if(lastAny.pass)return div("cdr-last cdr-last-pass",T("cdrSkipped").replace("{n}",lastAny.by));
+  var last=lastAny;
   var lb=div("cdr-last");
   var lt=last.by===CDR.me?T("cdrTriedMine").replace("{t}",last.target):last.target===CDR.me?T("cdrTriedYours").replace("{b}",last.by):T("cdrTriedOther").replace("{b}",last.by).replace("{t}",last.target);
   lb.appendChild(div("cdr-last-t",lt));
-  var lr=div("cdr-last-r");lr.appendChild(codiceSlots(last.guess,""));lr.appendChild(codiceFeedback(last.g,last.y,true));lb.appendChild(lr);
+  var lr=div("cdr-last-r");lr.appendChild(codiceSlots(last.guess,""));lr.appendChild(codiceFeedback(last.g,last.y,false));lb.appendChild(lr);
   lb.appendChild(div("cdr-last-s",codiceFeedbackText(last.g,last.y)));
-  wrap.appendChild(lb);
+  return lb;
  }
  // Tempo del turno, uguale per tutti: allo scadere il turno passa al giocatore successivo
- if(st.turnStart){var who=st.turn;rlTimer(wrap,st.turnStart,CDR_TURN_MS,function(){cdrSkip(who,true);});}
+ function timer(into){if(st.turnStart){var who=st.turn;rlTimer(into,st.turnStart,CDR_TURN_MS,function(){cdrSkip(who,true);});}}
  if(myTurn){
   if(!CDR.target||opps.indexOf(CDR.target)<0)CDR.target=opps[0];
   var target=CDR.target;
   cdrHeader(wrap,null,T("cdrYourTurn"),null);
   var histOf=function(p){return st.tries.filter(function(m){return m.target===p;});};
-  if(opps.length>1)wrap.appendChild(codicePicker(opps,target,histOf,function(p){CDR.target=p;CDR.entry=[];cdrRender(true);}));
+  if(opps.length>1)wrap.appendChild(codicePicker(opps,target,histOf,function(p){CDR.target=p;cdrRender(true);}));
   wrap.appendChild(div("codice-target",T("codiceGuessShort")+target));
-  cdrHistory(wrap,st,target);
+  // Tempo e casella del tentativo vicini
+  var play=div("cdr-play");wrap.appendChild(play);
+  timer(play);
   var tryB;var keep2=CDR.entry.slice();
   var otp2=codiceOtp(function(a){CDR.entry=a;if(tryB)tryB.disabled=a.length!==4;});
-  wrap.appendChild(otp2);
+  play.appendChild(otp2);
   if(keep2.length){otp2._input.value=keep2.join("");CDR.entry=keep2;}
   tryB=btn("codice-cta",T("codiceTry"),function(){if(CDR.entry.length!==4)return;tryB.disabled=true;cdrGuess(target,CDR.entry.slice());});
-  tryB.disabled=CDR.entry.length!==4;wrap.appendChild(tryB);
+  tryB.disabled=CDR.entry.length!==4;play.appendChild(tryB);
+  cdrHistory(wrap,st,target);
   wrap.appendChild(div("codice-legend",T("codiceLegend")));
+  var lb1=lastBox();if(lb1){lb1.classList.add("cdr-last-low");wrap.appendChild(lb1);}
  } else {
   cdrHeader(wrap,T("cdrWaiting"),T("cdrTurnOf").replace("{n}",st.turn||""),null);
-  // Si possono guardare i tentativi su ogni giocatore (anche sul proprio codice)
-  if(!CDR.view||others.indexOf(CDR.view)<0)CDR.view=opps[0]||CDR.me;
+  timer(wrap);
+  var lb2=lastBox();if(lb2)wrap.appendChild(lb2);
   // Intanto si possono guardare i tentativi su ogni codice (anche sul proprio)
+  if(!CDR.view||others.indexOf(CDR.view)<0)CDR.view=opps[0]||CDR.me;
   wrap.appendChild(codicePicker(others,CDR.view,function(p){return st.tries.filter(function(m){return m.target===p;});},function(p){CDR.view=p;cdrRender(true);},function(p){return p===CDR.me?T("cdrYourCode"):p;}));
   cdrHistory(wrap,st,CDR.view);
   wrap.appendChild(div("codice-legend",T("codiceLegend")));
@@ -363,7 +369,7 @@ function cdrScreenEnd(wrap,st){
   wrap.appendChild(div("end-title",T("cdrInterrupted")));
   wrap.appendChild(div("end-sub",T("cdrInterruptedSub")));
  } else {
-  wrap.appendChild(div("end-title",(st.winner===CDR.me?T("cdrYouWon"):st.winner+" "+T("qvWon"))));
+  wrap.appendChild(div("end-title",(st.winner===CDR.me?T("cdrYouWon"):winTxt(st.winner))));
   var ws=st.winner===CDR.me?T("cdrWonMine").replace("{t}",st.winnerTarget):st.winnerTarget===CDR.me?T("cdrWonYours"):T("cdrWonOther").replace("{t}",st.winnerTarget);
   wrap.appendChild(div("end-sub",ws+" · "+st.tries.length+" "+T("cdrTries")));
  }
@@ -422,6 +428,63 @@ function rlLevelPicker(wrap,cur,canEdit,onPick){
  var tabs=div("codice-tabs rl-level");
  RL_LEVELS.forEach(function(l){tabs.appendChild(btn("codice-tab"+(l===cur?" on":""),rlLevelName(l),function(){if(l!==cur)onPick(l);}));});
  wrap.appendChild(tabs);
+}
+// ── Ritmo dei giochi a domande a distanza ──
+// 30 secondi per rispondere, poi la risposta giusta e la classifica restano 20 secondi e si passa da soli
+// alla domanda dopo: nessun pulsante. Ogni telefono calcola gli stessi tempi dagli stessi dati,
+// quindi chiunque scriva il passaggio scrive esattamente la stessa cosa.
+// Niente pareggi: se alla fine c'è parità in testa si giocano 3 domande più difficili (solo chi è pari),
+// e se si è ancora pari altre 3, finché non c'è un vincitore.
+var RL_ANS_MS=30000,RL_REV_MS=20000,RL_MAIN=10,RL_TB=3;
+function rlBlock(meta,r){var t=(meta&&meta.tbs)||[];for(var i=0;i<t.length;i++){if(r>=t[i].f&&r<t[i].f+RL_TB)return t[i];}return null;}
+function rlElig(meta,active,r){var b=rlBlock(meta,r);if(!b)return active.slice();return active.filter(function(n){return (b.p||[]).indexOf(n)>=0;});}
+function rlMain(meta){return (meta&&meta.main)||((meta&&meta.qs)||[]).length;}
+// Momento in cui si mostrano le risposte: quando hanno risposto tutti, o allo scadere dei 30 secondi
+function rlRevealAt(meta,cur,elig,allIn){
+ var qt=(meta&&meta.qt)||0;if(!qt)return 0;var lim=qt+RL_ANS_MS;if(!allIn)return lim+1500;
+ var mx=0;elig.forEach(function(n){var a=cur[n];var t=a&&+a.t||0;if(t>mx)mx=t;});
+ return mx?Math.min(lim,Math.max(qt,mx)):lim;
+}
+// Chi è in testa (fra chi gioca la domanda r) e se serve uno spareggio
+function rlTop(meta,r,active,scores){
+ var b=rlBlock(meta,r);var group=b?active.filter(function(n){return (b.p||[]).indexOf(n)>=0;}):active.slice();
+ var mx=-1;group.forEach(function(n){if((scores[n]||0)>mx)mx=scores[n]||0;});
+ return group.filter(function(n){return (scores[n]||0)===mx;});
+}
+// Nuovo stato della partita dopo la domanda q: domanda successiva, spareggio o fine
+function rlNextMeta(meta,q,rt,active,scores){
+ var m=JSON.parse(JSON.stringify(meta));var qs=m.qs||[];var nt=rt+RL_REV_MS;
+ if(q<qs.length-1){m.q=q+1;m.rv=-1;m.qt=nt;return m;}
+ var top=rlTop(meta,q,active,scores);
+ var pool=m.tbp||[];
+ if(top.length>1&&pool.length){
+  var used=qs.length-rlMain(m);var add=[],addo=[];
+  for(var i=0;i<RL_TB;i++){var k=(used+i)%pool.length;add.push(pool[k]);if(m.tbo)addo.push(m.tbo[k]);}
+  m.tbs=(m.tbs||[]).concat([{f:qs.length,p:top}]);
+  m.qs=qs.concat(add);if(m.tbo)m.opts=(m.opts||[]).concat(addo);
+  m.q=qs.length;m.rv=-1;m.qt=nt;return m;
+ }
+ m.end=true;return m;
+}
+// Intestazione della domanda: "Domanda 3 di 10" oppure "Spareggio · 1 di 3"
+function rlRoundLabel(meta,q,label){
+ var b=rlBlock(meta,q);
+ if(b)return T("rlTbRound").replace("{n}",q-b.f+1).replace("{t}",RL_TB);
+ return label.replace("{n}",q+1).replace("{t}",rlMain(meta));
+}
+function rlNames(list,me){var a=list.map(function(n){return n===me?T("rlYouIn"):n;});return a.length>1?a.slice(0,-1).join(", ")+" "+T("intesaAnd")+" "+a[a.length-1]:(a[0]||"");}
+// Avviso di spareggio sopra la domanda
+function rlTbNote(wrap,meta,q,me){
+ var b=rlBlock(meta,q);if(!b)return;
+ wrap.appendChild(div("rl-tb",T("rlTbBetween").replace("{n}",rlNames(b.p||[],me))));
+}
+// Conto alla rovescia della schermata dei risultati (20 secondi), uguale per tutti
+function rlRevealCountdown(wrap,st,rt,onEnd){
+ var willTb=false;
+ if(st.last){var top=rlTop(st.meta,st.q,st.active,st.scores);willTb=top.length>1&&((st.meta.tbp||[]).length>0);}
+ var lbl=st.last?(willTb?T("rlNextTb"):T("rlNextFinal")):T("rlNextQ");
+ var box=div("rl-next");box.appendChild(div("rl-next-l",lbl));wrap.appendChild(box);
+ rlTimer(box,rt||fbNow(),RL_REV_MS,onEnd);
 }
 // Stringhe del gioco a distanza (aggiunte quando l'interfaccia è pronta)
 function cdrStrings(){

@@ -15,7 +15,7 @@
 // Le domande sono indici dell'elenco ANNO GIUSTO (uguale in tutte le lingue):
 // ognuno legge la domanda nella propria lingua.
 // ══════════════════════════════════════════
-var AGR_Q_MS=45000; // tempo per rispondere a ogni domanda
+var AGR_Q_MS=RL_ANS_MS; // tempo per rispondere a ogni domanda
 var AGR_MAX_PLAYERS=8,AGR_ROUNDS=10,AGR_FORCE_MS=45000;
 var AGR={code:null,me:null,data:null,unsub:null,sig:"",val:null,valKey:"",busy:false,closed:false};
 
@@ -43,7 +43,8 @@ function agrState(){
   return out;
  }
  var cur=answersOf(q);
- var allIn=active.length>0&&active.every(function(n){return !!cur[n];});
+ var elig=rlElig(meta,active,q);
+ var allIn=elig.length>0&&elig.every(function(n){return !!cur[n];});
  var rvMap=d.rv||{};
  var reveal=phase==="play"&&(allIn||meta.rv===q||!!rvMap[game+"_"+q]);
  // Punteggi: un punto a chi si avvicina di più (a pari distanza, a tutti i più vicini)
@@ -62,9 +63,10 @@ function agrState(){
  if(phase==="play"){
   if(meta.end)ended=true;
   else if(active.length<2){ended=true;interrupted=true;}
+  else if(rlBlock(meta,q)&&elig.length<2)ended=true;
  }
  var leader=(phase==="lobby"?lobby:active.length?active:lobby)[0]||null;
- return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1};
+ return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1,elig:elig,rt:(reveal?rlRevealAt(meta,cur,elig,allIn):0),main:rlMain(meta)};
 }
 function agrQuestion(idx){var l=agData();return l[idx]||(typeof ANNO_GIUSTO_DATA!=="undefined"?ANNO_GIUSTO_DATA[idx]:null);}
 // Livelli di Anno giusto: l'elenco va dalle domande più famose alle più difficili.
@@ -74,6 +76,12 @@ function agrLevelPool(lvl){
  var r=function(a,b){var o=[];for(var i=a;i<=Math.min(b,n-1);i++)o.push(i);return o;};
  var pool=lvl==="facile"?r(0,57):lvl==="media"?r(58,83).concat(r(152,n-1)):r(84,151);
  return pool.length>=AGR_ROUNDS?pool:r(0,n-1);
+}
+// 10 domande del livello (prima quelle mai uscite) e una riserva di domande difficili per gli spareggi
+function agrRoundData(lvl){
+ var qs=freshPick("r_ag_"+lvl,agrLevelPool(lvl),AGR_ROUNDS);
+ var tbp=fShuffle(agrLevelPool("difficile").filter(function(x){return qs.indexOf(x)<0;})).slice(0,12);
+ return {qs:qs,main:qs.length,tbp:tbp};
 }
 function agrPickQuestions(lvl){
  var idx=agrLevelPool(lvl);var n=idx.length;
@@ -145,17 +153,17 @@ function agrExit(){agrLeave();goBackToGames();}
 function agrStart(){
  var st=agrState();if(st.leader!==AGR.me||st.lobby.length<2||AGR.busy)return;
  AGR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),{phase:"play",order:st.lobby.slice(0,AGR_MAX_PLAYERS),game:st.game,qs:agrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()})).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,AGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()},agrRoundData(rlLevel(st.meta))))).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 function agrAnswer(v){
  var st=agrState();
- if(st.phase!=="play"||st.ended||st.reveal||st.active.indexOf(AGR.me)<0||st.cur[AGR.me]||AGR.busy)return;
+ if(st.phase!=="play"||st.ended||st.reveal||st.elig.indexOf(AGR.me)<0||st.cur[AGR.me]||AGR.busy)return;
  AGR.busy=true;
  var ref=fbRef(fbDB,agrPath("g"+st.game+"/a"+st.q+"/"+cdrKey(AGR.me)));
  // La risposta si scrive una volta sola (doppio tocco o rete lenta non la cambiano)
  cdrNet(fbGet(ref)).then(function(snap){
   if(snap.exists()){AGR.busy=false;AGR.sig="";agrRender(true);return;}
-  return cdrNet(fbSet(ref,{v:v,t:Date.now()})).then(function(){AGR.busy=false;AGR.sig="";agrRender(true);});
+  return cdrNet(fbSet(ref,{v:v,t:fbNow()})).then(function(){AGR.busy=false;AGR.sig="";agrRender(true);});
  }).catch(function(){AGR.busy=false;cdrToast(T("connErr"));AGR.sig="";agrRender(true);});
 }
 // Se qualcuno non risponde (telefono spento, app chiusa) dopo un po' chi ha già risposto può mostrare le risposte.
@@ -179,19 +187,21 @@ function agrTimer(wrap,st){
  var g=st.game,q=st.q;
  rlTimer(wrap,st.meta.qt,AGR_Q_MS,function(){agrTimeUp(g,q);});
 }
-function agrNext(){
- var st=agrState();if(!st.reveal||st.ended||AGR.busy)return;
+// Passaggio automatico alla domanda dopo (o allo spareggio, o alla fine), uguale su tutti i telefoni
+function agrNext(game,q){
+ var st=agrState();if(st.phase!=="play"||!st.reveal||st.ended||AGR.busy)return;
+ if(game!==undefined&&(st.game!==game||st.q!==q))return;
+ if(st.active.indexOf(AGR.me)<0)return;
  AGR.busy=true;
- var m=Object.assign({},st.meta);
- if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;m.qt=fbNow();}
- cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
+ var m=rlNextMeta(st.meta,st.q,st.rt||fbNow(),st.active,st.scores);
+ cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;});
 }
 function agrRematch(){
  var st=agrState();if(st.leader!==AGR.me||AGR.busy)return;
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  AGR.busy=true;
  var lv=rlLevel(st.meta);
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:agrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv,qt:fbNow()};
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv,qt:fbNow()},agrRoundData(lv));
  cdrNet(fbSet(fbRef(fbDB,agrPath("meta")),m)).then(function(){AGR.busy=false;}).catch(function(){AGR.busy=false;cdrToast(T("connErr"));});
 }
 // Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
@@ -247,7 +257,8 @@ function agrRender(force){
  }
  if(st.ended){agrScreenEnd(wrap,st);return;}
  if(st.reveal){agrScreenReveal(wrap,st);return;}
- if(!st.cur[AGR.me])agrScreenAnswer(wrap,st);
+ if(st.elig.indexOf(AGR.me)<0)agrScreenWatch(wrap,st);
+ else if(!st.cur[AGR.me])agrScreenAnswer(wrap,st);
  else agrScreenWait(wrap,st);
 }
 function agrScreenStart(wrap){
@@ -288,7 +299,8 @@ function agrScreenLobby(wrap,st){
  }
 }
 function agrQuestionBox(wrap,st){
- wrap.appendChild(div("agr-round",T("agrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)+" · "+rlLevelName(rlLevel(st.meta))));
+ wrap.appendChild(div("agr-round",rlRoundLabel(st.meta,st.q,T("agrRound"))+(rlBlock(st.meta,st.q)?"":" · "+rlLevelName(rlLevel(st.meta)))));
+ rlTbNote(wrap,st.meta,st.q,AGR.me);
  var q=agrQuestion(st.qs[st.q])||{q:""};
  wrap.appendChild(div("agr-q",q.q));
  return q;
@@ -315,9 +327,15 @@ function agrScreenAnswer(wrap,st){
  var ok=btn("codice-cta",T("agrConfirm"),function(){if(ok.disabled)return;ok.disabled=true;agrAnswer(AGR.val);});
  wrap.appendChild(ok);
 }
+function agrScreenWatch(wrap,st){
+ agrQuestionBox(wrap,st);
+ agrTimer(wrap,st);
+ wrap.appendChild(div("codice-sub",T("rlTbWatch").replace("{n}",rlNames(st.elig,AGR.me))));
+ agrChips(wrap,st);
+}
 function agrChips(wrap,st){
  var chips=div("agr-chips");
- st.active.forEach(function(n){chips.appendChild(div("agr-chip"+(st.cur[n]?" on":""),n===AGR.me?T("cdrYou2"):n));});
+ st.elig.forEach(function(n){chips.appendChild(div("agr-chip"+(st.cur[n]?" on":""),n===AGR.me?T("cdrYou2"):n));});
  wrap.appendChild(chips);
 }
 function agrScreenWait(wrap,st){
@@ -328,8 +346,8 @@ function agrScreenWait(wrap,st){
  box.appendChild(div("agr-sent-t",T("qvAnswerSent")));
  if(mine&&!mine.skip)box.appendChild(div("agr-sent-v",T("agrYourAnswer").replace("{y}",agYear(mine.v))));
  wrap.appendChild(box);
- var missing=st.active.filter(function(n){return !st.cur[n];});
- wrap.appendChild(div("codice-sub",T("agrWaiting").replace("{a}",st.active.length-missing.length).replace("{t}",st.active.length)));
+ var missing=st.elig.filter(function(n){return !st.cur[n];});
+ wrap.appendChild(div("codice-sub",T("agrWaiting").replace("{a}",st.elig.length-missing.length).replace("{t}",st.elig.length)));
  agrChips(wrap,st);
  if(!(st.meta&&st.meta.qt)){
   var key=st.game+"|"+st.q;
@@ -345,6 +363,7 @@ function agrScreenWait(wrap,st){
 }
 function agrScreenReveal(wrap,st){
  var q=agrQuestionBox(wrap,st);
+ var g0=st.game,q0=st.q;rlRevealCountdown(wrap,st,st.rt,function(){agrNext(g0,q0);});
  var item=(typeof ANNO_GIUSTO_DATA!=="undefined")?ANNO_GIUSTO_DATA[st.qs[st.q]]:null;
  var ans=item?item.risposta:q.risposta;
  var box=div("agr-answer");
@@ -353,7 +372,7 @@ function agrScreenReveal(wrap,st){
  if(q.curiosita)box.appendChild(div("agr-answer-c",q.curiosita));
  wrap.appendChild(box);
  var rd=st.rounds[st.q]||{answers:{},winners:[]};
- var rows=st.order.map(function(n){var a=rd.answers[n];return {n:n,a:a,d:(a&&!a.skip)?Math.abs(a.v-ans):Infinity};}).sort(function(x,y){return x.d-y.d;});
+ var rows=(rlBlock(st.meta,st.q)?st.elig:st.order).map(function(n){var a=rd.answers[n];return {n:n,a:a,d:(a&&!a.skip)?Math.abs(a.v-ans):Infinity};}).sort(function(x,y){return x.d-y.d;});
  var list=div("agr-list");
  rows.forEach(function(r){
   var won=rd.winners.indexOf(r.n)>=0;
@@ -368,18 +387,6 @@ function agrScreenReveal(wrap,st){
   wrap.appendChild(div("agr-point",me?T("agrPointMe"):T("agrPoint").replace("{n}",rd.winners.join(", "))));
  }
  agrScores(wrap,st);
- if(st.leader===AGR.me){
-  var nx=btn("codice-cta",st.last?T("agrFinal"):T("agrNext"),function(){if(nx.disabled)return;nx.disabled=true;agrNext();});
-  wrap.appendChild(nx);
- } else {
-  wrap.appendChild(div("cdr-wait",T("agrWaitNext").replace("{n}",st.leader||"")));
-  // Se chi guida non va avanti (telefono bloccato) dopo 30 secondi può farlo anche un altro
-  var rk=st.game+"|"+st.q;
-  if(AGR.revKey!==rk){AGR.revKey=rk;AGR.revSince=Date.now();}
-  var w=Date.now()-AGR.revSince;
-  if(w>=30000){var nx2=btn("ebtn out",st.last?T("agrFinal"):T("agrNext"),function(){if(nx2.disabled)return;nx2.disabled=true;agrNext();});wrap.appendChild(nx2);}
-  else{clearTimeout(AGR.forceTimer);AGR.forceTimer=setTimeout(function(){AGR.sig="";agrRender(true);},30000-w+200);}
- }
 }
 function agrScores(wrap,st){
  wrap.appendChild(div("codice-section",T("ui_punteggi_totali")));
@@ -396,9 +403,9 @@ function agrScreenEnd(wrap,st){
  } else {
   var max=-1;st.order.forEach(function(n){if(st.scores[n]>max)max=st.scores[n];});
   var top=st.order.filter(function(n){return st.scores[n]===max;});
-  var title=top.length>1?T("agrTie").replace("{n}",top.join(", ")):(top[0]===AGR.me?T("cdrYouWon"):top[0]+" "+T("qvWon"));
+  var title=top.length>1?T("agrTie").replace("{n}",top.join(", ")):(top[0]===AGR.me?T("cdrYouWon"):winTxt(top[0]));
   wrap.appendChild(div("end-title",title));
-  wrap.appendChild(div("end-sub",T("agrEndSub").replace("{p}",max).replace("{t}",st.qs.length)));
+  wrap.appendChild(div("end-sub",(st.meta.tbs&&st.meta.tbs.length)?T("rlWonTb"):T("agrEndSub").replace("{p}",max).replace("{t}",st.main)));
  }
  agrScores(wrap,st);
  if(st.leader===AGR.me)rlLevelPicker(wrap,rlLevel(st.meta),true,agrSetLevel);

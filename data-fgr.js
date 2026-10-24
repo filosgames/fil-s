@@ -15,7 +15,7 @@
 // opts: per ogni bandiera i 4 paesi tra cui scegliere, già mescolati, uguali per tutti:
 // ognuno li legge nella propria lingua.
 // ══════════════════════════════════════════
-var FGR_Q_MS=25000; // tempo per rispondere a ogni domanda
+var FGR_Q_MS=RL_ANS_MS; // tempo per rispondere a ogni domanda
 var FGR_MAX_PLAYERS=8,FGR_ROUNDS=10,FGR_FORCE_MS=45000;
 var FGR={code:null,me:null,data:null,unsub:null,sig:"",val:null,valKey:"",busy:false,closed:false};
 
@@ -43,7 +43,8 @@ function fgrState(){
   return out;
  }
  var cur=answersOf(q);
- var allIn=active.length>0&&active.every(function(n){return !!cur[n];});
+ var elig=rlElig(meta,active,q);
+ var allIn=elig.length>0&&elig.every(function(n){return !!cur[n];});
  var rvMap=d.rv||{};
  var reveal=phase==="play"&&(allIn||meta.rv===q||!!rvMap[game+"_"+q]);
  // Punteggi: un punto a chi risponde giusto
@@ -60,9 +61,10 @@ function fgrState(){
  if(phase==="play"){
   if(meta.end)ended=true;
   else if(active.length<2){ended=true;interrupted=true;}
+  else if(rlBlock(meta,q)&&elig.length<2)ended=true;
  }
  var leader=(phase==="lobby"?lobby:active.length?active:lobby)[0]||null;
- return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,opts:opts,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1};
+ return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,opts:opts,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1,elig:elig,rt:(reveal?rlRevealAt(meta,cur,elig,allIn):0),main:rlMain(meta)};
 }
 function fgrList(){
  var D=(LANG==="en"&&typeof QUIZ_DATA_EN!=="undefined")?QUIZ_DATA_EN:(LANG==="es"&&typeof QUIZ_DATA_ES!=="undefined")?QUIZ_DATA_ES:(typeof QUIZ_DATA!=="undefined"?QUIZ_DATA:null);
@@ -77,6 +79,14 @@ function fgrName(idx){var it=fgrList()[idx];return it?String(it.a):"";}
 function fgrQuestion(idx){var it=fgrList()[idx];if(!it)return null;return {src:fgrFlagSrc(idx),a:it.a,extra:it.extra};}
 function fgrShuffle(a){for(var j=a.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=a[j];a[j]=a[k];a[k]=t;}return a;}
 // 10 bandiere diverse, e per ognuna 4 paesi (quello giusto più 3 a caso) in ordine casuale
+// 10 bandiere del livello (prima quelle mai uscite), ognuna con 3 bandiere che le somigliano,
+// e una riserva di bandiere difficili per gli spareggi
+function fgrRoundData(lvl){
+ var n=fgrCount();
+ var qs=freshPick("r_fl_"+lvl,rlThirds(n,lvl),FGR_ROUNDS);
+ var tbp=fShuffle(rlThirds(n,"difficile").filter(function(x){return qs.indexOf(x)<0;})).slice(0,12);
+ return {qs:qs,opts:qs.map(function(q){return flagOpts(q);}),main:qs.length,tbp:tbp,tbo:tbp.map(function(q){return flagOpts(q);})};
+}
 function fgrPickRound(lvl){
  // Stessi tre livelli della versione al tavolo; anche i paesi sbagliati vengono dallo stesso livello
  var idx=rlThirds(fgrCount(),lvl);var n=idx.length;
@@ -151,19 +161,19 @@ function fgrExit(){fgrLeave();goBackToGames();}
 function fgrStart(){
  var st=fgrState();if(st.leader!==FGR.me||st.lobby.length<2||FGR.busy)return;
  FGR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,FGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()},fgrPickRound(rlLevel(st.meta))))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,FGR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()},fgrRoundData(rlLevel(st.meta))))).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 function fgrAnswer(v){
  if(typeof v!=="number")return;
  var st=fgrState();
- if(st.phase!=="play"||st.ended||st.reveal||st.active.indexOf(FGR.me)<0||st.cur[FGR.me]||FGR.busy)return;
+ if(st.phase!=="play"||st.ended||st.reveal||st.elig.indexOf(FGR.me)<0||st.cur[FGR.me]||FGR.busy)return;
  if((st.opts[st.q]||[]).indexOf(v)<0)return;
  FGR.busy=true;
  var ref=fbRef(fbDB,fgrPath("g"+st.game+"/a"+st.q+"/"+cdrKey(FGR.me)));
  // La risposta si scrive una volta sola (doppio tocco o rete lenta non la cambiano)
  cdrNet(fbGet(ref)).then(function(snap){
   if(snap.exists()){FGR.busy=false;FGR.sig="";fgrRender(true);return;}
-  return cdrNet(fbSet(ref,{c:v,t:Date.now()})).then(function(){FGR.busy=false;FGR.sig="";fgrRender(true);});
+  return cdrNet(fbSet(ref,{c:v,t:fbNow()})).then(function(){FGR.busy=false;FGR.sig="";fgrRender(true);});
  }).catch(function(){FGR.busy=false;cdrToast(T("connErr"));FGR.sig="";fgrRender(true);});
 }
 // Se qualcuno non risponde (telefono spento, app chiusa) dopo un po' chi ha già risposto può mostrare le risposte.
@@ -187,19 +197,21 @@ function fgrTimer(wrap,st){
  var g=st.game,q=st.q;
  rlTimer(wrap,st.meta.qt,FGR_Q_MS,function(){fgrTimeUp(g,q);});
 }
-function fgrNext(){
- var st=fgrState();if(!st.reveal||st.ended||FGR.busy)return;
+// Passaggio automatico alla domanda dopo (o allo spareggio, o alla fine), uguale su tutti i telefoni
+function fgrNext(game,q){
+ var st=fgrState();if(st.phase!=="play"||!st.reveal||st.ended||FGR.busy)return;
+ if(game!==undefined&&(st.game!==game||st.q!==q))return;
+ if(st.active.indexOf(FGR.me)<0)return;
  FGR.busy=true;
- var m=Object.assign({},st.meta);
- if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;m.qt=fbNow();}
- cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
+ var m=rlNextMeta(st.meta,st.q,st.rt||fbNow(),st.active,st.scores);
+ cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;});
 }
 function fgrRematch(){
  var st=fgrState();if(st.leader!==FGR.me||FGR.busy)return;
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  FGR.busy=true;
  var lv=rlLevel(st.meta);
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv,qt:fbNow()},fgrPickRound(lv));
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv,qt:fbNow()},fgrRoundData(lv));
  cdrNet(fbSet(fbRef(fbDB,fgrPath("meta")),m)).then(function(){FGR.busy=false;}).catch(function(){FGR.busy=false;cdrToast(T("connErr"));});
 }
 // Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
@@ -255,7 +267,8 @@ function fgrRender(force){
  }
  if(st.ended){fgrScreenEnd(wrap,st);return;}
  if(st.reveal){fgrScreenReveal(wrap,st);return;}
- if(!st.cur[FGR.me])fgrScreenAnswer(wrap,st);
+ if(st.elig.indexOf(FGR.me)<0)fgrScreenWatch(wrap,st);
+ else if(!st.cur[FGR.me])fgrScreenAnswer(wrap,st);
  else fgrScreenWait(wrap,st);
 }
 function fgrScreenStart(wrap){
@@ -296,7 +309,8 @@ function fgrScreenLobby(wrap,st){
  }
 }
 function fgrQuestionBox(wrap,st){
- wrap.appendChild(div("agr-round",T("fgrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)+" · "+rlLevelName(rlLevel(st.meta))));
+ wrap.appendChild(div("agr-round",rlRoundLabel(st.meta,st.q,T("fgrRound"))+(rlBlock(st.meta,st.q)?"":" · "+rlLevelName(rlLevel(st.meta)))));
+ rlTbNote(wrap,st.meta,st.q,FGR.me);
  var q=fgrQuestion(st.qs[st.q])||{src:"",a:"",extra:""};
  var box=div("fgr-flag");
  if(q.src){var im=document.createElement("img");im.src=q.src;im.alt="";box.appendChild(im);}
@@ -324,9 +338,15 @@ function fgrScreenAnswer(wrap,st){
  ok.disabled=FGR.val===null;
  wrap.appendChild(ok);
 }
+function fgrScreenWatch(wrap,st){
+ fgrQuestionBox(wrap,st);
+ fgrTimer(wrap,st);
+ wrap.appendChild(div("codice-sub",T("rlTbWatch").replace("{n}",rlNames(st.elig,FGR.me))));
+ fgrChips(wrap,st);
+}
 function fgrChips(wrap,st){
  var chips=div("agr-chips");
- st.active.forEach(function(n){chips.appendChild(div("agr-chip"+(st.cur[n]?" on":""),n===FGR.me?T("cdrYou2"):n));});
+ st.elig.forEach(function(n){chips.appendChild(div("agr-chip"+(st.cur[n]?" on":""),n===FGR.me?T("cdrYou2"):n));});
  wrap.appendChild(chips);
 }
 function fgrScreenWait(wrap,st){
@@ -337,8 +357,8 @@ function fgrScreenWait(wrap,st){
  box.appendChild(div("agr-sent-t",T("qvAnswerSent")));
  if(mine&&!mine.skip)box.appendChild(div("agr-sent-v",T("fgrYourAnswer").replace("{y}",fgrChoiceLabel(mine.c))));
  wrap.appendChild(box);
- var missing=st.active.filter(function(n){return !st.cur[n];});
- wrap.appendChild(div("codice-sub",T("fgrWaiting").replace("{a}",st.active.length-missing.length).replace("{t}",st.active.length)));
+ var missing=st.elig.filter(function(n){return !st.cur[n];});
+ wrap.appendChild(div("codice-sub",T("fgrWaiting").replace("{a}",st.elig.length-missing.length).replace("{t}",st.elig.length)));
  fgrChips(wrap,st);
  if(!(st.meta&&st.meta.qt)){
   var key=st.game+"|"+st.q;
@@ -354,13 +374,14 @@ function fgrScreenWait(wrap,st){
 }
 function fgrScreenReveal(wrap,st){
  var q=fgrQuestionBox(wrap,st)||{};
+ var g0=st.game,q0=st.q;rlRevealCountdown(wrap,st,st.rt,function(){fgrNext(g0,q0);});
  var rd=st.rounds[st.q]||{answers:{},winners:[],key:st.qs[st.q]};
  var box=div("agr-answer");
  box.appendChild(div("agr-answer-l",T("ui_risposta_corretta")));
  box.appendChild(div("agr-answer-v pdr-key fgr-key",fgrChoiceLabel(rd.key)));
  if(q.extra)box.appendChild(div("agr-answer-c",q.extra));
  wrap.appendChild(box);
- var rows=st.order.map(function(n){var a=rd.answers[n];return {n:n,a:a,ok:!!(a&&!a.skip&&a.c===rd.key)};}).sort(function(x,y){return (y.ok?1:0)-(x.ok?1:0);});
+ var rows=(rlBlock(st.meta,st.q)?st.elig:st.order).map(function(n){var a=rd.answers[n];return {n:n,a:a,ok:!!(a&&!a.skip&&a.c===rd.key)};}).sort(function(x,y){return (y.ok?1:0)-(x.ok?1:0);});
  var list=div("agr-list");
  rows.forEach(function(r){
   var row=div("agr-row"+(r.ok?" win":""));
@@ -374,18 +395,6 @@ function fgrScreenReveal(wrap,st){
   wrap.appendChild(div("agr-point",me?T("fgrPointMe"):T("fgrPoint").replace("{n}",rd.winners.join(", "))));
  } else wrap.appendChild(div("agr-point",T("fgrNobody")));
  fgrScores(wrap,st);
- if(st.leader===FGR.me){
-  var nx=btn("codice-cta",st.last?T("fgrFinal"):T("fgrNext"),function(){if(nx.disabled)return;nx.disabled=true;fgrNext();});
-  wrap.appendChild(nx);
- } else {
-  wrap.appendChild(div("cdr-wait",T("fgrWaitNext").replace("{n}",st.leader||"")));
-  // Se chi guida non va avanti (telefono bloccato) dopo 30 secondi può farlo anche un altro
-  var rk=st.game+"|"+st.q;
-  if(FGR.revKey!==rk){FGR.revKey=rk;FGR.revSince=Date.now();}
-  var w=Date.now()-FGR.revSince;
-  if(w>=30000){var nx2=btn("ebtn out",st.last?T("fgrFinal"):T("fgrNext"),function(){if(nx2.disabled)return;nx2.disabled=true;fgrNext();});wrap.appendChild(nx2);}
-  else{clearTimeout(FGR.forceTimer);FGR.forceTimer=setTimeout(function(){FGR.sig="";fgrRender(true);},30000-w+200);}
- }
 }
 function fgrScores(wrap,st){
  wrap.appendChild(div("codice-section",T("ui_punteggi_totali")));
@@ -402,9 +411,9 @@ function fgrScreenEnd(wrap,st){
  } else {
   var max=-1;st.order.forEach(function(n){if(st.scores[n]>max)max=st.scores[n];});
   var top=st.order.filter(function(n){return st.scores[n]===max;});
-  var title=top.length>1?T("fgrTie").replace("{n}",top.join(", ")):(top[0]===FGR.me?T("cdrYouWon"):top[0]+" "+T("qvWon"));
+  var title=top.length>1?T("fgrTie").replace("{n}",top.join(", ")):(top[0]===FGR.me?T("cdrYouWon"):winTxt(top[0]));
   wrap.appendChild(div("end-title",title));
-  wrap.appendChild(div("end-sub",T("fgrEndSub").replace("{p}",max).replace("{t}",st.qs.length)));
+  wrap.appendChild(div("end-sub",(st.meta.tbs&&st.meta.tbs.length)?T("rlWonTb"):T("fgrEndSub").replace("{p}",max).replace("{t}",st.main)));
  }
  fgrScores(wrap,st);
  if(st.leader===FGR.me)rlLevelPicker(wrap,rlLevel(st.meta),true,fgrSetLevel);

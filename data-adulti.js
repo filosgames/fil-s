@@ -1901,13 +1901,21 @@ function adultiDeck(){
  var L=(typeof LANG!=="undefined"&&a[LANG])?LANG:"it";
  return a[L].deck;
 }
+// Prima le domande mai uscite su questo telefono (poi quelle viste da più tempo)
+function adultiKey(){var g=(typeof curGame==="function")?curGame():null;return "ad_"+((g&&g._adulti)||"x");}
+function adultiFresh(d,cur){
+ var k=adultiKey();
+ var o=(typeof freshOrder==="function")?freshOrder(k,d.length):[Math.floor(Math.random()*d.length)];
+ var n=o.filter(function(x){return x!==cur;})[0];if(n===undefined)n=o[0]||0;
+ if(typeof freshMark==="function")freshMark(k,n);
+ return n;
+}
 function adultiPick(stateKey){
  var d=adultiDeck();if(!d||!d.length)return null;
- if(typeof S[stateKey]!=="number"||S[stateKey]>=d.length||S[stateKey]<0)S[stateKey]=Math.floor(Math.random()*d.length);
+ if(typeof S[stateKey]!=="number"||S[stateKey]>=d.length||S[stateKey]<0)S[stateKey]=adultiFresh(d,-1);
  return d[S[stateKey]];
 }
 function adultiNext(stateKey){
  var d=adultiDeck();if(!d||!d.length)return;
- var cur=S[stateKey],n;do{n=Math.floor(Math.random()*d.length);}while(d.length>1&&n===cur);
- S[stateKey]=n;
+ S[stateKey]=adultiFresh(d,S[stateKey]);
 }

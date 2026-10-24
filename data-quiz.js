@@ -7,6 +7,53 @@
  * Contenuti marcati con filigrana digitale per l'identificazione di copie non autorizzate.
  */
 try{console.log("%cFilòs — © 2026 Tutti i diritti riservati.%c\nCodice e contenuti protetti dal diritto d'autore. Copia e riuso vietati senza autorizzazione scritta. Contenuti protetti da filigrana digitale.","font-weight:700;font-size:14px","font-size:12px");}catch(e){}
+// ── Domande sempre nuove ──
+// Ogni gioco si ricorda (su questo telefono) le domande già uscite e pesca prima quelle mai viste:
+// solo quando sono finite tutte si ricomincia il giro.
+// "Ada ha vinto!" / "Ada wins!" / "¡Ada ha ganado!"
+function winTxt(n){var t=String(T("qvWon")).trim();if(typeof LANG!=="undefined"&&LANG==="es")return "¡"+n+" "+t.replace(/^¡/,"");return n+" "+t;}
+function fShuffle(a){for(var j=a.length-1;j>0;j--){var k=Math.floor(Math.random()*(j+1));var t=a[j];a[j]=a[k];a[k]=t;}return a;}
+function freshPick(key,pool,n,avoid){
+ var sk="filos_seen_"+key,seen=[];
+ try{seen=JSON.parse(localStorage.getItem(sk)||"[]");if(!Array.isArray(seen))seen=[];}catch(e){seen=[];}
+ avoid=avoid||[];
+ var ok=pool.filter(function(x){return avoid.indexOf(x)<0;});
+ var fresh=fShuffle(ok.filter(function(x){return seen.indexOf(x)<0;}));
+ var pick;
+ if(fresh.length>=n){pick=fresh.slice(0,n);seen=seen.concat(pick);}
+ else{
+  // giro finito: prima le ultime mai viste, poi le altre (non quelle appena giocate)
+  var rest=fShuffle(ok.filter(function(x){return fresh.indexOf(x)<0;}));
+  var recent=seen.slice(-n);rest.sort(function(a,b){return (recent.indexOf(a)>=0?1:0)-(recent.indexOf(b)>=0?1:0);});
+  pick=fresh.concat(rest).slice(0,n);seen=pick.slice(fresh.length);
+ }
+ try{localStorage.setItem(sk,JSON.stringify(seen.slice(-400)));}catch(e){}
+ return pick;
+}
+// Mazzi (frasi, parole, domande): prima le carte mai uscite, poi quelle viste da più tempo
+function freshSeen(key){try{var a=JSON.parse(localStorage.getItem("filos_seen_"+key)||"[]");return Array.isArray(a)?a:[];}catch(e){return [];}}
+function freshOrder(key,n){
+ var seen=freshSeen(key);var fresh=[],old=[];
+ for(var i=0;i<n;i++){if(seen.indexOf(i)<0)fresh.push(i);else old.push(i);}
+ fShuffle(fresh);old.sort(function(a,b){return seen.indexOf(a)-seen.indexOf(b);});
+ return fresh.concat(old);
+}
+function freshMark(key,items){
+ if(!Array.isArray(items))items=[items];
+ var seen=freshSeen(key).filter(function(x){return items.indexOf(x)<0;}).concat(items);
+ try{localStorage.setItem("filos_seen_"+key,JSON.stringify(seen.slice(-600)));}catch(e){}
+}
+// Bandiere: le risposte sbagliate sono bandiere che si somigliano (colori e disegno), facili da confondere
+function flagOpts(qi,n){
+ n=n||4;
+ var sim=(typeof FLAG_SIM!=="undefined"&&FLAG_SIM[qi])?FLAG_SIM[qi].slice():[];
+ var tier=(typeof FLAG_TIER!=="undefined")?FLAG_TIER:null;
+ var cand=tier?sim.filter(function(j){return tier[j]<=tier[qi]+1;}):sim;
+ if(cand.length<n-1)cand=sim;
+ var others=fShuffle(cand.slice(0,Math.max(n-1,5))).slice(0,n-1);
+ if(others.length<n-1){var tot=(typeof FLAG_TIER!=="undefined")?FLAG_TIER.length:0;for(var k=0;k<tot&&others.length<n-1;k++)if(k!==qi&&others.indexOf(k)<0)others.push(k);}
+ return fShuffle([qi].concat(others));
+}
 var ANALYTICS={plays:[],ratings:{},menuClicks:{}};
 try{var _d=localStorage.getItem("filos13");if(_d){var _p=JSON.parse(_d);ANALYTICS.plays=_p.plays||[];ANALYTICS.ratings=_p.ratings||{};ANALYTICS.menuClicks=_p.menuClicks||{};}}catch(e){}
 function getPubCode(){try{return localStorage.getItem("filos_pub_code")||"";}catch(e){return "";}}
@@ -179,7 +226,7 @@ function setCatBg(){
  }
 }
 function stopAllTimers(){["_appelloTimer","_cicTimer","_csdTimer","_lexTimer","_mimoTimer","_pubTimer","_robotTimer","_sculTimer","_sinonTimer","_sopTimer","_specTimer","_superTimer","alfaInterval"].forEach(function(n){try{if(window[n]){clearInterval(window[n]);window[n]=null;}}catch(e){}});if(typeof QZ!=="undefined"&&QZ&&QZ.timer){clearInterval(QZ.timer);QZ.timer=null;}["pubRunning","lexRunning","mimoRunning","robotRunning","sculRunning","sinonRunning","sopRunning","specRunning","superRunning","appelloRunning","cicRunning","csdRunning","alfaRunning","intesaRunning"].forEach(function(k){if(S[k])S[k]=false;});if(typeof intesaInterval!=='undefined'&&intesaInterval){clearInterval(intesaInterval);intesaInterval=null;}if(window._qvAutoTimer){clearTimeout(window._qvAutoTimer);window._qvAutoTimer=null;}if(window._qvCountdownInterval){clearInterval(window._qvCountdownInterval);window._qvCountdownInterval=null;}if(window._qvRevealTimer){clearTimeout(window._qvRevealTimer);window._qvRevealTimer=null;}if(window._qvRevealInterval){clearInterval(window._qvRevealInterval);window._qvRevealInterval=null;}if(window._qvNextTimer){clearTimeout(window._qvNextTimer);window._qvNextTimer=null;}if(window._qvNextInterval){clearInterval(window._qvNextInterval);window._qvNextInterval=null;}}
-function goHome(){if(typeof fgrLeave==="function"&&typeof FGR!=="undefined"&&FGR.code)fgrLeave();if(typeof pdrLeave==="function"&&typeof PDR!=="undefined"&&PDR.code)pdrLeave();if(typeof agrLeave==="function"&&typeof AGR!=="undefined"&&AGR.code)agrLeave();if(typeof qvrInLobby==="function"&&qvrInLobby())qvrLeave();if(typeof cdrLeave==="function"&&typeof CDR!=="undefined"&&CDR.code)cdrLeave();stopAllTimers();S.screen="home";S.cat=null;S.game=null;render();fbSync();}
+function goHome(){if(typeof qxrLeave==="function"&&typeof QXR!=="undefined"&&QXR.code)qxrLeave();if(typeof fgrLeave==="function"&&typeof FGR!=="undefined"&&FGR.code)fgrLeave();if(typeof pdrLeave==="function"&&typeof PDR!=="undefined"&&PDR.code)pdrLeave();if(typeof agrLeave==="function"&&typeof AGR!=="undefined"&&AGR.code)agrLeave();if(typeof qvrInLobby==="function"&&qvrInLobby())qvrLeave();if(typeof cdrLeave==="function"&&typeof CDR!=="undefined"&&CDR.code)cdrLeave();stopAllTimers();S.screen="home";S.cat=null;S.game=null;render();fbSync();}
 function addBackArrow(action){
  var left=document.getElementById("hdrLeft");
  if(!left) return;
@@ -190,7 +237,7 @@ function addBackArrow(action){
  b.onclick=action;
  left.appendChild(b);
 }
-function goBackToGames(){if(typeof fgrLeave==="function"&&typeof FGR!=="undefined"&&FGR.code)fgrLeave();if(typeof pdrLeave==="function"&&typeof PDR!=="undefined"&&PDR.code)pdrLeave();if(typeof agrLeave==="function"&&typeof AGR!=="undefined"&&AGR.code)agrLeave();if(typeof qvrInLobby==="function"&&qvrInLobby())qvrLeave();if(typeof cdrLeave==="function"&&typeof CDR!=="undefined"&&CDR.code)cdrLeave();stopAllTimers();logPlayEnd();S.screen="games";S.game=null;render();}
+function goBackToGames(){if(typeof qxrLeave==="function"&&typeof QXR!=="undefined"&&QXR.code)qxrLeave();if(typeof fgrLeave==="function"&&typeof FGR!=="undefined"&&FGR.code)fgrLeave();if(typeof pdrLeave==="function"&&typeof PDR!=="undefined"&&PDR.code)pdrLeave();if(typeof agrLeave==="function"&&typeof AGR!=="undefined"&&AGR.code)agrLeave();if(typeof qvrInLobby==="function"&&qvrInLobby())qvrLeave();if(typeof cdrLeave==="function"&&typeof CDR!=="undefined"&&CDR.code)cdrLeave();stopAllTimers();logPlayEnd();S.screen="games";S.game=null;render();}
 function endGame(name){stopAllTimers();logPlayEnd();S.lastGame=name;S.screen="end";S.stars=0;S.menuTab="drink";render();}
 function getMsg(n){return n>=4?T("endMsg4"):n===3?T("endMsg3"):T("endMsgElse");}
 
@@ -551,6 +598,9 @@ function renderGames(){
  if(g.chipaga){
  S.screen="chipaga";render();return;
  }
+ if(g.quantovale&&S.cat==="relax"){
+ S.screen="qxr";render();return;
+ }
  if(g.quantovale){
  S.screen="qv_setup";render();return;
  }
@@ -704,7 +754,8 @@ function startMrWhite(numPlayers){
  var g=curGame()||{};
  var _itMw=(GAMES[S.cat]||[]).filter(function(x){return x.mrwhite;})[0]||{};
  var words=g.words||_itMw.words||[{secret:"Spiaggia",similar:"Piscina"}];
- var pair=words[Math.floor(Math.random()*words.length)];
+ var _mk="mw_"+S.cat;var _wi=freshOrder(_mk,words.length)[0]||0;freshMark(_mk,_wi);
+ var pair=words[_wi];
  S.mwWord=pair.secret;
  S.mwSimilar=pair.similar;
  S.mwWhiteIdx=Math.floor(Math.random()*numPlayers);
@@ -715,6 +766,7 @@ function startMrWhite(numPlayers){
 }
 
 
+function mwName(i){var n=S.mwPlayerNames&&S.mwPlayerNames[i];return n||(T("mrWhitePlayer")+(i+1));}
 function renderMrWhiteSetup(){
  clr();
  if(!S.mwNumPlayers||S.mwNumPlayers<3)S.mwNumPlayers=4;
@@ -722,21 +774,26 @@ function renderMrWhiteSetup(){
  wrap.appendChild(div("mw-title","MR. WHITE"));
  wrap.appendChild(div("mw-sub",T("mrWhiteHowMany")));
 
- // Stepper stile altri giochi
- var stepper=div("");stepper.style.cssText="display:flex;align-items:center;justify-content:center;gap:24px;margin:24px 0;";
- var numDisp=div("");numDisp.style.cssText="font-size:52px;font-weight:800;min-width:64px;text-align:center;font-family:'Space Grotesk',sans-serif;color:var(--dark);";numDisp.textContent=String(S.mwNumPlayers);
- var minusBtn=document.createElement("button");
- minusBtn.style.cssText="width:48px;height:48px;border-radius:50%;border:2px solid #e0e0e0;background:#fff;font-size:24px;font-weight:300;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;font-family:inherit;";
- minusBtn.textContent="−";
- minusBtn.onclick=function(){if(S.mwNumPlayers>3){S.mwNumPlayers--;numDisp.textContent=String(S.mwNumPlayers);}};
- var plusBtn=document.createElement("button");
- plusBtn.style.cssText="width:48px;height:48px;border-radius:50%;border:2px solid #e0e0e0;background:#fff;font-size:24px;font-weight:300;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;font-family:inherit;";
- plusBtn.textContent="+";
- plusBtn.onclick=function(){if(S.mwNumPlayers<12){S.mwNumPlayers++;numDisp.textContent=String(S.mwNumPlayers);}};
- stepper.appendChild(minusBtn);stepper.appendChild(numDisp);stepper.appendChild(plusBtn);
- wrap.appendChild(stepper);
+ // Numero di giocatori e nomi (se un nome resta vuoto si usa "Giocatore N")
+ if(!S.mwNames)S.mwNames=[];
+ var grid=div("player-names-grid");var inputs=[];
+ function build(n){
+  grid.innerHTML="";inputs=[];
+  for(var k=0;k<n;k++){(function(idx){
+   var row=div("player-name-row");
+   row.appendChild(div("player-name-label",T("qvPlayer")+(idx+1)));
+   var inp=document.createElement("input");inp.type="text";inp.className="player-name-input";inp.maxLength=16;
+   inp.placeholder=T("playerNamePH")+(idx+1);inp.value=S.mwNames[idx]||"";
+   inp.addEventListener("input",function(){S.mwNames[idx]=inp.value;});
+   row.appendChild(inp);inputs.push(inp);grid.appendChild(row);
+  })(k);}
+ }
+ var sw=makeStepperWidget(S.mwNumPlayers,3,12,function(n){S.mwNumPlayers=n;build(n);});sw.style.margin="20px 0 8px";
+ wrap.appendChild(sw);
+ wrap.appendChild(grid);
+ function names(){var seen={};return inputs.map(function(inp,i){var v=inp.value.trim()||(T("qvPlayer")+(i+1));var b=v,c=2;while(seen[v.toLowerCase()]){v=b+" "+c;c++;}seen[v.toLowerCase()]=1;return v;});}
+ wrap.appendChild(btn("ebtn",T("ui_inizia"),function(){S.mwPlayerNames=names();S.screen="mrwhite";startMrWhite(S.mwNumPlayers);}));
 
- wrap.appendChild(btn("ebtn",T("ui_inizia"),function(){S.screen="mrwhite";startMrWhite(S.mwNumPlayers);}));
  wrap.appendChild(btn("ebtn out",T("backToGames"),goBackToGames));
  document.getElementById("root").appendChild(wrap);
 }
@@ -751,6 +808,7 @@ function renderMrWhite(){
  if(S.mwRevealing>=0){
  var overlay=div("mw-reveal-screen");
  var isWhite=(S.mwRevealing===S.mwWhiteIdx);
+ overlay.appendChild(div("mw-reveal-name",mwName(S.mwRevealing)));
  if(isWhite){
  overlay.appendChild(div("mw-reveal-msg",T("ui_sei_mr_white")));
  overlay.appendChild(div("mw-reveal-word",S.mwSimilar));
@@ -789,7 +847,9 @@ function renderMrWhite(){
  (function(idx){
  var seen=S.mwSeen.indexOf(idx)>=0;
  var pb=div("mw-player-btn"+(seen?" seen":""));
- pb.innerHTML=seen?"<span>"+T("mrWhitePlayer")+(idx+1)+T("ui_visto"):"<span>"+T("mrWhitePlayer")+(idx+1)+"</span><span>"+T("mrWhiteLookWord")+"</span>";
+ var pn=mwName(idx);
+ var s1=document.createElement("span");s1.textContent=pn;pb.appendChild(s1);
+ var s2=document.createElement("span");s2.textContent=seen?T("mwSeenTag"):T("mrWhiteLookWord");pb.appendChild(s2);
  if(!seen){pb.onclick=function(){S.mwRevealing=idx;render();};}
  playerList.appendChild(pb);
  })(i);
@@ -809,10 +869,11 @@ function renderMrWhite(){
 
 
 function intesaShuffle(level){
- var words=INTESA_WORDS[level].slice();
- for(var i=words.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=words[i];words[i]=words[j];words[j]=t;}
- return words;
+ // Prima le parole mai uscite su questo telefono (ogni parola mostrata viene ricordata)
+ var all=INTESA_WORDS[level];
+ return freshOrder("in_"+level,all.length).map(function(i){return all[i];});
 }
+function intesaMarkWord(){var w=S.intesaWords&&S.intesaWords[S.intesaIdx];var all=INTESA_WORDS[S.intesaLevel]||[];var k=all.indexOf(w);if(k>=0)freshMark("in_"+S.intesaLevel,k);}
 function intesaTeamName(i){return T("intesaTeam").replace("{n}",i+1);}
 function startIntesa(level){
  S.intesaLevel=level;
@@ -931,6 +992,7 @@ function renderIntesa(){
  warea.appendChild(timerNum);
 
  var currentWord=S.intesaWords[S.intesaIdx]||"—";
+ intesaMarkWord();
  var wword=div("intesa-word");wword.textContent=currentWord;warea.appendChild(wword);
  var wnum=div("intesa-word-num");wnum.textContent=T("intesaWord")+(S.intesaIdx+1)+T("ui_di")+S.intesaWords.length;warea.appendChild(wnum);
  wcard.appendChild(warea);
@@ -948,7 +1010,7 @@ function renderIntesa(){
  intesaEndTurn();
  return;
  }
- var ww=document.getElementById("intesaWord");
+ var ww=document.getElementById("intesaWord");intesaMarkWord();
  if(ww)ww.textContent=S.intesaWords[S.intesaIdx];
  else render();
  var wn=document.getElementById("intesaWordNum");
@@ -962,7 +1024,7 @@ function renderIntesa(){
  intesaEndTurn();
  return;
  }
- var ww=document.getElementById("intesaWord");
+ var ww=document.getElementById("intesaWord");intesaMarkWord();
  if(ww)ww.textContent=S.intesaWords[S.intesaIdx];
  else render();
  });
@@ -1149,7 +1211,7 @@ function renderAlfabeto(){
 
  if(winner){
  // Win screen
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winTxt(winner);wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("firstTo")+S.alfaTarget+T("pointsHunter")));
  var btns=div("endbtns");
  btns.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startAlfa(S.alfaNumPlayers);}));
@@ -1306,7 +1368,7 @@ function renderNomeCognome(){
  for(var p in S.ncScores){if(S.ncScores[p]>=S.ncTarget){winner=p;break;}}
 
  if(winner){
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winTxt(winner);wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("firstTo")+S.ncTarget+T("pointsWin")));
  var btns2=div("endbtns");
  btns2.appendChild(btn("ebtn",T("qvPlayAgain"),function(){startNomeCognome(S.ncNumPlayers);}));
@@ -1548,7 +1610,7 @@ function renderDadoWin(){
  var winner="";
  S.dadoPlayerNames.forEach(function(n){if(S.dadoScores[n]>=S.dadoTarget)winner=n;});
  var wrap=div("dado-wrap");
-  var wt=div("end-title");wt.textContent=winner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winTxt(winner);wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("dadoFirst15")));
  // Final scores
  var pd=div("dado-players");
@@ -1792,7 +1854,7 @@ function renderCodiceWin(){
  clr();
  addBackArrow(goBackToGames);
  var wrap=div("codice-wrap");wrap.style.textAlign="center";
-  var wt=div("end-title");wt.textContent=S.codiceWinner+" "+T("qvWon");wrap.appendChild(wt);
+  var wt=div("end-title");wt.textContent=winTxt(S.codiceWinner);wrap.appendChild(wt);
  wrap.appendChild(div("end-sub",T("codiceWonBy")+S.codiceWinnerTarget+"!"));
  // Reveal all codes
  var revDiv=div("dado-players");
@@ -1833,11 +1895,32 @@ function qvScoreRound(q,players){
 }
 // Le domande si ricordano per numero: l'elenco ha lo stesso ordine in tutte le lingue,
 // così ognuno (anche a distanza, o cambiando lingua) le legge nella propria lingua
-function qvPickIdx(n){
+function qvPickIdx(n,avoid){
  var tot=(typeof QUANTO_VALE_DATA!=="undefined")?QUANTO_VALE_DATA.length:qvData().length;
  var idx=[];for(var i=0;i<tot;i++)idx.push(i);
- for(var k=idx.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=idx[k];idx[k]=idx[j];idx[j]=t;}
- return idx.slice(0,n);
+ // Prima le domande mai uscite su questo telefono
+ return freshPick("qv",idx,n,avoid);
+}
+// Chi risponde alla domanda attuale: tutti, oppure solo chi è a pari punti durante lo spareggio
+function qvPlaying(){var b=S.qvTb;if(b&&S.qvRound>=b.f)return b.p.slice();return (S.qvPlayers||[]).slice();}
+function qvTbTop(){
+ var pl=S.qvPlayers||[];if(pl.length<2||S.qvDistanza)return [];
+ var group=S.qvTb?S.qvTb.p:pl;
+ var best=Math.max.apply(null,group.map(function(p){return S.qvScores[p]||0;}));
+ return group.filter(function(p){return (S.qvScores[p]||0)===best;});
+}
+function qvStartTb(top){
+ var add=qvPickIdx(3,S.qvQIdx||[]);if(!add.length)return false;
+ S.qvTb={f:S.qvQuestions.length,p:top.slice()};
+ qvSetQuestions((S.qvQIdx||[]).concat(add));
+ S.qvTotalRounds=S.qvQuestions.length;
+ S.qvRound=S.qvTb.f;S.qvAnswers={};S.qvCurrentPlayerIdx=0;S.qvPhase="answer";S.qvRoundWinner=null;S.qvScoredRound=-1;
+ S.screen="quantovale";
+ return true;
+}
+function qvRoundLabel(){
+ if(S.qvTb&&S.qvRound>=S.qvTb.f)return T("rlTbRound").replace("{n}",S.qvRound-S.qvTb.f+1).replace("{t}",RL_TB_LOCAL);
+ return T("qvQuestion")+" "+(S.qvRound+1)+" "+T("qvOf")+" "+(S.qvMain||S.qvTotalRounds);
 }
 function qvSetQuestions(idx){
  var L=qvData();
@@ -1850,7 +1933,7 @@ function startQuantoVale(players){
  S.qvScores={};
  players.forEach(function(p){S.qvScores[p]=0;});
  S.qvRound=0;S.qvScoredRound=-1;S.qvRoundWinner=null;
- S.qvTotalRounds=10;
+ S.qvTotalRounds=10;S.qvMain=10;S.qvTb=null;
  // Domande a caso (per numero)
  qvSetQuestions(qvPickIdx(S.qvTotalRounds));
  S.qvAnswers={};
@@ -2257,7 +2340,7 @@ function renderScultura(){
 var _mimoTimer=null;
 
 var MIMO_TITLES=[["f", "Titanic", "Titanic", "Titanic"], ["f", "Il Re Leone", "The Lion King", "El Rey León"], ["f", "Lo squalo", "Jaws", "Tiburón"], ["f", "Harry Potter", "Harry Potter", "Harry Potter"], ["f", "Il Signore degli Anelli", "The Lord of the Rings", "El Señor de los Anillos"], ["f", "Ritorno al futuro", "Back to the Future", "Regreso al futuro"], ["f", "Frozen", "Frozen", "Frozen"], ["f", "Jurassic Park", "Jurassic Park", "Jurassic Park"], ["f", "La Bella e la Bestia", "Beauty and the Beast", "La Bella y la Bestia"], ["f", "Spider-Man", "Spider-Man", "Spider-Man"], ["f", "Il Padrino", "The Godfather", "El Padrino"], ["f", "Shrek", "Shrek", "Shrek"], ["f", "Rocky", "Rocky", "Rocky"], ["f", "Star Wars", "Star Wars", "Star Wars"], ["f", "Toy Story", "Toy Story", "Toy Story"], ["f", "Alla ricerca di Nemo", "Finding Nemo", "Buscando a Nemo"], ["f", "Il mago di Oz", "The Wizard of Oz", "El mago de Oz"], ["f", "Mary Poppins", "Mary Poppins", "Mary Poppins"], ["f", "Indiana Jones", "Indiana Jones", "Indiana Jones"], ["f", "Avatar", "Avatar", "Avatar"], ["f", "La Sirenetta", "The Little Mermaid", "La Sirenita"], ["f", "Cenerentola", "Cinderella", "La Cenicienta"], ["s", "Volare", "Volare", "Volare"], ["s", "Bella ciao", "Bella ciao", "Bella ciao"], ["s", "Macarena", "Macarena", "Macarena"], ["s", "Despacito", "Despacito", "Despacito"], ["s", "Jingle Bells", "Jingle Bells", "Jingle Bells"], ["s", "Tanti auguri a te", "Happy Birthday", "Cumpleaños feliz"], ["s", "Let It Be", "Let It Be", "Let It Be"], ["s", "We Will Rock You", "We Will Rock You", "We Will Rock You"], ["s", "Thriller", "Thriller", "Thriller"], ["s", "Imagine", "Imagine", "Imagine"], ["b", "Il Piccolo Principe", "The Little Prince", "El Principito"], ["b", "Don Chisciotte", "Don Quixote", "Don Quijote"], ["b", "Romeo e Giulietta", "Romeo and Juliet", "Romeo y Julieta"], ["b", "Cappuccetto Rosso", "Little Red Riding Hood", "Caperucita Roja"], ["b", "Alice nel Paese delle Meraviglie", "Alice in Wonderland", "Alicia en el país de las maravillas"], ["b", "Il giro del mondo in 80 giorni", "Around the World in 80 Days", "La vuelta al mundo en 80 días"], ["b", "Moby Dick", "Moby Dick", "Moby Dick"], ["b", "Robinson Crusoe", "Robinson Crusoe", "Robinson Crusoe"], ["b", "Peter Pan", "Peter Pan", "Peter Pan"], ["b", "La Divina Commedia", "The Divine Comedy", "La Divina Comedia"], ["b", "I tre porcellini", "The Three Little Pigs", "Los tres cerditos"], ["b", "Pinocchio", "Pinocchio", "Pinocho"]];
-function mimoPick(){var n=MIMO_TITLES.length,i=Math.floor(Math.random()*n);if(i===S.mimoPick)i=(i+1)%n;S.mimoPick=i;S.mimoShow=false;}
+function mimoPick(){var o=freshOrder("mimo",MIMO_TITLES.length).filter(function(x){return x!==S.mimoPick;});var i=o[0]||0;freshMark("mimo",i);S.mimoPick=i;S.mimoShow=false;}
 function mimoTitleCard(){
  if(S.mimoPick===undefined||S.mimoPick===null)mimoPick();
  var it=MIMO_TITLES[S.mimoPick];var li=LANG==="en"?2:LANG==="es"?3:1;
@@ -3660,6 +3743,7 @@ function renderQvSetup(){
     sfidaBtn.disabled=true;
     sfidaBtn.style.opacity="0.5";
     sfidaBtn.querySelector("span").textContent=T("ui_invio_sfida");
+    if(typeof qxrChallenge==="function"){qxrChallenge();return;}
     sendQvChallenge(function(code){
      S.qvMode='distanza';
      renderQvSetup();
@@ -3995,15 +4079,16 @@ function renderQuantoVale(){
  qvRefreshLang();
  var wrap=div("qv-wrap");
  var q=S.qvQuestions[S.qvRound];
- var players=S.qvPlayers;
+ var players=S.qvDistanza?S.qvPlayers:qvPlaying();var allPl=S.qvPlayers;
 
  // Round indicator
- wrap.appendChild(div("qv-round",T("qvQuestion")+" "+(S.qvRound+1)+" "+T("qvOf")+" "+S.qvTotalRounds));
+ wrap.appendChild(div("qv-round",qvRoundLabel()));
+ if(S.qvTb&&S.qvRound>=S.qvTb.f){var _tw=div("");_tw.style.textAlign="center";_tw.appendChild(div("rl-tb",T("rlTbBetween").replace("{n}",rlNames(S.qvTb.p,null))));wrap.appendChild(_tw);}
 
  // Scores
- var maxScore=Math.max.apply(null,players.map(function(p){return S.qvScores[p];}));
+ var maxScore=Math.max.apply(null,allPl.map(function(p){return S.qvScores[p];}));
  var scoresDiv=div("qv-scores");
- players.forEach(function(p){
+ allPl.forEach(function(p){
  var chip=div("qv-score-chip"+(S.qvScores[p]===maxScore&&maxScore>0?" leader":""));
  chip.textContent=p+": "+S.qvScores[p];
  scoresDiv.appendChild(chip);
@@ -4345,12 +4430,19 @@ function renderQvEnd(){
  clr();
  addBackArrow(function(){fbLeaveRoom();goBackToGames();});
  var wrap=div("qv-wrap");
+ var tbTop=qvTbTop();
+ if(tbTop.length>1){
+  wrap.appendChild(div("end-title",T("rlTbTitle")));
+  wrap.appendChild(div("end-sub",T("rlTbSubQv").replace("{n}",rlNames(tbTop,null))));
+  var tbB=div("endbtns");tbB.appendChild(btn("ebtn",T("rlTbGo"),function(){if(qvStartTb(tbTop))render();}));wrap.appendChild(tbB);
+  document.getElementById("root").appendChild(wrap);return;
+ }
  // Find overall winner
  var maxScore=Math.max.apply(null,S.qvPlayers.map(function(p){return S.qvScores[p];}));
  var _winners=S.qvPlayers.filter(function(p){return S.qvScores[p]===maxScore;});
  var winner=_winners[0];
-  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winner+" "+T("qvWon");wrap.appendChild(wt);
- wrap.appendChild(div("end-sub",T("qvPoints")+" "+maxScore+" "+T("qvPointsOf")+" "+S.qvTotalRounds));
+  var wt=div("end-title");wt.textContent=_winners.length>1?T("qvTie")+" "+_winners.join(", "):winTxt(winner);wrap.appendChild(wt);
+ wrap.appendChild(div("end-sub",S.qvTb?T("rlWonTb"):T("qvPoints")+" "+maxScore+" "+T("qvPointsOf")+" "+(S.qvMain||S.qvTotalRounds)));
  var pd=div("qv-players-answers");
  S.qvPlayers.sort(function(a,b){return S.qvScores[b]-S.qvScores[a];}).forEach(function(p,i){
  var row=div("qv-player-answer"+(S.qvScores[p]===maxScore?" winner":""));
@@ -4394,6 +4486,7 @@ function renderAgSetup(){
  minusBtn.style.cssText="width:48px;height:48px;border-radius:50%;border:2px solid #e0e0e0;background:#fff;font-size:24px;font-weight:300;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;font-family:inherit;";
  minusBtn.textContent="−";
  minusBtn.onclick=function(){if(S.agNumPlayers>2){S.agNumPlayers--;renderAgSetup();}};
+ if(selectedNum<=2){minusBtn.disabled=true;minusBtn.style.opacity="0.35";}
  var numDisp=document.createElement("div");
  numDisp.style.cssText="width:72px;text-align:center;font-size:40px;font-weight:900;color:var(--dark);font-family:'Space Grotesk',sans-serif;";
  numDisp.textContent=selectedNum;
@@ -4401,8 +4494,10 @@ function renderAgSetup(){
  plusBtn.style.cssText="width:48px;height:48px;border-radius:50%;border:2px solid #e0e0e0;background:#fff;font-size:24px;font-weight:300;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;font-family:inherit;";
  plusBtn.textContent="+";
  plusBtn.onclick=function(){if(S.agNumPlayers<8){S.agNumPlayers++;renderAgSetup();}};
+ if(selectedNum>=8){plusBtn.disabled=true;plusBtn.style.opacity="0.35";}
  stepper.appendChild(minusBtn);stepper.appendChild(numDisp);stepper.appendChild(plusBtn);
  body.appendChild(stepper);
+ var agHint=div("");agHint.style.cssText="font-size:12px;color:var(--f-ink-3,#8E959E);text-align:center;margin:-14px 0 16px;";agHint.textContent=T("ui_minimo")+"2"+T("ui_massimo")+"8";body.appendChild(agHint);
  var namesGrid=div("player-names-grid");
  var inputs=[];
  for(var i=0;i<selectedNum;i++){
@@ -4435,13 +4530,11 @@ function startAnnoGiusto(players){
  S.agScores={};
  players.forEach(function(p){S.agScores[p]=0;});
  S.agRound=0;S.agScoredKey=null;S.agGameId=Date.now();
- S.agTotalRounds=10;
- var _agData=agData().slice();
- for(var i=_agData.length-1;i>0;i--){
-  var j=Math.floor(Math.random()*(i+1));
-  var t=_agData[i];_agData[i]=_agData[j];_agData[j]=t;
- }
- S.agQuestions=_agData.slice(0,10);
+ S.agTotalRounds=10;S.agMain=10;S.agTb=null;
+ // Prima le domande mai uscite su questo telefono (si ricordano per numero: stesso ordine in tutte le lingue)
+ var _all=[];for(var i=0;i<agData().length;i++)_all.push(i);
+ S.agQIdx=freshPick("ag_local",_all,10);
+ S.agQuestions=S.agQIdx.map(function(k){return agData()[k];});
  S.agAnswers={};
  S.agCurrentPlayerIdx=0;
  S.agPhase="answer";
@@ -4450,8 +4543,26 @@ function startAnnoGiusto(players){
  render();
 }
 
+// Chi risponde alla domanda attuale: tutti, oppure solo chi è a pari punti durante lo spareggio
+function agPlaying(){var b=S.agTb;if(b&&S.agRound>=b.f)return b.p.slice();return (S.agPlayers||[]).slice();}
+function agTbTop(){
+ var pl=S.agPlayers||[];if(pl.length<2)return [];
+ var group=S.agTb?S.agTb.p:pl;
+ var best=Math.max.apply(null,group.map(function(p){return S.agScores[p]||0;}));
+ return group.filter(function(p){return (S.agScores[p]||0)===best;});
+}
+function agStartTb(top){
+ var n=agData().length;var hard=[];for(var i=84;i<=Math.min(151,n-1);i++)hard.push(i);
+ var add=freshPick("ag_local_hard",hard,3,S.agQIdx||[]);if(!add.length)return false;
+ S.agTb={f:S.agQuestions.length,p:top.slice()};
+ add.forEach(function(k){S.agQIdx.push(k);S.agQuestions.push(agData()[k]);});
+ S.agTotalRounds=S.agQuestions.length;
+ S.agRound=S.agTb.f;S.agAnswers={};S.agCurrentPlayerIdx=0;S.agPhase="answer";S.agCurrentSlider=undefined;
+ S.screen="annogiusto";return true;
+}
 function renderAnnoGiusto(){
  clr();
+ if(S.agQIdx&&S.agQIdx.length)S.agQuestions=S.agQIdx.map(function(k){return agData()[k];});
  var cat=getCatById(S.cat);
  var bg=(CAT_PASTEL&&CAT_PASTEL[S.cat])?CAT_PASTEL[S.cat]:cat.bg;
  var wrap=div("panel");
@@ -4461,10 +4572,12 @@ function renderAnnoGiusto(){
  top.appendChild(btn("card-nav-btn back",T("backToGames"),goBackToGames));
  top.appendChild(btn("card-nav-btn",T("exitBtn"),goHome));
  hdr.appendChild(div("intesa-title",T("ui_anno_giusto")));
- hdr.appendChild(div("intesa-desc",T("ui_round")+(S.agRound+1)+" / "+S.agTotalRounds));
+ var _agTb=S.agTb&&S.agRound>=S.agTb.f;
+ hdr.appendChild(div("intesa-desc",_agTb?T("rlTbRound").replace("{n}",S.agRound-S.agTb.f+1).replace("{t}",RL_TB_LOCAL):T("ui_round")+(S.agRound+1)+" / "+(S.agMain||S.agTotalRounds)));
  var body=div("dbody");card.appendChild(body);
  body.style.cssText="display:flex;flex-direction:column;align-items:center;gap:20px;padding:24px 16px;";
  var q=S.agQuestions[S.agRound];
+ if(_agTb)body.appendChild(div("rl-tb",T("rlTbBetween").replace("{n}",rlNames(S.agTb.p,null))));
  // Domanda
  var qbox=div("");
  qbox.style.cssText="background:var(--surface2,#f5f5f5);border-radius:16px;padding:20px;text-align:center;width:100%;max-width:340px;";
@@ -4472,7 +4585,7 @@ function renderAnnoGiusto(){
  qbox.appendChild(qtext);
  body.appendChild(qbox);
  if(S.agPhase==="answer"){
-  var curPlayer=S.agPlayers[S.agCurrentPlayerIdx];
+  var curPlayer=agPlaying()[S.agCurrentPlayerIdx];
   var turnLbl=div("");
   turnLbl.style.cssText="font-size:15px;color:var(--muted,#888);text-align:center;";
   turnLbl.textContent=T("ui_turno_di")+curPlayer;
@@ -4517,7 +4630,7 @@ function renderAnnoGiusto(){
    S.agAnswers[curPlayer]=v;
    S.agCurrentSlider=undefined;
    S.agCurrentPlayerIdx++;
-   if(S.agCurrentPlayerIdx>=S.agPlayers.length){
+   if(S.agCurrentPlayerIdx>=agPlaying().length){
     S.agPhase="reveal";
    }
    renderAnnoGiusto();
@@ -4540,7 +4653,7 @@ function renderAnnoGiusto(){
   }
   body.appendChild(answerBox);
   // Classifica risposte
-  var ranked=S.agPlayers.map(function(p){
+  var ranked=agPlaying().map(function(p){
    var ans=S.agAnswers[p];
    var diff=Math.abs(ans-risposta);
    return{p:p,ans:ans,diff:diff};
@@ -4597,10 +4710,17 @@ function renderAgEnd(){
  clr();
  addBackArrow(goBackToGames);
  var wrap=div("qv-wrap");
+ var tbTop=agTbTop();
+ if(tbTop.length>1){
+  wrap.appendChild(div("end-title",T("rlTbTitle")));
+  wrap.appendChild(div("end-sub",T("rlTbSub").replace("{n}",rlNames(tbTop,null))));
+  var tbB=div("endbtns");tbB.appendChild(btn("ebtn",T("rlTbGo"),function(){if(agStartTb(tbTop))render();}));wrap.appendChild(tbB);
+  document.getElementById("root").appendChild(wrap);return;
+ }
  var maxScore=Math.max.apply(null,S.agPlayers.map(function(p){return S.agScores[p];}));
  var winner=S.agPlayers.filter(function(p){return S.agScores[p]===maxScore;})[0];
- var wt=div("end-title");wt.textContent=winner+T("ui_ha_vinto");wrap.appendChild(wt);
- wrap.appendChild(div("end-sub",T("ui_con")+maxScore+T("ui_punti_su")+S.agTotalRounds+" round"));
+ var wt=div("end-title");wt.textContent=winTxt(winner);wrap.appendChild(wt);
+ wrap.appendChild(div("end-sub",S.agTb?T("rlWonTb"):T("ui_con")+maxScore+T("ui_punti_su")+(S.agMain||S.agTotalRounds)+" "+T("agQWord")));
  var pd=div("qv-players-answers");
  S.agPlayers.slice().sort(function(a,b){return S.agScores[b]-S.agScores[a];}).forEach(function(p,i){
   var row=div("qv-player-answer"+(i===0?" winner":""));
@@ -5021,39 +5141,45 @@ function startQuizWithLevel(level){
  if(!S.quizPlayers||!S.quizPlayers.length)S.quizPlayers=[(typeof FILOS_NAME!=="undefined"&&FILOS_NAME)||(T("qvPlayer")+"1")];
  S.quizScores={};S.quizPlayers.forEach(function(p){S.quizScores[p]=0;});S.quizPick={};
  var allQ=quizDataFor(S.quizGame).questions;
- var total=allQ.length;
- // Split into thirds: facile=first third, media=middle, difficile=last third
- var third=Math.floor(total/3);
- var pool;
- if(level==="facile") pool=allQ.slice(0,third);
- else if(level==="media") pool=allQ.slice(third,third*2);
- else pool=allQ.slice(third*2);
- // Shuffle
- pool=pool.slice();
- for(var ii=pool.length-1;ii>0;ii--){var jj=Math.floor(Math.random()*(ii+1));var tmp=pool[ii];pool[ii]=pool[jj];pool[jj]=tmp;}
- S.quizQuestions=pool.slice(0,10);
+ // Tre livelli: primo terzo facile, secondo medio, ultimo difficile. Si pescano prima le domande mai uscite
+ var picks=freshPick("q_"+S.quizGame+"_"+level,quizLevelIdx(allQ.length,level),10);
+ S.quizPickIdx=picks.slice();S.quizMain=picks.length;S.quizTb=null;
+ S.quizQuestions=picks.map(function(i){return allQ[i];});
  S.quizOpts=null;S.quizQIdx=null;S.quizChoice={};S.quizTurn=0;
  if(S.quizGame===FLAG_QUIZ){
-  // Bandiere: ogni bandiera ha 4 paesi tra cui scegliere (quello giusto più 3 a caso).
+  // Bandiere: 4 paesi tra cui scegliere, quello giusto più 3 bandiere che le somigliano.
   // Si ricordano per numero, così cambiando lingua i nomi si traducono
-  var all=allQ;
-  S.quizQIdx=S.quizQuestions.map(function(q){return all.indexOf(q);});
-  S.quizOpts=S.quizQIdx.map(function(qi){
-   var others=[];for(var k=0;k<all.length;k++)if(k!==qi)others.push(k);
-   for(var a=others.length-1;a>0;a--){var b=Math.floor(Math.random()*(a+1));var t=others[a];others[a]=others[b];others[b]=t;}
-   var o=[qi].concat(others.slice(0,3));
-   for(var c=o.length-1;c>0;c--){var d=Math.floor(Math.random()*(c+1));var t2=o[c];o[c]=o[d];o[d]=t2;}
-   return o;
-  });
+  S.quizQIdx=picks.slice();
+  S.quizOpts=picks.map(function(qi){return flagOpts(qi);});
  }
  S.screen="quiz";render();
 }
 var FLAG_QUIZ="CHE BANDIERA \u00c8?";
+var RL_TB_LOCAL=3;
+function quizLevelIdx(n,level){var t=Math.floor(n/3);var a=level==="facile"?0:level==="media"?t:2*t,b=level==="facile"?t:level==="media"?2*t:n;var o=[];for(var i=a;i<b;i++)o.push(i);return o;}
+// Chi gioca la domanda attuale: tutti, oppure solo chi è a pari punti durante lo spareggio
+function quizPlaying(){var b=S.quizTb;if(b&&S.quizIdx>=b.f)return b.p.slice();return (S.quizPlayers||[]).slice();}
+// Spareggio al tavolo: 3 domande più difficili, solo per chi è a pari punti in testa
+function quizStartTb(top){
+ var allQ=quizDataFor(S.quizGame).questions;
+ var add=freshPick("q_"+S.quizGame+"_difficile",quizLevelIdx(allQ.length,"difficile"),3,S.quizPickIdx||[]);
+ if(!add.length)return false;
+ S.quizTb={f:S.quizQuestions.length,p:top.slice()};
+ add.forEach(function(i){S.quizPickIdx.push(i);S.quizQuestions.push(allQ[i]);if(S.quizQIdx){S.quizQIdx.push(i);S.quizOpts.push(flagOpts(i));}});
+ S.quizRevealed=false;S.quizChoice={};S.quizTurn=0;S.quizPick={};
+ return true;
+}
+function quizTbTop(){
+ var pl=S.quizPlayers||[];if(pl.length<2)return [];
+ var group=S.quizTb?S.quizTb.p:pl;
+ var best=Math.max.apply(null,group.map(function(p){return S.quizScores[p]||0;}));
+ return group.filter(function(p){return (S.quizScores[p]||0)===best;});
+}
 // Bandiere con la scelta: si risponde a turno (le scelte degli altri restano nascoste), poi l'app mostra chi ha indovinato e conta i punti
 function quizFlagBody(body,q){
  var all=quizDataFor(S.quizGame).questions;
  var qi=S.quizQIdx[S.quizIdx],opts=S.quizOpts[S.quizIdx]||[];
- var pl=S.quizPlayers||[];
+ var pl=quizPlaying();
  if(!S.quizChoice)S.quizChoice={};
  var name=function(i){return all[i]?String(all[i].a):"";};
  if(!S.quizRevealed){
@@ -5160,6 +5286,15 @@ function renderQuiz(){
  var qdata=quizDataFor(S.quizGame);var total=S.quizQuestions.length;
  if(S.quizIdx>=total){
  var wrap=div("quiz-wrap");var sc=div("quiz-score");wrap.appendChild(sc);
+ // Pareggio in testa: niente fine, si fa lo spareggio
+ var tbTop=quizTbTop();
+ if(tbTop.length>1){
+  sc.appendChild(div("quiz-score-title",T("rlTbTitle")));
+  sc.appendChild(div("quiz-score-sub",T("rlTbSub").replace("{n}",rlNames(tbTop,null))));
+  var tbB=div("endbtns");sc.appendChild(tbB);
+  tbB.appendChild(btn("ebtn",T("rlTbGo"),function(){if(quizStartTb(tbTop))render();}));
+  document.getElementById("root").appendChild(wrap);return;
+ }
  
  sc.appendChild(div("quiz-score-title",T("ui_quiz_terminato")));
  var pl=S.quizPlayers||[];
@@ -5173,13 +5308,14 @@ function renderQuiz(){
  } else {
   var best=Math.max.apply(null,pl.map(function(p){return S.quizScores[p]||0;}));
   var winners=pl.filter(function(p){return (S.quizScores[p]||0)===best;});
-  sc.appendChild(div("quiz-score-msg",best===0?T("ui_nessuno_ha_indovinato"):winners.length>1?T("qvTie")+" "+winners.join(", "):winners[0]+" "+T("qvWon")));
+  sc.appendChild(div("quiz-score-msg",winners.length>1?T("qvTie")+" "+winners.join(", "):winTxt(winners[0])));
+  if(S.quizTb)sc.appendChild(div("quiz-score-sub",T("rlWonTb")));
   var lb=div("quiz-board");sc.appendChild(lb);
   pl.slice().sort(function(a,b){return (S.quizScores[b]||0)-(S.quizScores[a]||0);}).forEach(function(p,i){
    var r=div("quiz-board-row"+((S.quizScores[p]||0)===best&&best>0?" win":""));
    r.appendChild(el("span","quiz-board-pos",String(i+1)));
    r.appendChild(el("span","quiz-board-name",p));
-   r.appendChild(el("span","quiz-board-pts",(S.quizScores[p]||0)+" / "+total));
+   r.appendChild(el("span","quiz-board-pts",S.quizTb?(S.quizScores[p]||0)+" pt":(S.quizScores[p]||0)+" / "+total));
    lb.appendChild(r);
   });
  }
@@ -5193,9 +5329,11 @@ function renderQuiz(){
  var q=S.quizQuestions[S.quizIdx];
  var wrap=div("quiz-wrap");
  var hdr=div("quiz-header");wrap.appendChild(hdr);
- hdr.appendChild(div("quiz-title",(curGame()||{}).name||S.quizGame));hdr.appendChild(div("quiz-counter",T("quizQuestion")+(S.quizIdx+1)+" / "+total));
+ var _inTb=S.quizTb&&S.quizIdx>=S.quizTb.f;var _main=S.quizMain||total;
+ hdr.appendChild(div("quiz-title",(curGame()||{}).name||S.quizGame));hdr.appendChild(div("quiz-counter",_inTb?T("rlTbRound").replace("{n}",S.quizIdx-S.quizTb.f+1).replace("{t}",RL_TB_LOCAL):T("quizQuestion")+(S.quizIdx+1)+" / "+_main));
  var prog=div("quiz-progress");wrap.appendChild(prog);
- var bar=div("quiz-progress-bar");bar.style.width=Math.round((S.quizIdx/total)*100)+"%";prog.appendChild(bar);
+ var bar=div("quiz-progress-bar");bar.style.width=(_inTb?Math.round(((S.quizIdx-S.quizTb.f)/RL_TB_LOCAL)*100):Math.round((S.quizIdx/_main)*100))+"%";prog.appendChild(bar);
+ if(_inTb){var _tbn=div("rl-tb",T("rlTbBetween").replace("{n}",rlNames(S.quizTb.p,null)));var _tbw=div("");_tbw.style.textAlign="center";_tbw.appendChild(_tbn);wrap.appendChild(_tbw);}
  var sb=div("qv-scores");wrap.appendChild(sb);
  var _pl=S.quizPlayers||[];var _mx=Math.max.apply(null,_pl.map(function(p){return S.quizScores[p]||0;}).concat([0]));
  _pl.forEach(function(p){var c=div("qv-score-chip"+((S.quizScores[p]||0)===_mx&&_mx>0?" leader":""));c.textContent=p+": "+(S.quizScores[p]||0);sb.appendChild(c);});
@@ -5216,7 +5354,7 @@ function renderQuiz(){
  } else {
  var ans=div("quiz-answer correct");ans.textContent=q.a;body.appendChild(ans);
  if(q.extra){body.appendChild(div("quiz-answer-sub",q.extra));}
- var pl=S.quizPlayers||[];
+ var pl=quizPlaying();
  body.appendChild(div("quiz-who",pl.length>1?T("ui_chi_ha_indovinato"):T("ui_hai_indovinato")));
  var picks=div("quiz-picks");body.appendChild(picks);
  if(!S.quizPick)S.quizPick={};
@@ -5244,9 +5382,10 @@ function renderStarter(){
  // Mescola una volta sola per partita (prima si rimescolava a ogni frase e alcune si ripetevano)
  var _dk=gameName+"|"+LANG;
  if(!S.starterDeck||S.starterDeck.key!==_dk||S.starterIdx===0||S.starterDeck.src!==allPhrases.length){
-  var sh=allPhrases.slice();
-  for(var si=sh.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=sh[si];sh[si]=sh[sj];sh[sj]=st;}
-  S.starterDeck={key:_dk,list:sh,src:allPhrases.length};
+  // Prima le frasi mai uscite su questo telefono
+  var _sk="sp_"+(S.starterGameIt||gameName);var _ord=freshOrder(_sk,allPhrases.length);
+  var sh=_ord.map(function(i){return allPhrases[i];});
+  S.starterDeck={key:_dk,list:sh,src:allPhrases.length,ord:_ord,sk:_sk};
  }
  var shuffled=S.starterDeck.list;
  var maxPhrases=(gameName==="IL SUSSURRO"||gameName==="THE WHISPER"||gameName==="EL SUSURRO")?10:(gameName==="CHI È PIÙ PROBABILE? (COPPIA)"||gameName==="WHO'S MORE LIKELY? (COUPLE)"||gameName==="¿QUIÉN ES MÁS PROBABLE? (PAREJA)")?15:(gameName==="SCALA DA 1 A 10"||gameName==="SCALE OF 1 TO 10"||gameName==="ESCALA DEL 1 AL 10")?20:25;
@@ -5263,6 +5402,7 @@ function renderStarter(){
  document.getElementById("root").appendChild(wrap);return;
  }
  var phrase=phrases[S.starterIdx];var cat=getCatById(S.cat);
+ if(S.starterDeck&&S.starterDeck.ord)freshMark(S.starterDeck.sk,S.starterDeck.ord[S.starterIdx]);
  var wrap=div("starter-wrap");
  var hdr=div("starter-header");wrap.appendChild(hdr);
  hdr.appendChild(div("starter-title",gameName));hdr.appendChild(div("starter-counter",T("ui_frase")+(S.starterIdx+1)+" / "+total));

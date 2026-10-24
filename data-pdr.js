@@ -17,7 +17,7 @@
 // Ricavata dalle risposte del gioco e controllata a mano una per una.
 // ══════════════════════════════════════════
 var PDR_KEY="BBBABBBBBBBBBBAABBBABBBBBBBBBSBASBSBBBBSSABBAAABBSSSAASABSBBBAABBSBBBBBBBBASBBBAAA";
-var PDR_Q_MS=30000; // tempo per rispondere a ogni domanda
+var PDR_Q_MS=RL_ANS_MS; // tempo per rispondere a ogni domanda
 var PDR_MAX_PLAYERS=8,PDR_ROUNDS=10,PDR_FORCE_MS=45000;
 var PDR={code:null,me:null,data:null,unsub:null,sig:"",val:null,valKey:"",busy:false,closed:false};
 
@@ -44,7 +44,8 @@ function pdrState(){
   return out;
  }
  var cur=answersOf(q);
- var allIn=active.length>0&&active.every(function(n){return !!cur[n];});
+ var elig=rlElig(meta,active,q);
+ var allIn=elig.length>0&&elig.every(function(n){return !!cur[n];});
  var rvMap=d.rv||{};
  var reveal=phase==="play"&&(allIn||meta.rv===q||!!rvMap[game+"_"+q]);
  // Punteggi: un punto a chi risponde giusto
@@ -61,9 +62,10 @@ function pdrState(){
  if(phase==="play"){
   if(meta.end)ended=true;
   else if(active.length<2){ended=true;interrupted=true;}
+  else if(rlBlock(meta,q)&&elig.length<2)ended=true;
  }
  var leader=(phase==="lobby"?lobby:active.length?active:lobby)[0]||null;
- return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1};
+ return {meta:meta,phase:phase,players:players,lobby:lobby,order:order,active:active,isLeft:isLeft,game:game,qs:qs,q:q,cur:cur,allIn:allIn,reveal:reveal,scores:scores,rounds:rounds,ended:ended,interrupted:interrupted,leader:leader,last:q>=qs.length-1,elig:elig,rt:(reveal?rlRevealAt(meta,cur,elig,allIn):0),main:rlMain(meta)};
 }
 function pdrList(){
  var D=(LANG==="en"&&typeof QUIZ_DATA_EN!=="undefined")?QUIZ_DATA_EN:(LANG==="es"&&typeof QUIZ_DATA_ES!=="undefined")?QUIZ_DATA_ES:(typeof QUIZ_DATA!=="undefined"?QUIZ_DATA:null);
@@ -77,6 +79,14 @@ function pdrQuestion(idx){
  var t=String(it.q).replace(/^\s*(PRIMA O DOPO\?|BEFORE OR AFTER\?|¿ANTES O DESPUÉS\?)\s*/i,"");
  t=t.charAt(0).toUpperCase()+t.slice(1);
  return {q:t,a:it.a,extra:it.extra};
+}
+function pdrTotal(){return (typeof QUIZ_DATA!=="undefined"&&QUIZ_DATA["PRIMA O DOPO?"])?Math.min(QUIZ_DATA["PRIMA O DOPO?"].questions.length,PDR_KEY.length):0;}
+// 10 domande del livello (prima quelle mai uscite) e una riserva di domande difficili per gli spareggi
+function pdrRoundData(lvl){
+ var tot=pdrTotal();
+ var qs=freshPick("r_pd_"+lvl,rlThirds(tot,lvl),PDR_ROUNDS);
+ var tbp=fShuffle(rlThirds(tot,"difficile").filter(function(x){return qs.indexOf(x)<0;})).slice(0,12);
+ return {qs:qs,main:qs.length,tbp:tbp};
 }
 function pdrPickQuestions(lvl){
  var tot=(typeof QUIZ_DATA!=="undefined"&&QUIZ_DATA["PRIMA O DOPO?"])?Math.min(QUIZ_DATA["PRIMA O DOPO?"].questions.length,PDR_KEY.length):0;
@@ -150,18 +160,18 @@ function pdrExit(){pdrLeave();goBackToGames();}
 function pdrStart(){
  var st=pdrState();if(st.leader!==PDR.me||st.lobby.length<2||PDR.busy)return;
  PDR.busy=true;
- cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),{phase:"play",order:st.lobby.slice(0,PDR_MAX_PLAYERS),game:st.game,qs:pdrPickQuestions(rlLevel(st.meta)),q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()})).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
+ cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),Object.assign({phase:"play",order:st.lobby.slice(0,PDR_MAX_PLAYERS),game:st.game,q:0,rv:-1,end:false,lvl:rlLevel(st.meta),qt:fbNow()},pdrRoundData(rlLevel(st.meta))))).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
 }
 function pdrAnswer(v){
  if(!/^[BAS]$/.test(v||""))return;
  var st=pdrState();
- if(st.phase!=="play"||st.ended||st.reveal||st.active.indexOf(PDR.me)<0||st.cur[PDR.me]||PDR.busy)return;
+ if(st.phase!=="play"||st.ended||st.reveal||st.elig.indexOf(PDR.me)<0||st.cur[PDR.me]||PDR.busy)return;
  PDR.busy=true;
  var ref=fbRef(fbDB,pdrPath("g"+st.game+"/a"+st.q+"/"+cdrKey(PDR.me)));
  // La risposta si scrive una volta sola (doppio tocco o rete lenta non la cambiano)
  cdrNet(fbGet(ref)).then(function(snap){
   if(snap.exists()){PDR.busy=false;PDR.sig="";pdrRender(true);return;}
-  return cdrNet(fbSet(ref,{c:v,t:Date.now()})).then(function(){PDR.busy=false;PDR.sig="";pdrRender(true);});
+  return cdrNet(fbSet(ref,{c:v,t:fbNow()})).then(function(){PDR.busy=false;PDR.sig="";pdrRender(true);});
  }).catch(function(){PDR.busy=false;cdrToast(T("connErr"));PDR.sig="";pdrRender(true);});
 }
 // Se qualcuno non risponde (telefono spento, app chiusa) dopo un po' chi ha già risposto può mostrare le risposte.
@@ -185,19 +195,21 @@ function pdrTimer(wrap,st){
  var g=st.game,q=st.q;
  rlTimer(wrap,st.meta.qt,PDR_Q_MS,function(){pdrTimeUp(g,q);});
 }
-function pdrNext(){
- var st=pdrState();if(!st.reveal||st.ended||PDR.busy)return;
+// Passaggio automatico alla domanda dopo (o allo spareggio, o alla fine), uguale su tutti i telefoni
+function pdrNext(game,q){
+ var st=pdrState();if(st.phase!=="play"||!st.reveal||st.ended||PDR.busy)return;
+ if(game!==undefined&&(st.game!==game||st.q!==q))return;
+ if(st.active.indexOf(PDR.me)<0)return;
  PDR.busy=true;
- var m=Object.assign({},st.meta);
- if(st.last)m.end=true;else{m.q=st.q+1;m.rv=-1;m.qt=fbNow();}
- cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),m)).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
+ var m=rlNextMeta(st.meta,st.q,st.rt||fbNow(),st.active,st.scores);
+ cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),m)).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;});
 }
 function pdrRematch(){
  var st=pdrState();if(st.leader!==PDR.me||PDR.busy)return;
  var still=st.order.filter(function(n){return !st.isLeft(n);});
  PDR.busy=true;
  var lv=rlLevel(st.meta);
- var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:{phase:"play",order:still,game:st.game+1,qs:pdrPickQuestions(lv),q:0,rv:-1,end:false,lvl:lv,qt:fbNow()};
+ var m=still.length<2?{phase:"lobby",order:[],game:st.game+1,lvl:lv}:Object.assign({phase:"play",order:still,game:st.game+1,q:0,rv:-1,end:false,lvl:lv,qt:fbNow()},pdrRoundData(lv));
  cdrNet(fbSet(fbRef(fbDB,pdrPath("meta")),m)).then(function(){PDR.busy=false;}).catch(function(){PDR.busy=false;cdrToast(T("connErr"));});
 }
 // Chi guida sceglie il livello (sala d'attesa, oppure fine partita per la rivincita)
@@ -253,7 +265,8 @@ function pdrRender(force){
  }
  if(st.ended){pdrScreenEnd(wrap,st);return;}
  if(st.reveal){pdrScreenReveal(wrap,st);return;}
- if(!st.cur[PDR.me])pdrScreenAnswer(wrap,st);
+ if(st.elig.indexOf(PDR.me)<0)pdrScreenWatch(wrap,st);
+ else if(!st.cur[PDR.me])pdrScreenAnswer(wrap,st);
  else pdrScreenWait(wrap,st);
 }
 function pdrScreenStart(wrap){
@@ -294,7 +307,8 @@ function pdrScreenLobby(wrap,st){
  }
 }
 function pdrQuestionBox(wrap,st){
- wrap.appendChild(div("agr-round",T("pdrRound").replace("{n}",st.q+1).replace("{t}",st.qs.length)+" · "+rlLevelName(rlLevel(st.meta))));
+ wrap.appendChild(div("agr-round",rlRoundLabel(st.meta,st.q,T("pdrRound"))+(rlBlock(st.meta,st.q)?"":" · "+rlLevelName(rlLevel(st.meta)))));
+ rlTbNote(wrap,st.meta,st.q,PDR.me);
  var q=pdrQuestion(st.qs[st.q])||{q:""};
  wrap.appendChild(div("agr-q",q.q));
  return q;
@@ -320,9 +334,15 @@ function pdrScreenAnswer(wrap,st){
  ok.disabled=!PDR.val;
  wrap.appendChild(ok);
 }
+function pdrScreenWatch(wrap,st){
+ pdrQuestionBox(wrap,st);
+ pdrTimer(wrap,st);
+ wrap.appendChild(div("codice-sub",T("rlTbWatch").replace("{n}",rlNames(st.elig,PDR.me))));
+ pdrChips(wrap,st);
+}
 function pdrChips(wrap,st){
  var chips=div("agr-chips");
- st.active.forEach(function(n){chips.appendChild(div("agr-chip"+(st.cur[n]?" on":""),n===PDR.me?T("cdrYou2"):n));});
+ st.elig.forEach(function(n){chips.appendChild(div("agr-chip"+(st.cur[n]?" on":""),n===PDR.me?T("cdrYou2"):n));});
  wrap.appendChild(chips);
 }
 function pdrScreenWait(wrap,st){
@@ -333,8 +353,8 @@ function pdrScreenWait(wrap,st){
  box.appendChild(div("agr-sent-t",T("qvAnswerSent")));
  if(mine&&!mine.skip)box.appendChild(div("agr-sent-v",T("pdrYourAnswer").replace("{y}",pdrChoiceLabel(mine.c))));
  wrap.appendChild(box);
- var missing=st.active.filter(function(n){return !st.cur[n];});
- wrap.appendChild(div("codice-sub",T("pdrWaiting").replace("{a}",st.active.length-missing.length).replace("{t}",st.active.length)));
+ var missing=st.elig.filter(function(n){return !st.cur[n];});
+ wrap.appendChild(div("codice-sub",T("pdrWaiting").replace("{a}",st.elig.length-missing.length).replace("{t}",st.elig.length)));
  pdrChips(wrap,st);
  if(!(st.meta&&st.meta.qt)){
   var key=st.game+"|"+st.q;
@@ -350,6 +370,7 @@ function pdrScreenWait(wrap,st){
 }
 function pdrScreenReveal(wrap,st){
  var q=pdrQuestionBox(wrap,st)||{};
+ var g0=st.game,q0=st.q;rlRevealCountdown(wrap,st,st.rt,function(){pdrNext(g0,q0);});
  var rd=st.rounds[st.q]||{answers:{},winners:[],key:PDR_KEY.charAt(st.qs[st.q])};
  var box=div("agr-answer");
  box.appendChild(div("agr-answer-l",T("ui_risposta_corretta")));
@@ -358,7 +379,7 @@ function pdrScreenReveal(wrap,st){
  if(q.a&&!q.extra)box.appendChild(div("pdr-a",q.a));
  if(q.extra)box.appendChild(div("agr-answer-c",q.extra));
  wrap.appendChild(box);
- var rows=st.order.map(function(n){var a=rd.answers[n];return {n:n,a:a,ok:!!(a&&!a.skip&&a.c===rd.key)};}).sort(function(x,y){return (y.ok?1:0)-(x.ok?1:0);});
+ var rows=(rlBlock(st.meta,st.q)?st.elig:st.order).map(function(n){var a=rd.answers[n];return {n:n,a:a,ok:!!(a&&!a.skip&&a.c===rd.key)};}).sort(function(x,y){return (y.ok?1:0)-(x.ok?1:0);});
  var list=div("agr-list");
  rows.forEach(function(r){
   var row=div("agr-row"+(r.ok?" win":""));
@@ -372,18 +393,6 @@ function pdrScreenReveal(wrap,st){
   wrap.appendChild(div("agr-point",me?T("pdrPointMe"):T("pdrPoint").replace("{n}",rd.winners.join(", "))));
  } else wrap.appendChild(div("agr-point",T("pdrNobody")));
  pdrScores(wrap,st);
- if(st.leader===PDR.me){
-  var nx=btn("codice-cta",st.last?T("pdrFinal"):T("pdrNext"),function(){if(nx.disabled)return;nx.disabled=true;pdrNext();});
-  wrap.appendChild(nx);
- } else {
-  wrap.appendChild(div("cdr-wait",T("pdrWaitNext").replace("{n}",st.leader||"")));
-  // Se chi guida non va avanti (telefono bloccato) dopo 30 secondi può farlo anche un altro
-  var rk=st.game+"|"+st.q;
-  if(PDR.revKey!==rk){PDR.revKey=rk;PDR.revSince=Date.now();}
-  var w=Date.now()-PDR.revSince;
-  if(w>=30000){var nx2=btn("ebtn out",st.last?T("pdrFinal"):T("pdrNext"),function(){if(nx2.disabled)return;nx2.disabled=true;pdrNext();});wrap.appendChild(nx2);}
-  else{clearTimeout(PDR.forceTimer);PDR.forceTimer=setTimeout(function(){PDR.sig="";pdrRender(true);},30000-w+200);}
- }
 }
 function pdrScores(wrap,st){
  wrap.appendChild(div("codice-section",T("ui_punteggi_totali")));
@@ -400,9 +409,9 @@ function pdrScreenEnd(wrap,st){
  } else {
   var max=-1;st.order.forEach(function(n){if(st.scores[n]>max)max=st.scores[n];});
   var top=st.order.filter(function(n){return st.scores[n]===max;});
-  var title=top.length>1?T("pdrTie").replace("{n}",top.join(", ")):(top[0]===PDR.me?T("cdrYouWon"):top[0]+" "+T("qvWon"));
+  var title=top.length>1?T("pdrTie").replace("{n}",top.join(", ")):(top[0]===PDR.me?T("cdrYouWon"):winTxt(top[0]));
   wrap.appendChild(div("end-title",title));
-  wrap.appendChild(div("end-sub",T("pdrEndSub").replace("{p}",max).replace("{t}",st.qs.length)));
+  wrap.appendChild(div("end-sub",(st.meta.tbs&&st.meta.tbs.length)?T("rlWonTb"):T("pdrEndSub").replace("{p}",max).replace("{t}",st.main)));
  }
  pdrScores(wrap,st);
  if(st.leader===PDR.me)rlLevelPicker(wrap,rlLevel(st.meta),true,pdrSetLevel);

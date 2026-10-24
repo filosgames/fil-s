@@ -381,3 +381,31 @@ body[data-cat="cultura"]{--f-cat:#DCE3F7;}body[data-cat="adulti"]{--f-cat:#EEDCE
 #chipaga-overlay{background:#FBCFD1!important;}
 #chipaga-close{background:rgba(255,255,255,0.6)!important;}
 #chipaga-hint{color:#5A3A3C!important;}
+
+/* 17. Indovina il codice a distanza: tempo + tentativo vicini, ultima mossa compatta */
+.cdr-play{background:var(--f-fill);border-radius:18px;padding:14px 14px 16px;margin:6px auto 18px;max-width:420px;display:flex;flex-direction:column;gap:12px;}
+.cdr-play .rl-timer{margin:0!important;}
+.cdr-play .codice-cta{margin:0 auto!important;}
+.cdr-play .codice-otp,.cdr-play .codice-slots{margin:0 auto!important;}
+.cdr-last{max-width:420px;box-sizing:border-box;overflow:hidden;}
+.cdr-last-r{gap:10px!important;flex-wrap:nowrap;}
+.cdr-last-r .codice-slots{gap:6px!important;}
+.cdr-last-r .codice-slot{width:38px!important;height:46px!important;font-size:20px!important;border-radius:11px!important;}
+.cdr-last-low{margin-top:18px!important;}
+.cdr-play .codice-otp{display:block!important;width:max-content;max-width:100%;}
+.cdr-play .codice-slots{gap:8px!important;}
+.cdr-play .codice-slot{width:min(56px,calc((100vw - 110px) / 4))!important;height:62px!important;}
+.cdr-mine{gap:12px;}
+.cdr-mine-l{flex:1;min-width:0;}
+.cdr-mine-v{white-space:nowrap;flex:0 0 auto;}
+
+/* 18. Spareggio e conto alla rovescia dei risultati */
+.rl-tb{display:inline-block;margin:2px auto 10px;padding:6px 14px;border-radius:999px;background:var(--f-sand-soft);color:var(--f-sand-ink);font-size:14px;font-weight:700;}
+.rl-next{max-width:420px;margin:6px auto 14px;}
+.rl-next-l{font-size:13px;font-weight:600;color:var(--f-ink-2);margin-bottom:4px;}
+.rl-next .rl-timer{margin:0!important;}
+.qxr-unit{font-size:15px;color:var(--f-ink-2);margin:-6px 0 8px;}
+.mw-reveal-name{font-size:22px;font-weight:800;color:var(--f-ink);margin-bottom:10px;overflow-wrap:anywhere;}
+.mw-wrap .player-names-grid{max-width:420px;margin:8px auto 20px;}
+.mw-player-btn>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.mw-player-btn>span:last-child{white-space:nowrap;font-size:12px!important;flex:0 0 auto;}
