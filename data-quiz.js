@@ -360,10 +360,39 @@ function renderSplash(){
  document.getElementById("root").appendChild(wrap);
 }
 
+// Il maialino cade fino in fondo allo schermo, poi si apre "Chi paga?"
+var _pigBusy=false;
+function pigDrop(pig){
+ if(_pigBusy)return;_pigBusy=true;
+ var img=pig.querySelector("img");var r=img.getBoundingClientRect();
+ function open(){if(typeof openChiPaga==="function")openChiPaga();}
+ var reduce=false;try{reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){}
+ if(reduce||!img.animate){_pigBusy=false;open();return;}
+ var fly=img.cloneNode(true);fly.className="pig-fly";
+ fly.style.cssText="position:fixed;left:"+r.left+"px;top:"+r.top+"px;width:"+r.width+"px;height:"+r.height+"px;z-index:9998;pointer-events:none;margin:0;";
+ document.body.appendChild(fly);img.style.visibility="hidden";
+ var dy=Math.max(0,window.innerHeight-r.bottom-14);
+ var a=fly.animate([
+  {transform:"translateY(0) rotate(0deg)"},
+  {transform:"translateY(-14px) rotate(-6deg)",offset:0.12},
+  {transform:"translateY("+dy+"px) rotate(14deg)",offset:0.78},
+  {transform:"translateY("+(dy-18)+"px) rotate(6deg)",offset:0.88},
+  {transform:"translateY("+dy+"px) rotate(10deg)"}
+ ],{duration:950,easing:"ease-in",fill:"forwards"});
+ a.onfinish=function(){
+  open();
+  setTimeout(function(){try{fly.remove();}catch(e){}img.style.visibility="";_pigBusy=false;},350);
+ };
+}
 function renderHome(){
  clr();
  var wrap=div("home");
- wrap.appendChild(div("home-title",T("homeTitle")));
+ var htop=div("home-top");htop.appendChild(div("home-title",T("homeTitle")));
+ var pig=document.createElement("button");pig.type="button";pig.className="home-pig";pig.setAttribute("aria-label",T("ui_chi_paga_il_conto"));
+ pig.innerHTML='<img src="maialino.png?v=1" alt="" draggable="false"><span class="home-pig-cap"></span>';
+ pig.querySelector(".home-pig-cap").textContent=T("pigCap");
+ pig.onclick=function(){pigDrop(pig);};
+ htop.appendChild(pig);wrap.appendChild(htop);
  // challenge rimosso
 
  var grid1=div("cgrid"),grid2=div("cgrid"),gridM=div("cgrid-mobile");
@@ -393,12 +422,12 @@ function renderHome(){
  }
  wrap.appendChild(grid1);wrap.appendChild(grid2);wrap.appendChild(gridM);
  // Chi paga il conto? — scheda in home (non copre più i giochi)
- var pay=document.createElement("button");pay.className="home-pay";pay.type="button";
+ var pay=null;if(false){pay=document.createElement("button");pay.className="home-pay";pay.type="button";
  pay.innerHTML='<span class="home-pay-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg></span><span class="home-pay-tx"><span class="home-pay-t"></span><span class="home-pay-s"></span></span><span class="home-pay-chev"></span>';
  pay.querySelector(".home-pay-t").textContent=T("ui_chi_paga_il_conto");
  pay.querySelector(".home-pay-s").textContent=T("ui_chi_paga_sub");
  pay.onclick=function(){if(typeof openChiPaga==="function")openChiPaga();};
- wrap.appendChild(pay);
+ wrap.appendChild(pay);}
  var lf=div("legal-foot");lf.appendChild(div("",T("legalFooter")));
  lf.appendChild(btn("",T("legalLink"),function(){S.prevScreen="home";S.screen="terms";render();window.scrollTo(0,0);}));
  wrap.appendChild(lf);

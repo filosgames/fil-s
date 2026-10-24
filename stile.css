@@ -367,3 +367,17 @@ body[data-cat="cultura"]{--f-cat:#DCE3F7;}body[data-cat="adulti"]{--f-cat:#EEDCE
 .mw-player-btn>span:first-child{white-space:nowrap;}
 .mw-player-btn>span:last-child{text-align:right;font-size:13px;font-weight:600;letter-spacing:.2px;}
 .mimo-pick .ebtn.out{background:#fff!important;padding:10px 16px!important;min-height:40px!important;font-size:15px!important;}
+
+/* 16. Maialino "Chi paga?" in home + sfondo rosa del gioco */
+.home-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;}
+.home-top .home-title{flex:1;min-width:0;margin-bottom:0!important;}
+.home-pig{flex:0 0 auto;background:none!important;border:none!important;padding:0!important;margin:0 -4px 0 0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;-webkit-tap-highlight-color:transparent;}
+.home-pig img{width:92px;height:auto;display:block;transform-origin:50% 90%;animation:pigWiggle 5s ease-in-out infinite;user-select:none;-webkit-user-drag:none;}
+.home-pig-cap{font-size:12px;font-weight:700;color:var(--f-ink-2);letter-spacing:.2px;}
+.home-pig:active img{transform:scale(.94);}
+@keyframes pigWiggle{0%,84%,100%{transform:rotate(0)}88%{transform:rotate(-7deg)}92%{transform:rotate(6deg)}96%{transform:rotate(-3deg)}}
+@media (min-width:700px){.home-pig img{width:120px;}}
+@media (prefers-reduced-motion:reduce){.home-pig img{animation:none;}}
+#chipaga-overlay{background:#FBCFD1!important;}
+#chipaga-close{background:rgba(255,255,255,0.6)!important;}
+#chipaga-hint{color:#5A3A3C!important;}
