@@ -409,8 +409,10 @@ function renderSplash(){
 
 // Il maialino cade fino in fondo allo schermo, poi si apre "Chi paga?"
 var _pigBusy=false;
+var PIG_BROKEN="maialino-rotto.png?v=1";var _pigBrokenImg=null;
+function pigPreload(){if(!_pigBrokenImg){_pigBrokenImg=new Image();_pigBrokenImg.src=PIG_BROKEN;}}
 function pigDrop(pig){
- if(_pigBusy)return;_pigBusy=true;
+ if(_pigBusy)return;_pigBusy=true;pigPreload();
  var img=pig.querySelector("img");var r=img.getBoundingClientRect();
  function open(){if(typeof openChiPaga==="function")openChiPaga();}
  // Animazione con transizioni CSS: funziona su tutti i telefoni (anche iPhone vecchi)
@@ -419,22 +421,30 @@ function pigDrop(pig){
  document.body.appendChild(fly);img.style.visibility="hidden";
  var vh=window.innerHeight||document.documentElement.clientHeight;
  var dy=Math.max(0,vh-r.bottom-14);
- function setT(t,tr){fly.style.webkitTransition=tr;fly.style.transition=tr;fly.style.webkitTransform=t;fly.style.transform=t;}
+ function setT(el,t,tr){el.style.webkitTransition=tr;el.style.transition=tr;el.style.webkitTransform=t;el.style.transform=t;}
+ function done(){try{fly.parentNode.removeChild(fly);}catch(e){}try{if(br)br.parentNode.removeChild(br);}catch(e){}img.style.visibility="";_pigBusy=false;}
+ var br=null;
+ // Quando tocca il fondo il maialino si rompe: al suo posto compare il maialino in pezzi
+ function smash(){
+  var w=r.width*1.35;var ratio=(_pigBrokenImg&&_pigBrokenImg.naturalWidth)?_pigBrokenImg.naturalHeight/_pigBrokenImg.naturalWidth:0.47;var h=w*ratio;
+  var cx=r.left+r.width/2;
+  br=document.createElement("img");br.src=PIG_BROKEN;br.alt="";br.className="pig-broken";
+  var vw=window.innerWidth||document.documentElement.clientWidth;var lx=Math.max(6,Math.min(vw-w-6,cx-w/2));
+  br.style.cssText="position:fixed;left:"+lx+"px;top:"+(vh-14-h)+"px;width:"+w+"px;height:"+h+"px;z-index:9998;pointer-events:none;margin:0;transform-origin:50% 100%;-webkit-transform:scale(1.06,.9);transform:scale(1.06,.9);";
+  document.body.appendChild(br);fly.style.visibility="hidden";
+  void br.offsetWidth;
+  setT(br,"scale(1,1)","transform .18s cubic-bezier(.3,1.6,.6,1)");
+  setTimeout(function(){setT(br,"translate3d(-4px,0,0)","transform .05s linear");},190);
+  setTimeout(function(){setT(br,"translate3d(4px,0,0)","transform .05s linear");},240);
+  setTimeout(function(){setT(br,"translate3d(0,0,0)","transform .05s linear");},290);
+  setTimeout(function(){open();setTimeout(done,350);},900);
+ }
  void fly.offsetWidth;
  requestAnimationFrame(function(){
-  setT("translate3d(0,-16px,0) rotate(-6deg)","transform .16s ease-out");
+  setT(fly,"translate3d(0,-16px,0) rotate(-6deg)","transform .16s ease-out");
   setTimeout(function(){
-   setT("translate3d(0,"+dy+"px,0) rotate(14deg)","transform .62s cubic-bezier(.55,0,.9,.6)");
-   setTimeout(function(){
-    setT("translate3d(0,"+(dy-20)+"px,0) rotate(6deg)","transform .13s ease-out");
-    setTimeout(function(){
-     setT("translate3d(0,"+dy+"px,0) rotate(10deg)","transform .13s ease-in");
-     setTimeout(function(){
-      open();
-      setTimeout(function(){try{fly.parentNode.removeChild(fly);}catch(e){}img.style.visibility="";_pigBusy=false;},350);
-     },160);
-    },140);
-   },640);
+   setT(fly,"translate3d(0,"+dy+"px,0) rotate(4deg)","transform .6s cubic-bezier(.55,0,1,.6)");
+   setTimeout(smash,600);
   },170);
  });
 }
@@ -446,6 +456,7 @@ function renderHome(){
  pig.innerHTML='<img src="maialino.png?v=1" alt="" draggable="false"><span class="home-pig-cap"></span>';
  pig.querySelector(".home-pig-cap").textContent=T("pigCap");
  pig.onclick=function(){pigDrop(pig);};
+ setTimeout(pigPreload,800);
  htop.appendChild(pig);wrap.appendChild(htop);
  // challenge rimosso
 
