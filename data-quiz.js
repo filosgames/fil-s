@@ -434,7 +434,8 @@ function pigDrop(pig){
   document.body.appendChild(br);fly.style.visibility="hidden";
   void br.offsetWidth;
   setT(br,"scale(1,1)","transform .18s cubic-bezier(.3,1.6,.6,1)");
-  setTimeout(function(){open();setTimeout(done,350);},900);
+  // Subito dopo la rottura si apre la schermata rosa
+  requestAnimationFrame(function(){setTimeout(function(){open();setTimeout(done,350);},60);});
  }
  void fly.offsetWidth;
  requestAnimationFrame(function(){
