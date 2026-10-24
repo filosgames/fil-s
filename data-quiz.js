@@ -434,9 +434,6 @@ function pigDrop(pig){
   document.body.appendChild(br);fly.style.visibility="hidden";
   void br.offsetWidth;
   setT(br,"scale(1,1)","transform .18s cubic-bezier(.3,1.6,.6,1)");
-  setTimeout(function(){setT(br,"translate3d(-4px,0,0)","transform .05s linear");},190);
-  setTimeout(function(){setT(br,"translate3d(4px,0,0)","transform .05s linear");},240);
-  setTimeout(function(){setT(br,"translate3d(0,0,0)","transform .05s linear");},290);
   setTimeout(function(){open();setTimeout(done,350);},900);
  }
  void fly.offsetWidth;
