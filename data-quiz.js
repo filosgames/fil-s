@@ -4485,8 +4485,8 @@ function renderAgSetup(){
  var minusBtn=document.createElement("button");
  minusBtn.style.cssText="width:48px;height:48px;border-radius:50%;border:2px solid #e0e0e0;background:#fff;font-size:24px;font-weight:300;cursor:pointer;color:#555;display:flex;align-items:center;justify-content:center;font-family:inherit;";
  minusBtn.textContent="−";
- minusBtn.onclick=function(){if(S.agNumPlayers>2){S.agNumPlayers--;renderAgSetup();}};
- if(selectedNum<=2){minusBtn.disabled=true;minusBtn.style.opacity="0.35";}
+ minusBtn.onclick=function(){if(S.agNumPlayers>1){S.agNumPlayers--;renderAgSetup();}};
+ if(selectedNum<=1){minusBtn.disabled=true;minusBtn.style.opacity="0.35";}
  var numDisp=document.createElement("div");
  numDisp.style.cssText="width:72px;text-align:center;font-size:40px;font-weight:900;color:var(--dark);font-family:'Space Grotesk',sans-serif;";
  numDisp.textContent=selectedNum;
@@ -4497,7 +4497,7 @@ function renderAgSetup(){
  if(selectedNum>=8){plusBtn.disabled=true;plusBtn.style.opacity="0.35";}
  stepper.appendChild(minusBtn);stepper.appendChild(numDisp);stepper.appendChild(plusBtn);
  body.appendChild(stepper);
- var agHint=div("");agHint.style.cssText="font-size:12px;color:var(--f-ink-3,#8E959E);text-align:center;margin:-14px 0 16px;";agHint.textContent=T("ui_minimo")+"2"+T("ui_massimo")+"8";body.appendChild(agHint);
+ var agHint=div("");agHint.style.cssText="font-size:12px;color:var(--f-ink-3,#8E959E);text-align:center;margin:-14px 0 16px;";agHint.textContent=T("ui_minimo")+"1"+T("ui_massimo")+"8";body.appendChild(agHint);
  var namesGrid=div("player-names-grid");
  var inputs=[];
  for(var i=0;i<selectedNum;i++){
@@ -4544,6 +4544,7 @@ function startAnnoGiusto(players){
 }
 
 // Chi risponde alla domanda attuale: tutti, oppure solo chi è a pari punti durante lo spareggio
+var AG_SOLO_RANGE=10;
 function agPlaying(){var b=S.agTb;if(b&&S.agRound>=b.f)return b.p.slice();return (S.agPlayers||[]).slice();}
 function agTbTop(){
  var pl=S.agPlayers||[];if(pl.length<2)return [];
@@ -4663,17 +4664,21 @@ function renderAnnoGiusto(){
   var agKey=S.agGameId+"|"+S.agRound;
   if(S.agScoredKey!==agKey){
    S.agScoredKey=agKey;
-   ranked.forEach(function(r){if(r.diff===bestD)S.agScores[r.p]=(S.agScores[r.p]||0)+1;});
+   // Da soli: punto se si sbaglia di 10 anni al massimo (con più giocatori: punto a chi si avvicina di più)
+   if(S.agPlayers.length===1){if(ranked[0].diff<=AG_SOLO_RANGE)S.agScores[ranked[0].p]=(S.agScores[ranked[0].p]||0)+1;}
+   else ranked.forEach(function(r){if(r.diff===bestD)S.agScores[r.p]=(S.agScores[r.p]||0)+1;});
   }
   var rankDiv=div("");rankDiv.style.cssText="width:100%;max-width:340px;display:flex;flex-direction:column;gap:8px;";
   ranked.forEach(function(r,i){
-   var row=div("qv-player-answer"+(i===0?" winner":""));
-   var pname=el("span","qv-answer-name",(i===0?" ":i===1?" ":i===2?" ":"")+r.p);
+   var win=S.agPlayers.length===1?r.diff<=AG_SOLO_RANGE:r.diff===bestD;
+   var row=div("qv-player-answer"+(win?" winner":""));
+   var pname=el("span","qv-answer-name",r.p+(win?" +1":""));
    var pval=el("span","qv-answer-val",agYear(r.ans)+" (±"+r.diff+")");
    row.appendChild(pname);row.appendChild(pval);
    rankDiv.appendChild(row);
   });
   body.appendChild(rankDiv);
+  if(S.agPlayers.length===1){var sh=div("");sh.style.cssText="font-size:13px;color:var(--f-ink-2,#5B626B);text-align:center;max-width:340px;";sh.textContent=T("agSoloRule");body.appendChild(sh);}
   // Punteggi
   var scoreDiv=div("");scoreDiv.style.cssText="width:100%;max-width:340px;display:flex;flex-direction:column;gap:4px;";
   var scoreLbl=div("");scoreLbl.style.cssText="font-size:13px;font-weight:700;color:var(--muted,#888);";scoreLbl.textContent=T("ui_punteggi_totali");
@@ -4719,8 +4724,10 @@ function renderAgEnd(){
  }
  var maxScore=Math.max.apply(null,S.agPlayers.map(function(p){return S.agScores[p];}));
  var winner=S.agPlayers.filter(function(p){return S.agScores[p]===maxScore;})[0];
- var wt=div("end-title");wt.textContent=winTxt(winner);wrap.appendChild(wt);
- wrap.appendChild(div("end-sub",S.agTb?T("rlWonTb"):T("ui_con")+maxScore+T("ui_punti_su")+(S.agMain||S.agTotalRounds)+" "+T("agQWord")));
+ var solo=S.agPlayers.length===1;
+ var wt=div("end-title");wt.textContent=solo?maxScore+" / "+(S.agMain||S.agTotalRounds):winTxt(winner);wrap.appendChild(wt);
+ if(solo){var pct=maxScore/(S.agMain||10);wrap.appendChild(div("end-sub",pct>=0.9?T("ui_fenomenale"):pct>=0.7?T("ui_ottimo"):pct>=0.5?T("ui_non_male"):T("ui_riprova")));}
+ wrap.appendChild(div("end-sub",S.agTb?T("rlWonTb"):solo?T("agSoloRule"):T("ui_con")+maxScore+T("ui_punti_su")+(S.agMain||S.agTotalRounds)+" "+T("agQWord")));
  var pd=div("qv-players-answers");
  S.agPlayers.slice().sort(function(a,b){return S.agScores[b]-S.agScores[a];}).forEach(function(p,i){
   var row=div("qv-player-answer"+(i===0?" winner":""));
