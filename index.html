@@ -803,7 +803,7 @@ button:disabled{opacity:0.35!important;transform:none;}
 #cdr-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);transform:translate(-50%,20px);background:rgba(28,28,30,0.92);color:#fff;font-size:15px;font-weight:600;padding:11px 18px;border-radius:999px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;}
 #cdr-toast.on{opacity:1;transform:translate(-50%,0);}
 </style>
-<link rel="stylesheet" href="stile.css?v=27">
+<link rel="stylesheet" href="stile.css?v=28">
 
 <!-- Firebase SDK (bundled) -->
 <script>
@@ -1137,15 +1137,16 @@ try {
 <script src="data-ag.js?v=4"></script>
 <script src="data-qv.js?v=4"></script>
 <script src="data-sp.js?v=5"></script>
-<script src="data-cats.js?v=19"></script>
+<script src="data-cats.js?v=20"></script>
 <script src="data-quizdata.js?v=5"></script>
 <script src="data-adulti.js?v=3"></script>
-<script src="data-quiz.js?v=60"></script>
+<script src="data-quiz.js?v=61"></script>
 <script src="data-cdr.js?v=10"></script>
 <script src="data-agr.js?v=5"></script>
 <script src="data-pdr.js?v=5"></script>
 <script src="data-fgr.js?v=4"></script>
 <script src="data-qxr.js?v=1"></script>
+<script src="data-occhio.js?v=2"></script>
 <script>
 
 
@@ -2519,7 +2520,7 @@ var GAMES={
  {name:T("codiceTitle"),players:"2+",time:"15 min",hot:true,codice:true,
  rules:"Ognuno sceglie di nascosto un codice segreto di 4 cifre (es. 3-7-1-9) e l'app lo ricorda. A turno provi a indovinare il codice di un avversario scrivendo tutte e 4 le cifre: l'app ti dice quante sono giuste al posto giusto (verde) e quante sono giuste ma al posto sbagliato (giallo). Chi per primo indovina un codice intero vince!",
  tip:"Usa i tentativi precedenti, anche quelli degli altri: sono tutti visibili. Se una cifra non dà né verde né giallo, scartala subito."},
- 
+ {name:"L'OCCHIO DEI COLORI",players:"2-8",time:"10 min",isnew:true,occhio:true,rules:"A turno, sullo stesso telefono, ognuno mette in ordine di sfumatura le stesse quattro file di quadratini colorati. Il primo e l'ultimo di ogni fila (con il puntino) restano fermi; gli altri si spostano trascinandoli, oppure toccandone uno e poi il posto dove metterlo. Vince chi è più preciso. Niente pareggi: chi è pari in testa rifà una prova più difficile, finché uno vince.",tip:"Chi aspetta il proprio turno non deve guardare: i colori sono gli stessi per tutti."}
  ],
  coppia:[
  {name:"36 DOMANDE",players:"2",time:"45-60 min",hot:true,rules:"Le 36 domande di Arthur Aron per creare vera intimità. Tre round di intensità crescente. Si risponde a turno, ascoltando davvero.",tip:"Non correte: la pausa dopo ogni risposta è parte del gioco.",questions:Q36R},
@@ -2741,9 +2742,13 @@ var GAMES={
  tip:"Le bandiere più simili tra loro sono le più difficili!"},
  {name:"QUANTO VALE?",players:"2-8",time:"15 min",hot:true,quantovale:true,
  rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. L'app mostra una domanda con un valore numerico (es. 'Quanti neonati nascono ogni giorno nel mondo?') e ognuno sceglie la sua risposta con il cursore. Chi si avvicina di più prende un punto. Dieci domande: vince chi fa più punti. Hai 30 secondi per rispondere; poi per 20 secondi si vedono la risposta giusta e la classifica, e si passa da soli alla domanda dopo. Niente pareggi: chi è pari in testa gioca uno spareggio con altre 3 domande.",
- tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."}
+ tip:"Non sparare un numero a caso — ragiona per difetto o per eccesso. E ricorda: quasi tutto è sempre più grande di quanto pensiamo."},
+ {name:"L'OCCHIO DEI COLORI",players:"2-8",time:"5 min",isnew:true,occhioremote:true,
+ rules:"Ognuno gioca dal proprio telefono, anche da tavoli diversi. Uno lancia la sfida e agli altri arriva una notifica: toccando Gioca entrano nella partita. Tutti ricevono le stesse quattro file di quadratini colorati da mettere in ordine di sfumatura, con 3 minuti di tempo. Vince chi è più preciso. Niente pareggi: chi è pari in testa rifà una prova più difficile, finché uno vince.",
+ tip:"Allo scadere dei 3 minuti conta l'ordine che hai fatto fin lì."}
  ],
  solitario:[
+ {name:"L'OCCHIO DEI COLORI",players:"1",time:"5 min",isnew:true,occhio:true,rules:"Quattro file di quadratini colorati da mettere in ordine di sfumatura. Il primo e l'ultimo di ogni fila (con il puntino) restano fermi; gli altri si spostano trascinandoli, oppure toccandone uno e poi il posto dove metterlo. Tre livelli: più quadratini e colori più simili rendono tutto più difficile. Conta solo la precisione.",tip:"Guarda la fila intera da lontano: le sfumature fuori posto saltano all'occhio."},
  {name:"DIARIO DEL GIORNO",players:"1",time:"10 min",isnew:true,rules:"Rifletti su tre cose successe oggi: una che ti ha sorpreso, una che ti ha dato fastidio e una che ti ha fatto sorridere. Scrivile o tienile a mente.",tip:"Più sei specifico nei dettagli, più l'esercizio è utile."},
  {name:"LA MAPPA DEI DESIDERI",players:"1",time:"15 min",isnew:true,rules:"Pensa a cinque cose che vorresti fare nei prossimi 12 mesi. Mettile in ordine dalla più semplice alla più difficile. Poi chiediti: cosa posso fare questa settimana per avvicinarmi alla prima?",tip:"Anche un passo piccolo conta."},
  {name:"LETTERA A TE STESSO",players:"1",time:"20 min",isnew:true,rules:"Scrivi una lettera al tuo io di dieci anni fa. Cosa gli diresti? Cosa lo faresti smettere di fare? Cosa vorresti che sapesse già?",tip:"Non filtrate: scrivete d'istinto, senza correggere."},
@@ -3862,6 +3867,9 @@ else if(S.screen==="specchio")renderSpecchio();
  else if(S.screen==="ag_setup")renderAgSetup();
  else if(S.screen==="agr")renderAgRemote();
  else if(S.screen==="qxr")renderQvRemote();
+ else if(S.screen==="ocr")renderOcRemote();
+ else if(S.screen==="occhio_setup")renderOcSetup();
+ else if(S.screen==="occhio")renderOc();
  else if(S.screen==="pdr")renderPdRemote();
  else if(S.screen==="fgr")renderFlRemote();
  else if(S.screen==="annogiusto")renderAnnoGiusto();
@@ -4212,7 +4220,7 @@ function showInviteBanner(inv, key){
  top.appendChild(ic);top.appendChild(app);top.appendChild(when);
  var who = document.createElement("div");who.className="inv-title";
  who.textContent=(inv.from||T("ui_qualcuno"))+T("invChallenges");
- var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : inv.kind==="primadopo" ? ((typeof pdrStrings==="function"&&pdrStrings()),T("pdrTitle")) : inv.kind==="bandiera" ? ((typeof fgrStrings==="function"&&fgrStrings()),T("fgrTitle")) : inv.kind==="qvx" ? T("qvTitle") : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
+ var gameLbl = inv.kind==="codice" ? T("codiceTitle") : inv.kind==="anno" ? T("ui_anno_giusto") : inv.kind==="primadopo" ? ((typeof pdrStrings==="function"&&pdrStrings()),T("pdrTitle")) : inv.kind==="bandiera" ? ((typeof fgrStrings==="function"&&fgrStrings()),T("fgrTitle")) : inv.kind==="qvx" ? T("qvTitle") : inv.kind==="occhio" ? ((typeof ocStrings==="function"&&ocStrings()),T("ocTitle")) : (inv.cat && inv.cat!=="quantovale" && typeof getCatName==="function") ? getCatName(inv.cat) : (inv.roomCode ? T("invQv") : (inv.game||T("ui_un_gioco")));
  gameLbl=String(gameLbl);if(gameLbl===gameLbl.toUpperCase())gameLbl=gameLbl.charAt(0)+gameLbl.slice(1).toLowerCase();
  var what = document.createElement("div");what.className="inv-body";what.textContent=T("invGame")+gameLbl;
  var btns = document.createElement("div");btns.className="inv-btns";
@@ -4259,6 +4267,15 @@ function showInviteBanner(inv, key){
     S.cat="relax";S.game=null;
     if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
     S.screen="fgr";render();
+   });
+   return;
+  }
+  // Invito all'Occhio dei colori a distanza
+  if(inv.roomCode && inv.kind === "occhio" && typeof ocrJoin==="function"){
+   ocrJoin(inv.roomCode,function(ok,msg){
+    S.cat="relax";S.game=null;
+    if(!ok){S.screen="games";render();if(typeof cdrToast==="function")cdrToast(msg||T("ui_stanza_non_trovata_o_scaduta"));return;}
+    S.screen="ocr";render();
    });
    return;
   }
